@@ -1,50 +1,27 @@
-# Current slice — C1 Course data model
+# Current slice — C2 Pilot course content
 
 **Owner:** Cursor  
 **Implementer:** Claude Code  
-**Last updated:** 2026-05-29  
-**Program:** `docs/education-full-program.md` · Master prompts: `docs/education-slices/MASTER-education-build.md`
+**Last updated:** 2026-05-30  
+**Program:** `docs/education-full-program.md` · Prompt: `docs/education-slices/C2-pilot-courses.md`
+
+**Status:** C1 done (`src/data/courses.ts` skeleton). C2 fills 16 lessons.
 
 ---
 
 ## Goal
 
-Start **structured courses** (separate from glossary). Add types + empty/skeleton curriculum file — no UI this slice.
+Populate **4 courses × 4 lessons** with full Robinhood-style `steps` (content + quiz), `profileAside`, and `conceptLinks`.
 
 ## Non-goals
 
-- 16 lessons of copy (C2), Learn hub (C3), AI assistant (A1–A5)
-- Changing `concepts.ts` content (except types import if needed)
+- UI (C3 Learn hub, C4 lesson player)
+- Ask Thesis (A1–A5)
 
-## Product constraints
+## Acceptance
 
-- Educational only — not investment advice
-- Lessons will later include: credit score, interest rates, compound interest, Roth IRA (C2)
-
-## Implementation spec
-
-See **C1** in `docs/education-full-program.md`:
-
-- `src/data/courses.ts`
-- Types: `CourseId`, `Course`, `Lesson`, `LessonSection`
-- Exports: `courses()`, `courseById(id)`, `lessonsForCourse(courseId)`, `lessonById(lessonId)`
-
-Skeleton: define 4 `CourseId`s with titles/descriptions only; lessons array empty or 1 placeholder each.
-
-## Acceptance checks
-
-- [ ] Types exported and used consistently
-- [ ] Four course IDs defined matching program doc
-- [ ] `npx tsc --noEmit` passes
-- [ ] No UI routes added
-
-## Verify
-
-```bash
-cd /Users/jaidenrabatin/Projects/thesis
-npx tsc --noEmit
-```
+See `docs/education-slices/C2-pilot-courses.md` and C2 in `docs/education-full-program.md`.
 
 ## Next slice
 
-**C2** — fill 16 lessons (4 courses × 4 lessons).
+**C3** — Learn hub (Ask | Courses | Glossary).
