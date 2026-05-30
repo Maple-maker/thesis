@@ -1,50 +1,42 @@
-# Current slice — E2 ExplainSheet
+# Current slice — C1 Course data model
 
 **Owner:** Cursor  
 **Implementer:** Claude Code  
 **Last updated:** 2026-05-29  
-**Status:** Not shipped — no `ExplainSheet.tsx` in repo yet.
+**Program:** `docs/education-full-program.md` · Master prompts: `docs/education-slices/MASTER-education-build.md`
 
 ---
 
 ## Goal
 
-Add reusable **ExplainSheet** so finance terms can be taught from duel metrics, stock stats, and (later) TermLink / insight copy.
+Start **structured courses** (separate from glossary). Add types + empty/skeleton curriculum file — no UI this slice.
 
 ## Non-goals
 
-- Wiring duel (E3) or stock stats (E4) — separate sessions after E2
-- Stock signals (E8–E9), TermLink (E5), InsightSheet (U4), Themes ListRow (U5)
-- New concepts in `concepts.ts` unless a label has no matching `ConceptId`
+- 16 lessons of copy (C2), Learn hub (C3), AI assistant (A1–A5)
+- Changing `concepts.ts` content (except types import if needed)
 
 ## Product constraints
 
 - Educational only — not investment advice
-- Daylight UI (`src/components/ui/` patterns)
-- Dismissible sheet/modal
+- Lessons will later include: credit score, interest rates, compound interest, Roth IRA (C2)
 
 ## Implementation spec
 
-See **E2** in `docs/education-roadmap.md`:
+See **C1** in `docs/education-full-program.md`:
 
-- `src/components/ExplainSheet.tsx` — props: `conceptId`, `visible`, `onClose`
-- Load via `conceptById()` from `src/data/concepts.ts`
-- Show: `term`, `body`, optional `whyItMatters`, related concepts (chips OK as noop)
-- Optional: `src/hooks/useExplainSheet.ts`
+- `src/data/courses.ts`
+- Types: `CourseId`, `Course`, `Lesson`, `LessonSection`
+- Exports: `courses()`, `courseById(id)`, `lessonsForCourse(courseId)`, `lessonById(lessonId)`
 
-## Files to touch
-
-| File | Intent |
-|------|--------|
-| `src/components/ExplainSheet.tsx` | New |
-| `src/hooks/useExplainSheet.ts` | Optional |
+Skeleton: define 4 `CourseId`s with titles/descriptions only; lessons array empty or 1 placeholder each.
 
 ## Acceptance checks
 
-- [ ] Any concept from `concepts.ts` renders in sheet
-- [ ] Close control works
+- [ ] Types exported and used consistently
+- [ ] Four course IDs defined matching program doc
 - [ ] `npx tsc --noEmit` passes
-- [ ] No duel/stock wiring required this slice
+- [ ] No UI routes added
 
 ## Verify
 
@@ -53,8 +45,6 @@ cd /Users/jaidenrabatin/Projects/thesis
 npx tsc --noEmit
 ```
 
-## Context
+## Next slice
 
-**Shipped:** reveal reasons, `concepts.ts`, `InsightCard` + `context-insights` on stock, `ListRow`/`MetricChip`.  
-**Today plan:** `docs/today.md`  
-**Next after E2:** E3 duel taps → E4 stock stats → E8/E9 signals.
+**C2** — fill 16 lessons (4 courses × 4 lessons).
