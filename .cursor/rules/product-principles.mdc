@@ -1,0 +1,34 @@
+---
+description: Thesis product principles — educational, thesis-first, user-friendly depth
+alwaysApply: true
+---
+
+# Product principles
+
+## Positioning
+
+- **Educational decision-support** — not investment advice. No "buy", "sell", "you should own", or personalized recommendations.
+- Explain **tradeoffs** and fit to the user's stated profile; let them choose.
+
+## Onboarding = thesis builder
+
+- Onboarding is **thorough and comprehensive** — it builds the user's investment **thesis frame**, not a signup shortcut.
+- Never frame the questionnaire as "short" or something to rush through.
+- Payoff: themes, copy, and home must **trace back** to questionnaire answers (e.g. `generateThemes` reasons).
+
+## UX priorities
+
+- **One obvious next action** per screen when possible.
+- **Depth is optional** after the core action (e.g. duel pick first; metrics/bull-bear behind detail).
+- **Explain jargon** on demand (P/E, beta, moat, ETF) — plain English, not textbook dumps.
+- Helpful **empty states** (e.g. watchlist needs 2 names for a duel).
+
+## Explicit non-goals
+
+- Pitch decks, investor decks, landing-page marketing for VCs.
+- Features that imply live trading or guaranteed returns.
+
+## Copy tone
+
+- Calm, trustworthy (Daylight / narrative style) — not Bloomberg terminal, not hype.
+- Disclaimers stay visible on onboarding and sensitive flows.

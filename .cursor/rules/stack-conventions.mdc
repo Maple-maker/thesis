@@ -1,0 +1,36 @@
+---
+description: Thesis stack and code conventions (Expo, NativeWind, Zustand)
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Stack conventions
+
+## Minimal diffs
+
+- Smallest change that meets the slice; no drive-by refactors or new abstractions for one-off logic.
+- Reuse `src/components/ui/*` and existing store actions before adding parallel patterns.
+
+## Styling
+
+- **NativeWind** class names; tokens from `tailwind.config.js` (`brand`, `ink`, `bg-surface`, `font-sansMd`, etc.).
+- Icons via `src/components/Icon.tsx` — do not add a second icon library.
+- Animations: Reanimated patterns already used in onboarding/reveal.
+
+## State & data
+
+- Profile, themes, watchlist, journal → **Zustand** `useStore` in `src/store/index.ts`.
+- Mock catalog → `src/data/`; scoring → `src/lib/theme-engine.ts`, `src/lib/etf-overlap.ts`.
+- Do not add network calls or new persistence layers unless the slice requires it.
+
+## Navigation
+
+- **Expo Router** file routes under `src/app/`; modals like `duel.tsx` stay as documented in README.
+
+## TypeScript
+
+- Types live in `src/store/types.ts` for domain models; keep strict typing, avoid `any` in new code.
+
+## Commits
+
+- Do not commit unless the user asks.

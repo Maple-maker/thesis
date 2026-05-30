@@ -1,0 +1,16 @@
+---
+description: Read current slice before implementing; do not expand scope
+alwaysApply: true
+---
+
+# Handoff
+
+Before coding:
+
+1. Open **`docs/current-slice.md`** and treat it as the contract for this session.
+2. Implement **only** what Goal + Files + Acceptance describe.
+3. If framing is missing or ambiguous, **stop and ask** — do not invent product direction (onboarding length, advice tone, new features).
+
+When finishing a slice, do not update `current-slice.md` unless the user asked — Cursor updates the next slice.
+
+**Claude Code prompt:** `Implement docs/current-slice.md only. Read AGENTS.md.`
