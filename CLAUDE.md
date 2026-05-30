@@ -9,3 +9,5 @@ Read before coding:
 Do **not** start the education layer until reveal ships. Then **one phase at a time** from `docs/education-roadmap.md` (E1–E10, U1–U5). UI patterns from Public/Autopilot/Coinbase: `docs/design-reference-insights-ui.md`. Quick prompts: `docs/education-slices/`.
 
 **Default prompt:** Implement `docs/current-slice.md` only. Run `npx tsc --noEmit` when finished.
+
+**Daily plan:** `docs/today.md` — phased sessions (E2 → E3/E4 → E8/E9 → E5).
