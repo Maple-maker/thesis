@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>thesis: Become a Smarter Investor Today</title>
+<meta name="description" content="Form your personalized investment thesis to understand the why behind your buys. Thesis helps you invest with conviction. Educational, never stock picks. iOS exclusive.">
+<meta name="theme-color" content="#0E7A66">
+<meta property="og:title" content="thesis: Become a Smarter Investor Today">
+<meta property="og:description" content="Form your personalized investment thesis to understand the why behind your buys. Education builds conviction. Never buy blind again.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="thesis: Become a Smarter Investor Today">
+<meta name="twitter:description" content="Form your personalized investment thesis to understand the why behind your buys.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --serif: 'Newsreader', Georgia, serif;
+    --mono: 'Spline Sans Mono', ui-monospace, monospace;
+
+    --green: #0E7A66;
+    --green-deep: #06483C;
+    --green-grad: linear-gradient(157deg, #0E7A66 0%, #095948 52%, #06483C 100%);
+    --blue: #2F5BD8;
+    --violet: #7C3AED;
+    --amber: #C9810F;
+
+    /* paper / light */
+    --paper: #F4EFE6;
+    --paper-2: #EFE8DA;
+    --surface: #FCF9F2;
+    --ink: #16201C;
+    --ink-2: #545C56;
+    --ink-3: #8A8E84;
+    --line: #E6DECF;
+    --line-strong: #D8CDB8;
+
+    /* on dark */
+    --cream: #F6F1E6;
+    --cream-dim: rgba(246,241,230,.74);
+    --cream-faint: rgba(246,241,230,.50);
+    --on-green-line: rgba(246,241,230,.16);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -.02em; line-height: 1.08; }
+  p { margin: 0; text-wrap: pretty; }
+  a { color: inherit; }
+
+  .wrap { width: min(1120px, 100% - 44px); margin: 0 auto; }
+  .narrow { width: min(720px, 100% - 44px); margin: 0 auto; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+
+  /* ── Logo ───────────────────────────────────────────── */
+  .logo { display: inline-flex; align-items: center; gap: 11px; }
+  .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .logo-word { font-family: var(--serif); font-size: 25px; font-weight: 600; letter-spacing: -.02em; }
+
+  /* ── Buttons + form ─────────────────────────────────── */
+  .signup { display: flex; gap: 9px; width: 100%; max-width: 460px; }
+  .signup input {
+    flex: 1; min-width: 0; font-family: var(--font); font-size: 16px; font-weight: 500;
+    padding: 16px 18px; border-radius: 14px; outline: none; transition: border-color .16s, box-shadow .16s;
+  }
+  .btn {
+    border: none; cursor: pointer; font-family: var(--font); font-weight: 800;
+    font-size: 16px; padding: 16px 22px; border-radius: 14px; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    transition: transform .12s ease, box-shadow .16s ease, background-color .16s;
+  }
+  .btn:active { transform: translateY(1px) scale(.995); }
+  .btn-cream { background: var(--cream); color: var(--green-deep); box-shadow: 0 8px 24px rgba(0,0,0,.22); }
+  .btn-cream:hover { background: #fff; }
+  .btn-green { background: var(--green); color: #fff; box-shadow: 0 8px 22px rgba(14,122,102,.26); }
+  .btn-green:hover { background: #0c6e5c; }
+
+  .on-dark input { background: rgba(246,241,230,.10); border: 1.5px solid rgba(246,241,230,.24); color: var(--cream); }
+  .on-dark input::placeholder { color: rgba(246,241,230,.55); }
+  .on-dark input:focus { border-color: rgba(246,241,230,.6); background: rgba(246,241,230,.16); }
+
+  .microline { font-size: 13px; font-weight: 500; letter-spacing: .005em; }
+  .micro-dark { color: var(--cream-faint); }
+
+  .form-done {
+    display: none; align-items: center; gap: 12px; max-width: 460px;
+    padding: 16px 18px; border-radius: 14px; font-weight: 600; font-size: 15px; line-height: 1.4;
+    background: rgba(246,241,230,.12); border: 1.5px solid rgba(246,241,230,.22); color: var(--cream);
+  }
+  .form-done.show { display: flex; }
+  .check-badge { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
+
+  /* ── Phone frame ────────────────────────────────────── */
+  .phone {
+    position: relative; width: 100%; max-width: 296px; margin: 0 auto;
+    border-radius: 46px; background: #0E1714; padding: 9px;
+    box-shadow: 0 44px 90px rgba(3,34,27,.42), 0 10px 26px rgba(0,0,0,.20);
+  }
+  .phone img { display: block; width: 100%; border-radius: 38px; }
+
+  /* ── Hero ───────────────────────────────────────────── */
+  .hero { background: var(--green-grad); color: var(--cream); position: relative; overflow: hidden; }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(80% 60% at 78% 6%, rgba(255,255,255,.08), transparent 60%);
+  }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 0; position: relative; z-index: 2; }
+  .beta-tag {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--cream-dim); border: 1px solid var(--on-green-line); padding: 7px 13px; border-radius: 999px;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.06fr .94fr; gap: 48px; align-items: center;
+    padding: clamp(48px, 7vw, 88px) 0 clamp(56px, 8vw, 96px); position: relative; z-index: 2;
+  }
+  .hero h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(44px, 6vw, 76px); line-height: 1.0; color: #fff; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: #BFE6D8; }
+  .hero-sub { margin-top: 22px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; color: var(--cream-dim); max-width: 38ch; font-weight: 500; }
+  .hero-form-zone { margin-top: 32px; }
+  .hero .microline { margin-top: 15px; }
+  .hero-phone-col { display: flex; justify-content: center; }
+  .hero-phone-col .phone { transform: rotate(1deg); }
+
+  /* ── Section scaffold ───────────────────────────────── */
+  section { position: relative; }
+  .pad { padding: clamp(72px, 11vw, 130px) 0; }
+  .pad-sm { padding: clamp(56px, 8vw, 92px) 0; }
+  .sec-label { color: var(--green); margin-bottom: 22px; }
+
+  /* Problem */
+  .problem { background: var(--paper); text-align: center; }
+  .problem p { font-family: var(--serif); font-weight: 500; font-size: clamp(27px, 3.6vw, 40px); line-height: 1.24; color: var(--ink); }
+  .problem .accent { color: var(--green); font-style: italic; }
+
+  /* How it works */
+  .how { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .how h2 { font-family: var(--serif); font-size: clamp(30px, 4vw, 46px); }
+  .steps { margin-top: 52px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+  .step-ico { width: 54px; height: 54px; border-radius: 15px; background: rgba(14,122,102,.09); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .step-n { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--green); letter-spacing: .1em; }
+  .step h3 { font-size: 18px; font-weight: 700; margin: 9px 0 8px; letter-spacing: -.01em; }
+  .step p { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); font-weight: 500; }
+
+  /* Showcase rows */
+  .showcase { background: var(--paper); }
+  .show-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 6vw, 84px); align-items: center; }
+  .show-row + .show-row { margin-top: clamp(72px, 9vw, 128px); }
+  .show-row.flip .show-text { order: 2; }
+  .show-eyebrow { color: var(--green); margin-bottom: 16px; }
+  .show-text h2 { font-family: var(--serif); font-size: clamp(28px, 3.6vw, 44px); }
+  .show-text > p { margin-top: 18px; font-size: 17px; line-height: 1.55; color: var(--ink-2); font-weight: 500; max-width: 40ch; }
+  .chip-row { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 9px; }
+  .chip { font-family: var(--font); font-size: 13.5px; font-weight: 600; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); padding: 9px 14px; border-radius: 11px; }
+  .chip.b { color: var(--blue); border-color: rgba(47,91,216,.28); background: rgba(47,91,216,.06); }
+  .chip.v { color: var(--violet); border-color: rgba(124,58,237,.26); background: rgba(124,58,237,.06); }
+  .chip.a { color: var(--amber); border-color: rgba(201,129,15,.3); background: rgba(201,129,15,.07); }
+
+  /* What you get */
+  .get { background: var(--surface); border-top: 1px solid var(--line); }
+  .get h2 { font-family: var(--serif); font-size: clamp(30px, 4vw, 46px); }
+  .get-grid { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 40px; }
+  .get-item { display: flex; gap: 15px; padding: 18px 0; border-top: 1px solid var(--line); align-items: flex-start; }
+  .get-check { flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; background: rgba(14,122,102,.1); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .get-item h3 { font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; }
+  .get-item p { font-size: 14px; line-height: 1.5; color: var(--ink-2); font-weight: 500; margin-top: 4px; }
+
+  /* Founding offer */
+  .founding { background: var(--paper-2); }
+  .offer { background: var(--green-grad); color: var(--cream); border-radius: 30px; overflow: hidden; position: relative; box-shadow: 0 40px 90px rgba(3,40,32,.28); }
+  .offer::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(70% 50% at 85% 0%, rgba(255,255,255,.07), transparent 60%); }
+  .offer-inner { display: grid; grid-template-columns: 1fr .92fr; gap: 52px; padding: clamp(40px, 5vw, 64px); position: relative; z-index: 2; }
+  .offer h2 { font-family: var(--serif); font-size: clamp(36px, 4.6vw, 56px); color: #fff; }
+  .offer-lede { margin-top: 18px; font-size: 16.5px; line-height: 1.55; color: var(--cream-dim); font-weight: 500; }
+  .stack { margin-top: 26px; display: grid; gap: 2px; }
+  .stack-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid var(--on-green-line); }
+  .stack-item:first-child { border-top: none; }
+  .stack-dot { flex-shrink: 0; width: 24px; height: 24px; border-radius: 7px; background: rgba(246,241,230,.16); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .stack-item strong { font-weight: 700; color: #fff; font-size: 15.5px; }
+  .stack-item span { color: var(--cream-dim); font-weight: 500; }
+  .offer-side { align-self: stretch; display: flex; flex-direction: column; }
+  .return-box { background: rgba(246,241,230,.07); border: 1px solid var(--on-green-line); border-radius: 18px; padding: 22px; }
+  .return-box .lbl { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #BFE6D8; }
+  .return-box p { margin-top: 10px; font-size: 14.5px; line-height: 1.55; color: var(--cream-dim); font-weight: 500; }
+  .scarcity { margin-top: 18px; display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--cream-dim); font-weight: 500; }
+  .scarcity svg { flex-shrink: 0; margin-top: 1px; }
+  .offer-cta { margin-top: auto; padding-top: 24px; }
+
+  /* Trust */
+  .trust { background: var(--paper); }
+  .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .trust-card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 30px 26px; }
+  .trust-ico { width: 44px; height: 44px; border-radius: 12px; background: rgba(14,122,102,.09); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .trust-card h3 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .trust-card p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--ink-2); font-weight: 500; }
+
+  /* Final CTA */
+  .final { background: var(--green-grad); color: var(--cream); text-align: center; position: relative; overflow: hidden; }
+  .final::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 60% at 50% 0%, rgba(255,255,255,.07), transparent 60%); }
+  .final-in { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+  .final h2 { font-family: var(--serif); font-size: clamp(38px, 5.2vw, 64px); color: #fff; }
+  .final .hero-form-zone { display: flex; flex-direction: column; align-items: center; }
+  .final .signup, .final .form-done { margin: 32px auto 0; }
+  .final .microline { margin-top: 15px; }
+
+  /* Footer */
+  footer { background: var(--green-deep); color: var(--cream-faint); padding: 42px 0; }
+  .foot-in { display: flex; flex-direction: column; gap: 18px; }
+  .foot-logo .logo-word { color: var(--cream); font-size: 21px; }
+  .foot-disc { font-size: 13px; line-height: 1.6; max-width: 64ch; color: rgba(246,241,230,.46); }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+  /* ── Responsive ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 44px; padding-top: clamp(36px, 9vw, 56px); }
+    .hero-phone-col { order: -0; }
+    .offer-inner { grid-template-columns: 1fr; gap: 34px; }
+    .steps { grid-template-columns: 1fr 1fr; gap: 32px 22px; }
+    .show-row { grid-template-columns: 1fr; gap: 40px; }
+    .show-row.flip .show-text { order: 0; }
+    .show-phone { order: -1; }
+    .get-grid { grid-template-columns: 1fr; gap: 0; }
+    .trust-grid { grid-template-columns: 1fr; gap: 14px; }
+    .offer-cta { padding-top: 8px; }
+  }
+  @media (max-width: 540px) {
+    .wrap, .narrow { width: calc(100% - 36px); }
+    .signup { flex-direction: column; }
+    .signup .btn { width: 100%; }
+    .hero-sub { max-width: none; }
+    .steps { grid-template-columns: 1fr; gap: 30px; }
+    .hero-top { padding-top: 22px; }
+    .hero-phone-col .phone { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ══ HERO ══ -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-top">
+        <span class="logo">
+          <span class="logo-mark" style="background:rgba(246,241,230,.14)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 17c3-1 4.5-5 7-9 1.5 4 3 6 5 5.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="18.5" cy="6" r="2.1" fill="#fff"/>
+            </svg>
+          </span>
+          <span class="logo-word" style="color:#fff">thesis</span>
+        </span>
+        <span class="beta-tag">iOS exclusive · Founding beta</span>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <h1>Become a smarter<br><em>investor today.</em></h1>
+          <p class="hero-sub">Form your personalized investment thesis to formulate the why behind your buys, plus an AI CFO that knows your accounts and your goals. Education builds conviction. Never buy blind again.</p>
+          <div class="hero-form-zone">
+            <form class="signup on-dark" data-signup name="hero-signup" method="POST" data-netlify="true">
+              <input type="hidden" name="form-name" value="hero-signup">
+              <input type="email" name="email" required placeholder="you@email.com" aria-label="Email address" />
+              <button type="submit" class="btn btn-cream">Become a Founding Member</button>
+            </form>
+            <div class="form-done" data-done>
+              <span class="check-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>You're on the founding list. Watch your inbox. TestFlight invites go out in waves of 100.</span>
+            </div>
+            <p class="microline micro-dark">iOS exclusive · Free during beta · No card · Educational tool, not investment advice</p>
+          </div>
+        </div>
+
+        <div class="hero-phone-col">
+          <div class="phone"><img src="img/shot-home.png" alt="Thesis home screen: net worth, AI CFO scorecard and Ask your CFO" /></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ PROBLEM ══ -->
+  <section class="problem pad-sm">
+    <div class="narrow reveal">
+      <p>Most people buy on tips and FOMO, then panic when it drops <span class="accent">because they never had a reason in the first place.</span></p>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <section class="how pad">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="eyebrow sec-label">How it works</p>
+        <h2>Four steps to understanding<br>the why behind your buys.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-ico">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 17c3-1 4.5-5 7-9 1.5 4 3 6 5 5.5" stroke="#0E7A66" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="6" r="2.1" fill="#0E7A66"/></svg>
+          </div>
+          <span class="step-n">01</span>
+          <h3>Build your thesis</h3>
+          <p>A few honest questions become your investing fingerprint: risk, horizon, return, income.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-ico">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#0E7A66" stroke-width="2"/><path d="M12 3.5v3M12 17.5v3M20.5 12h-3M6.5 12h-3" stroke="#0E7A66" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="#0E7A66"/></svg>
+          </div>
+          <span class="step-n">02</span>
+          <h3>Get matched</h3>
+          <p>A personal thesis and the themes that fit how you actually think, in plain English.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-ico">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="#0E7A66" stroke-width="2"/><path d="M3 10h18" stroke="#0E7A66" stroke-width="2"/><path d="M7 15h4" stroke="#0E7A66" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <span class="step-n">03</span>
+          <h3>Link your accounts</h3>
+          <p>Net worth, holdings and overlap in one place, so every answer is grounded in your real money.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-ico">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 5h14a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 3.5V7a2 2 0 012-2z" stroke="#0E7A66" stroke-width="2" stroke-linejoin="round"/><path d="M12 8.5l.9 1.9 2 .2-1.5 1.4.5 2-1.9-1.1-1.9 1.1.5-2L9.1 10.6l2-.2.9-1.9z" fill="#0E7A66"/></svg>
+          </div>
+          <span class="step-n">04</span>
+          <h3>Ask your CFO</h3>
+          <p>Profile- and account-aware answers, forecasts and scenarios on tap, whenever you wonder.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SHOWCASE ══ -->
+  <section class="showcase pad">
+    <div class="wrap">
+
+      <div class="show-row reveal">
+        <div class="show-text">
+          <p class="eyebrow show-eyebrow">Your investing fingerprint</p>
+          <h2>A thesis that fits how you think.</h2>
+          <p>Answer a few questions and Thesis maps your risk tolerance, time horizon, return target and income need. Then matches you to an approach you'll recognize as your own.</p>
+          <div class="chip-row">
+            <span class="chip">Risk tolerance</span>
+            <span class="chip">Time horizon</span>
+            <span class="chip v">Return target</span>
+            <span class="chip a">Income need</span>
+            <span class="chip b">Top match · Wonderful Companies</span>
+          </div>
+        </div>
+        <div class="show-phone">
+          <div class="phone"><img src="img/shot-thesis.png" alt="Thesis match: Wonderful Companies, your investing fingerprint" /></div>
+        </div>
+      </div>
+
+      <div class="show-row flip reveal">
+        <div class="show-text">
+          <p class="eyebrow show-eyebrow">Forecast &amp; scenarios</p>
+          <h2>Pressure-test your future before you live it.</h2>
+          <p>Drag to test a retirement age and watch the projection update instantly. Model a home, a kid, an income change. Then ask your CFO what each one really costs. Illustrative, never advice.</p>
+          <div class="chip-row">
+            <span class="chip">When can I retire?</span>
+            <span class="chip">Can I afford this house?</span>
+            <span class="chip">How does my future look?</span>
+          </div>
+        </div>
+        <div class="show-phone">
+          <div class="phone"><img src="img/shot-forecast.png" alt="Forecast screen: net worth projection to 2050 with a retirement-age slider" /></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ WHAT YOU GET ══ -->
+  <section class="get pad">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="eyebrow sec-label">What you get</p>
+        <h2>One calm place to know what you<br>own and why it's yours.</h2>
+      </div>
+      <div class="get-grid">
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Your investing fingerprint</h3><p>Risk, horizon, return and income need, mapped from your own answers, not a template.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>AI CFO Scorecard</h3><p>A 0–100 read on your profile that climbs as you add detail. No grade, just a path.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>A thesis matched to you</h3><p>Your top-matched approach, explained plainly, and the themes that go with it.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Ask your CFO</h3><p>Answers grounded in your profile and linked accounts. Never a buy or sell call.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Forecast &amp; scenarios</h3><p>"When can I retire?" "Can I afford this house?" Model the tradeoffs. Illustrative, not advice.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Portfolio X-Ray</h3><p>See overlap and gaps across every linked account. What you really hold, in one view.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Investor lenses</h3><p>View your holdings through Buffett, Dalio and more, and learn how each would read them.</p></div>
+        </div>
+        <div class="get-item reveal">
+          <span class="get-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0E7A66" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h3>Learn-first, jargon decoded</h3><p>P/E, moat, beta, ETF: one plain line on tap. Deeper research unlocks once you understand it.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOUNDING OFFER ══ -->
+  <section class="founding pad" id="join">
+    <div class="wrap reveal">
+      <div class="offer">
+        <div class="offer-inner">
+          <div>
+            <p class="eyebrow" style="color:#BFE6D8;margin-bottom:18px;">The founding cohort · 100 spots</p>
+            <h2>Join the first 100.</h2>
+            <p class="offer-lede">We're opening Thesis to a small founding cohort before public launch. You'll help shape v1 and lock in:</p>
+            <div class="stack">
+              <div class="stack-item">
+                <span class="stack-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span><strong>3 months of Thesis Pro, free</strong> at launch. The full AI CFO.</span>
+              </div>
+              <div class="stack-item">
+                <span class="stack-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>A <strong>permanent Founding Member rate</strong>, for as long as you stay.</span>
+              </div>
+              <div class="stack-item">
+                <span class="stack-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>A <strong>Founding Member badge</strong> in-app.</span>
+              </div>
+              <div class="stack-item">
+                <span class="stack-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>A <strong>direct line to the builder</strong>. Your feedback shapes the product.</span>
+              </div>
+              <div class="stack-item">
+                <span class="stack-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span><strong>Early access</strong> to every new feature.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="offer-side">
+            <div class="return-box">
+              <span class="lbl">In return</span>
+              <p>Use it for two weeks, tell us what's broken, answer one short survey. That's it.</p>
+            </div>
+            <div class="scarcity">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#BFE6D8" stroke-width="2"/><path d="M12 7.5v5l3 2" stroke="#BFE6D8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Small cohort on purpose, so your feedback actually moves the product. When it's full, founding access closes.</span>
+            </div>
+            <div class="offer-cta">
+              <form class="signup on-dark" data-signup name="founding-signup" method="POST" data-netlify="true" netlify style="max-width:none;">
+                <input type="hidden" name="form-name" value="founding-signup">
+                <input type="email" name="email" required placeholder="you@email.com" aria-label="Email address" />
+                <button type="submit" class="btn btn-cream">Claim your spot</button>
+              </form>
+              <div class="form-done" data-done style="max-width:none;">
+                <span class="check-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Spot reserved. Your founding invite is on its way.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHY TRUST IT ══ -->
+  <section class="trust pad-sm">
+    <div class="wrap">
+      <div class="trust-grid">
+        <div class="trust-card reveal">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 8.5l9-4.5 9 4.5M5 11v5.5c0 .8.4 1.5 1.1 1.9L12 21l5.9-2.6c.7-.4 1.1-1.1 1.1-1.9V11" stroke="#0E7A66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Free during beta, no card</h3>
+          <p>Nothing to enter, nothing to cancel. You're testing it, not buying it.</p>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4c1.5 3 4 4.5 7 4.5 0 6-3 9.5-7 11.5-4-2-7-5.5-7-11.5 3 0 5.5-1.5 7-4.5z" stroke="#0E7A66" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Educational, not advice</h3>
+          <p>Everything is illustrative. No buy/sell calls, no nudges, no one selling you anything.</p>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#0E7A66" stroke-width="2"/><path d="M8 10V7.5a4 4 0 018 0V10" stroke="#0E7A66" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Your data stays on your device</h3>
+          <p>Your answers, your accounts, your plan. They live with you, not on a server somewhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FINAL CTA ══ -->
+  <section class="final pad">
+    <div class="narrow final-in reveal">
+      <h2>Become a smarter<br>investor today.</h2>
+      <div class="hero-form-zone">
+        <form class="signup on-dark" data-signup name="final-signup" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="final-signup">
+          <input type="email" name="email" required placeholder="you@email.com" aria-label="Email address" />
+          <button type="submit" class="btn btn-cream">Become a Founding Member</button>
+        </form>
+        <div class="form-done" data-done>
+          <span class="check-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span>You're on the founding list. Invites go out in waves of 100.</span>
+        </div>
+        <p class="microline micro-dark">iOS exclusive · Limited founding cohort · No card required</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="wrap foot-in">
+      <span class="logo foot-logo">
+        <span class="logo-mark" style="background:rgba(246,241,230,.14)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 17c3-1 4.5-5 7-9 1.5 4 3 6 5 5.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="18.5" cy="6" r="2.1" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="logo-word">thesis</span>
+      </span>
+      <p class="foot-disc">Educational tool. Not investment advice. Nothing here is a recommendation to buy or sell any security. Forecasts and simulations are illustrative only. Investing involves risk, including possible loss of principal.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('form[data-signup]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var input = form.querySelector('input[type="email"]');
+        if (!input.checkValidity()) { input.reportValidity(); return; }
+
+        var done = form.parentElement.querySelector('[data-done]');
+        var micro = form.parentElement.querySelector('.microline');
+        form.style.display = 'none';
+        if (micro) micro.style.display = 'none';
+        if (done) done.classList.add('show');
+
+        // POST to Netlify Forms
+        var fd = new FormData(form);
+        var body = new URLSearchParams();
+        fd.forEach(function(v, k) { body.append(k, v); });
+        fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+      });
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  </script>
+
+</body>
+</html>
