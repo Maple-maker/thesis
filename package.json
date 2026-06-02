@@ -9,6 +9,7 @@
     "@expo/ui": "~56.0.14",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~56.0.6",
+    "expo-asset": "~56.0.15",
     "expo-constants": "~56.0.16",
     "expo-device": "~56.0.4",
     "expo-font": "~56.0.5",
@@ -34,6 +35,7 @@
     "react-native-screens": "4.25.2",
     "react-native-svg": "15.15.4",
     "react-native-web": "~0.21.0",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.8.3",
     "tailwindcss": "^3.4.19",
     "zustand": "^5.0.14"
@@ -41,7 +43,10 @@
   "devDependencies": {
     "@expo/ngrok": "^4.1.3",
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
+    "lightningcss": "~1.27.0",
+    "patch-package": "^8.0.1",
+    "typescript": "~6.0.3",
+    "yahoo-finance2": "^2.13.3"
   },
   "scripts": {
     "start": "expo start",
@@ -51,7 +56,31 @@
     "ios": "expo run:ios",
     "ios:setup": "bash scripts/setup-ios.sh",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "generate:etf-catalog": "node scripts/generate-etf-catalog.mjs",
+    "generate:market-catalogs": "node scripts/generate-market-catalogs.mjs",
+    "generate:market-catalogs:safe": "node scripts/generate-market-catalogs.mjs --delay-ms 3000 --batch-size 5 --resume",
+    "bootstrap:stocks-catalog": "node scripts/bootstrap-stocks-catalog.mjs",
+    "postinstall": "patch-package",
+    "server:install": "cd server && npm install",
+    "server:dev": "cd server && npm run dev",
+    "server:verify-deepseek": "cd server && npm run verify:deepseek",
+    "server:test-chat": "cd server && npm run test:chat",
+    "server:stop": "lsof -ti :8787 | xargs kill -9 2>/dev/null || true",
+    "server:pace": "curl -s http://localhost:8787/v1/health | python3 -m json.tool",
+    "ios:sim": "expo start --ios --lan",
+    "ios:sim:clear": "expo start --ios --lan --clear",
+    "ios:dev": "bash scripts/run-ios-dev.sh",
+    "metro:check": "bash scripts/check-metro-connectivity.sh",
+    "metro:ensure": "bash scripts/ensure-metro.sh",
+    "xcode": "bash scripts/xcode-with-metro.sh",
+    "dev": "bash scripts/dev.sh",
+    "dev:sim": "npm run metro:stop && npm run ios:sim:clear",
+    "metro:stop": "lsof -ti :8081 | xargs kill -9 2>/dev/null || true",
+    "dev:ios": "expo run:ios",
+    "setup:agent-tooling": "bash scripts/setup-agent-tooling.sh",
+    "codegraph:sync": "codegraph sync",
+    "codegraph:status": "codegraph status"
   },
   "private": true
 }

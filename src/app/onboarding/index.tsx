@@ -6,11 +6,11 @@ import Svg, { Circle, Path } from "react-native-svg";
 
 import { Button } from "@/components/ui/Button";
 import { Screen } from "@/components/ui/Screen";
-import { STEPS } from "@/data/questionnaire";
+import { THESIS_BUILDER_CHAPTERS } from "@/data/thesis-builder-chapters";
 import { useStore } from "@/store";
 
-const CHAPTER_COUNT = STEPS.length;
-const QUESTION_COUNT = STEPS.reduce((n, s) => n + s.questions.length, 0);
+const CHAPTER_COUNT = THESIS_BUILDER_CHAPTERS.length;
+const QUESTION_COUNT = THESIS_BUILDER_CHAPTERS.reduce((n, s) => n + s.questions.length, 0);
 
 export default function OnboardingIntro() {
   const router = useRouter();
@@ -47,7 +47,8 @@ export default function OnboardingIntro() {
           </Text>
           <Text className="text-ink-3 text-[13px] font-sansMd mt-3 leading-[19px]">
             {CHAPTER_COUNT} chapters · {QUESTION_COUNT} questions · take your
-            time — honest beats optimistic.
+            time, honest beats optimistic. Tap ? next to any term you do not
+            know, education first, conviction second.
           </Text>
         </Animated.View>
 
@@ -56,7 +57,7 @@ export default function OnboardingIntro() {
             What you'll work through
           </Text>
           <View className="gap-y-2.5 mb-6">
-            {STEPS.map((chapter, i) => (
+            {THESIS_BUILDER_CHAPTERS.map((chapter, i) => (
               <ChapterRow
                 key={chapter.id}
                 n={String(i + 1)}
@@ -67,7 +68,7 @@ export default function OnboardingIntro() {
           </View>
 
           <Button
-            label="Begin your thesis"
+            label="Make Your Thesis"
             fullWidth
             size="lg"
             onPress={() => {
@@ -76,7 +77,7 @@ export default function OnboardingIntro() {
             }}
           />
           <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-4 px-6">
-            Educational tool — not investment advice. Nothing here is a
+            Educational tool, not investment advice. Nothing here is a
             recommendation to buy or sell any security.
           </Text>
         </Animated.View>

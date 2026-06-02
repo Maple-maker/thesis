@@ -1,0 +1,43 @@
+---
+description: Agentic dev methodology from obra/superpowers — load skills before planning, debugging, or shipping
+alwaysApply: true
+---
+
+# Superpowers (Cursor)
+
+This project vendors [obra/superpowers](https://github.com/obra/superpowers) skills under `.cursor/skills/`.
+
+**User instructions win:** `AGENTS.md`, `docs/current-slice.md`, and explicit user requests override superpowers when they conflict.
+
+## When to load a skill
+
+Before planning features, debugging, finishing work, or requesting review — if a skill might apply (~1% chance), **read it first**:
+
+```text
+.cursor/skills/{skill-name}/SKILL.md
+```
+
+Use the **Read** tool on that path (Cursor has no separate Skill tool).
+
+## Thesis-relevant skills
+
+| Situation | Skill |
+|-----------|--------|
+| New feature / UX change | `brainstorming` → `writing-plans` → `executing-plans` |
+| Bug or red screen / Metro | `systematic-debugging` |
+| Before saying "done" | `verification-before-completion` |
+| Multi-file refactor | `subagent-driven-development` or `dispatching-parallel-agents` |
+| Session start / unsure | `using-superpowers` |
+| iOS native / CocoaPods | `expo-ios-setup` (project-specific) |
+
+## Platform mapping (Cursor)
+
+| Superpowers (Claude Code) | Cursor |
+|---------------------------|--------|
+| `Skill` | `Read` on `.cursor/skills/.../SKILL.md` |
+| `TodoWrite` | `TodoWrite` |
+| `Task` / subagents | `Task` tool |
+| `Read` / `Write` / `Edit` | `Read` / `Write` / `StrReplace` |
+| `Bash` | `Shell` |
+
+Refresh skills: `cd /Users/jaidenrabatin/Projects/thesis && npm run setup:agent-tooling`

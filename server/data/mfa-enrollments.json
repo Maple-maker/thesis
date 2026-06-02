@@ -1,0 +1,9 @@
+{
+  "test-user-12345678": {
+    "userId": "test-user-12345678",
+    "secret": "Z62ETXHRADI5IZ74X2O6GHHXFOKGG3B4",
+    "enrolled": true,
+    "enrolledAt": 1780418054270,
+    "lastVerifiedAt": 1780418054270
+  }
+}

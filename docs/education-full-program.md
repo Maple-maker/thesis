@@ -115,16 +115,20 @@ Skip if already shipped on `main`.
 Each lesson structure:
 
 ```ts
+// Robinhood-style steps — see docs/design-reference-robinhood-learn.md
+type LessonStep =
+  | { kind: "content"; id: string; title: string; paragraphs: string[]; didYouKnow?: string; conceptLinks?: ConceptId[]; profileAside?: (p: UserProfile) => string | null }
+  | { kind: "quiz"; id: string; question: string; options: string[]; correctIndex: number; correctFeedback: string; incorrectFeedback: string };
+
 type Lesson = {
   id: string;
   courseId: CourseId;
   order: number;
   title: string;
   estimatedMin: number;
-  sections: { heading?: string; paragraphs: string[] }[];
+  steps: LessonStep[];       // one screen per step; intro shows time pill
   keyTakeaways: string[];
-  conceptLinks?: ConceptId[];  // tap opens ExplainSheet
-  profileAside?: (profile: UserProfile) => string | null;
+  courseMetaphor?: string;   // e.g. smoothie analogy for ETF course
 };
 ```
 

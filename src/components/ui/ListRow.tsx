@@ -12,22 +12,24 @@ const BADGE_CLASS: Record<BadgeTone, { bg: string; text: string }> = {
 };
 
 type Props = {
-  leading: ReactNode;
+  leading?: ReactNode;
   badge?: { text: string; tone?: BadgeTone };
   title: string;
   subtitle?: string;
   onPress: () => void;
 };
 
-/** Minimal list row — used on Themes tab, concept list, etc. */
+/** Minimal list row, used on Themes tab, concept list, etc. */
 export function ListRow({ leading, badge, title, subtitle, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
       className="flex-row items-center bg-bg-surface border border-line rounded-[14px] px-4 py-3.5 active:opacity-70"
     >
-      {leading}
-      <View className="flex-1 ml-3">
+      {leading ?? (
+        <View className="w-[8px] h-[8px] rounded-full bg-brand mr-1" />
+      )}
+      <View className={`flex-1 ${leading ? "ml-3" : "ml-2"}`}>
         <View className="flex-row items-center gap-x-2">
           <Text
             className="text-ink font-displayX text-[16px] flex-shrink"

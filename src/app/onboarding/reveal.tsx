@@ -8,8 +8,11 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FeaturedCard } from "@/components/ui/FeaturedCard";
 import { Screen } from "@/components/ui/Screen";
+import { CfoScorecard } from "@/components/CfoScorecard";
 import { HEAT_COLOR, themeById } from "@/data/themes";
 import { generateThemes } from "@/lib/theme-engine";
+import { MilitaryResourcesSection } from "@/components/MilitaryResourcesSection";
+import { militaryStatusFromProfile } from "@/lib/military-profile";
 import { useStore } from "@/store";
 
 export default function RevealScreen() {
@@ -20,25 +23,41 @@ export default function RevealScreen() {
   const setThemeIds = useStore((s) => s.setThemeIds);
 
   const result = useMemo(() => generateThemes(profile, 5), [profile]);
+  const topThemes = result.themes.slice(0, 2);
 
   useEffect(() => {
     if (themeIds.length === 0) {
-      setThemeIds(result.themes.map((t) => t.id));
+      setThemeIds(topThemes.map((t) => t.id));
     }
-  }, [themeIds.length, result.themes, setThemeIds]);
+  }, [themeIds.length, topThemes, setThemeIds]);
 
   const reasons = result.reasons;
 
-  const themes = themeIds.length
+  const themes = (themeIds.length
     ? themeIds.map((id) => themeById(id)!).filter(Boolean)
-    : result.themes;
+    : topThemes
+  ).slice(0, 2);
 
   const featured = themes[0];
   const rest = themes.slice(1);
 
+  const militaryStatus = militaryStatusFromProfile(profile);
+  const showMilitary =
+    militaryStatus === "active" ||
+    militaryStatus === "veteran" ||
+    militaryStatus === "reserve";
+
   return (
     <Screen padded>
-      <Animated.View entering={FadeInUp.duration(450)} className="pt-6 mb-6">
+      <Animated.View entering={FadeIn.delay(80).duration(400)} className="mb-5">
+        <CfoScorecard
+          derived={profile.derived}
+          completedSections={profile.meta.completedSections.length}
+          compact
+        />
+      </Animated.View>
+
+      <Animated.View entering={FadeInUp.duration(450)} className="pt-2 mb-6">
         <Text className="text-brand text-[11px] font-sansX uppercase tracking-widest">
           Your thesis
         </Text>
@@ -49,8 +68,8 @@ export default function RevealScreen() {
           Here's how the world{"\n"}looks from where you sit.
         </Text>
         <Text className="text-ink-2 text-[15px] font-sansMd mt-3 leading-[22px]">
-          Five themes chosen for your situation, horizon, and what you
-          actually care about.
+          Two focused theses matched to your situation and horizon, swap
+          them anytime in Builder.
         </Text>
       </Animated.View>
 
@@ -150,6 +169,12 @@ export default function RevealScreen() {
           </Animated.View>
         ))}
       </View>
+
+      {showMilitary && (
+        <Animated.View entering={FadeIn.delay(200).duration(400)} className="mt-4">
+          <MilitaryResourcesSection status={militaryStatus} compact />
+        </Animated.View>
+      )}
 
       <View className="mt-10 mb-2">
         <Button

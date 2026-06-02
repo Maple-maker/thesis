@@ -10,7 +10,7 @@ export function Delta({ value, size = 13.5, abs = false }: Props) {
   if (value === 0) {
     return (
       <Text className="font-monoBold text-ink-3" style={{ fontSize: size }}>
-        —
+        –
       </Text>
     );
   }

@@ -17,15 +17,22 @@ export function PersonaCard({
   theme,
   persona,
   onPress,
+  onLongPress,
+  adopted = false,
 }: {
   theme: Theme;
   persona: ThesisPersona;
   onPress: () => void;
+  onLongPress?: () => void;
+  adopted?: boolean;
 }) {
   return (
     <Pressable
       onPress={onPress}
-      className="bg-bg-surface border border-line rounded-[16px] overflow-hidden active:opacity-80 flex-1"
+      onLongPress={onLongPress}
+      className={`bg-bg-surface border rounded-[16px] overflow-hidden active:opacity-80 flex-1 ${
+        adopted ? "border-brand" : "border-line"
+      }`}
       style={{
         shadowColor: theme.color,
         shadowOpacity: 0.08,
@@ -54,8 +61,8 @@ export function PersonaCard({
           >
             <Icon name={theme.glyph as IconName} size={18} color={theme.color} />
           </View>
-          <View className="flex-1">
-            <Text className="text-ink font-displayX text-[14px]" style={{ letterSpacing: -0.2 }} numberOfLines={1}>
+          <View className="flex-1 min-w-0">
+            <Text className="text-ink font-displayX text-[14px]" style={{ letterSpacing: -0.2 }} numberOfLines={2}>
               {theme.title}
             </Text>
             <Text className="text-ink-3 text-[10.5px] font-sansMd mt-0.5" numberOfLines={1}>
@@ -71,6 +78,7 @@ export function PersonaCard({
 
         {/* Chips */}
         <View className="flex-row flex-wrap gap-1">
+          {adopted && <Tag label="Active" tone="brand" />}
           <Tag label={persona.riskLevel} tone={RISK_TONE[persona.riskLevel]} />
           <Tag label={persona.timeHorizon} tone="amber" />
         </View>
@@ -79,7 +87,7 @@ export function PersonaCard({
   );
 }
 
-/** Hero persona card — full-width, gradient background, philosophy quote. */
+/** Hero persona card, full-width, gradient background, philosophy quote. */
 export function PersonaHero({
   theme,
   persona,

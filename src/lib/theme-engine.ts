@@ -140,6 +140,43 @@ export function generateThemes(profile: UserProfile, count = 5): {
         bump("fintech", 2);
         bump("emerging-tech", 2);
         break;
+      case "dividends":
+        bump("income", 4, "You want dividend / cash-flow exposure");
+        bump("cash-flow-defensives", 1);
+        break;
+      case "quality-blue-chip":
+        bump("compounders", 4, "Quality compounders & blue chips");
+        bump("consumer-staples", 1);
+        break;
+      case "healthcare":
+        bump("aging-demographics", 2);
+        bump("biotech", 2, "Healthcare & life sciences");
+        break;
+      case "defense":
+        bump("cybersecurity", 1);
+        bump("cash-flow-defensives", 1);
+        break;
+      case "energy-commodities":
+        bump("clean-energy", 2);
+        bump("income", 1);
+        break;
+      case "broad-index":
+        bump("compounders", 2);
+        bump("global-diversification", 2, "Broad market / indexing");
+        break;
+      case "housing-reits":
+        bump("income", 3, "Real estate & REIT income");
+        break;
+      case "fintech-payments":
+        bump("fintech", 4);
+        break;
+      case "emerging-markets":
+        bump("global-diversification", 4);
+        break;
+      case "quality-dividend":
+        bump("income", 3);
+        bump("compounders", 2);
+        break;
     }
   }
 
@@ -185,7 +222,7 @@ export function generateThemes(profile: UserProfile, count = 5): {
 
 /**
  * Rank stocks within a given theme for a given profile.
- * Lighter scoring than theme selection — just tilts the order.
+ * Lighter scoring than theme selection, just tilts the order.
  */
 export function rankStocksForTheme(
   themeId: ThemeId,

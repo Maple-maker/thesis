@@ -1,5 +1,5 @@
 ---
-description: Thesis product principles — educational, thesis-first, user-friendly depth
+description: Thesis product principles — educate first, thesis-grounded portfolio, affiliate ethics
 alwaysApply: true
 ---
 
@@ -7,28 +7,37 @@ alwaysApply: true
 
 ## Positioning
 
-- **Educational decision-support** — not investment advice. No "buy", "sell", "you should own", or personalized recommendations.
-- Explain **tradeoffs** and fit to the user's stated profile; let them choose.
+- **Investopedia + NerdWallet for investing** — teach concepts, then help users act on a **personal investment thesis**.
+- **Educational** — not investment advice. No "buy this stock" or personalized recommendations.
+- **Monetization:** affiliate links for **credit cards, brokerages, HYSA**, etc. — only after contextual education; always disclose commissions.
+
+## User journey (tabs)
+
+Home → Library → Learn → Watchlist. No Journal tab (duel history is secondary, not a destination).
 
 ## Onboarding = thesis builder
 
-- Onboarding is **thorough and comprehensive** — it builds the user's investment **thesis frame**, not a signup shortcut.
-- Never frame the questionnaire as "short" or something to rush through.
-- Payoff: themes, copy, and home must **trace back** to questionnaire answers (e.g. `generateThemes` reasons).
+- Thorough questionnaire builds the user's **thesis frame**.
+- Payoff: themes, Library, and Home must trace back to answers.
 
 ## UX priorities
 
-- **One obvious next action** per screen when possible.
-- **Depth is optional** after the core action (e.g. duel pick first; metrics/bull-bear behind detail).
-- **Explain jargon** on demand (P/E, beta, moat, ETF) — plain English, not textbook dumps.
-- Helpful **empty states** (e.g. watchlist needs 2 names for a duel).
+- **Learn before you earn** — courses/glossary before brokerage CTAs when user is brand new.
+- **One obvious next action** per screen.
+- **Affiliate offers** are "Tools for your plan" — profile-ranked, with `AFFILIATE_DISCLOSURE` visible.
+- Explain jargon via glossary / ExplainSheet.
+
+## Affiliate ethics
+
+- Disclose: "We may earn a commission…"
+- Match offer to profile (emergency fund → HYSA; ready to invest → brokerage; high-interest debt → credit payoff education first).
+- Never hide fees or present one product as "the answer."
 
 ## Explicit non-goals
 
-- Pitch decks, investor decks, landing-page marketing for VCs.
-- Features that imply live trading or guaranteed returns.
+- Pitch decks, live trading inside the app, guaranteed returns.
+- Journal as a primary tab or gamified streaks that push trading.
 
 ## Copy tone
 
-- Calm, trustworthy (Daylight / narrative style) — not Bloomberg terminal, not hype.
-- Disclaimers stay visible on onboarding and sensitive flows.
+- Calm, trustworthy (Daylight) — not hype, not Bloomberg terminal.

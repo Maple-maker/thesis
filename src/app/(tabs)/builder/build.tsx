@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -16,6 +16,7 @@ import { THEMES, themeById } from "@/data/themes";
 import { personaForTheme } from "@/data/thesis-personas";
 import { scoreThesis } from "@/lib/thesis-score";
 import { rankStocksForTheme } from "@/lib/theme-engine";
+import { MAX_ACTIVE_THEMES, THESIS_LIMIT_COPY } from "@/lib/thesis-limits";
 import { useStore } from "@/store";
 import type { ThemeId, UserProfile } from "@/store/types";
 
@@ -24,17 +25,26 @@ export default function BuildThesis() {
   const profile = useStore((s) => s.profile);
   const currentThemeIds = useStore((s) => s.themeIds);
   const toggleTheme = useStore((s) => s.toggleTheme);
+  const setCustomThesis = useStore((s) => s.setCustomThesis);
+  const savedCustom = useStore((s) => s.customThesis);
 
-  const [thesisName, setThesisName] = useState("");
-  const [thesisNote, setThesisNote] = useState("");
+  const [thesisName, setThesisName] = useState(savedCustom?.name ?? "");
+  const [thesisNote, setThesisNote] = useState(savedCustom?.note ?? "");
   const [picked, setPicked] = useState<Set<ThemeId>>(new Set(currentThemeIds));
   const [step, setStep] = useState<"build" | "preview">("build");
 
   const togglePick = (id: ThemeId) => {
     setPicked((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+        return next;
+      }
+      if (next.size >= MAX_ACTIVE_THEMES) {
+        Alert.alert(THESIS_LIMIT_COPY.headline, THESIS_LIMIT_COPY.atCapacity);
+        return prev;
+      }
+      next.add(id);
       return next;
     });
   };
@@ -66,11 +76,12 @@ export default function BuildThesis() {
   }, [screened]);
 
   const handleSave = () => {
-    // Adopt all picked themes
+    if (thesisName.trim() || thesisNote.trim()) {
+      setCustomThesis(thesisName, thesisNote);
+    }
     for (const tid of pickedArr) {
       if (!currentThemeIds.includes(tid)) toggleTheme(tid);
     }
-    // Remove themes no longer picked
     for (const tid of currentThemeIds) {
       if (!picked.has(tid)) toggleTheme(tid);
     }
@@ -99,7 +110,7 @@ export default function BuildThesis() {
 
           {/* Conviction note */}
           <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest mb-2">
-            Your conviction — what do you believe?
+            Your conviction, what do you believe?
           </Text>
           <TextInput
             className="text-ink text-[14px] font-sansMd bg-bg-surface border border-line rounded-[14px] px-4 py-3.5 mb-5"
@@ -116,7 +127,7 @@ export default function BuildThesis() {
           {/* Theme picks */}
           <SectionTitle>Which themes does it draw from?</SectionTitle>
           <Text className="text-ink-2 text-[12.5px] font-sansMd mb-3 leading-[17px]">
-            Pick the investment themes that represent what you believe. This shapes which stocks and ETFs we surface.
+            Pick up to {MAX_ACTIVE_THEMES} themes, {THESIS_LIMIT_COPY.body}
           </Text>
 
           <View className="flex-row flex-wrap gap-2 mb-6">
@@ -157,7 +168,7 @@ export default function BuildThesis() {
           </View>
 
           <Text className="text-ink-3 text-[11px] font-sansMd text-center mb-2">
-            {picked.size} {picked.size === 1 ? "theme" : "themes"} selected
+            {picked.size}/{MAX_ACTIVE_THEMES} themes selected
           </Text>
 
           <Button

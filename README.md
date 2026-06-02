@@ -1,6 +1,6 @@
 # thesis
 
-> A "This or That" investing app. Deep-dive questionnaire → personalized themes → forced binary stock picks → ETF synthesis when you want both. Built with Expo + React Native, designed to ship to the iOS App Store.
+> Educate-first investing app (Investopedia × NerdWallet). Thesis builder → Library → Learn → watchlist & duels. Monetization via disclosed affiliate offers (brokerage, HYSA, credit). Expo + React Native.
 
 ## What it does (v1 prototype)
 
@@ -9,8 +9,9 @@
 3. **Theme browse** — each theme expands into a curated, profile-ranked list of stocks. Add to watchlist.
 4. **Watchlist & ETF rollups** — once you have ≥2 names, we surface ETFs that cover your list.
 5. **The Duel** — forced "This or That" between two of your watchlist names (preferring same-theme pairs). Tap to pick, then capture conviction.
-6. **Conviction Journal** — every duel records *why* you chose what you chose. Over time, the journal screen shows your reasoning patterns.
-7. **ETF Synthesis** — after each duel, surfaces 0–3 ETFs that hold both names, ranked by overlap + expense ratio + alignment to your profile.
+6. **Duels** — compare two watchlist names; optional conviction capture (stored, no Journal tab).
+7. **ETF synthesis** — after duels, ETFs that hold both names.
+8. **Tools for your plan** — profile-matched affiliate placeholders (brokerage, HYSA, credit) on Home.
 
 Educational tool. Not investment advice. Disclaimers are baked throughout.
 

@@ -10,7 +10,13 @@ import type {
 
 export type QuestionId = keyof UserProfile;
 
-export type ChoiceOption<T> = { value: T; label: string; hint?: string };
+export type ChoiceOption<T> = {
+  value: T;
+  label: string;
+  hint?: string;
+  /** Glossary id, shows ? bubble with definition */
+  termId?: string;
+};
 
 export type Step = {
   id: string;
@@ -70,7 +76,7 @@ export const STEPS: Step[] = [
         kind: "number",
         id: "netInvestable",
         prompt: "Roughly how much can you put to work in markets right now?",
-        help: "Ballpark is fine — money already invested counts.",
+        help: "Ballpark is fine, money already invested counts.",
         placeholder: "USD",
         min: 0,
       },
@@ -98,7 +104,7 @@ export const STEPS: Step[] = [
   {
     id: "goals",
     title: "What you want",
-    subtitle: "Goals shape what we surface — be honest, not aspirational.",
+    subtitle: "Goals shape what we surface, be honest, not aspirational.",
     questions: [
       {
         kind: "choice",
@@ -160,7 +166,7 @@ export const STEPS: Step[] = [
         options: [
           { value: "panic-sell", label: "Sell, I can't watch it" },
           { value: "hold", label: "Hold and try not to look" },
-          { value: "buy-more", label: "Buy more — sale prices" },
+          { value: "buy-more", label: "Buy more, sale prices" },
         ],
       },
       {
@@ -169,8 +175,8 @@ export const STEPS: Step[] = [
         prompt: "How much investing experience do you have?",
         options: [
           { value: "none", label: "Brand new" },
-          { value: "some", label: "Some — I've owned funds or stocks" },
-          { value: "experienced", label: "Experienced — I've held through cycles" },
+          { value: "some", label: "Some, I've owned funds or stocks" },
+          { value: "experienced", label: "Experienced, I've held through cycles" },
         ],
       },
     ],
@@ -233,9 +239,9 @@ export const STEPS: Step[] = [
         id: "incomeNeed",
         prompt: "Do you need this portfolio to produce income now?",
         options: [
-          { value: "none", label: "No — I'm growing wealth" },
-          { value: "some", label: "Some — a little yield would be nice" },
-          { value: "primary", label: "Yes — income is the point" },
+          { value: "none", label: "No, I'm growing wealth" },
+          { value: "some", label: "Some, a little yield would be nice" },
+          { value: "primary", label: "Yes, income is the point" },
         ] as ChoiceOption<IncomeNeed>[],
       },
     ],

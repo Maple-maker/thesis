@@ -21,12 +21,12 @@ type Props = {
   chips?: Chip[];
   /** Optional "Read more" action for InsightSheet expansion. */
   onPressReadMore?: () => void;
-  /** Optional footer override — default is disclaimer. */
+  /** Optional footer override, default is disclaimer. */
   footer?: string;
 };
 
 /**
- * Daylight insight card — Public/Coinbase-inspired narrative.
+ * Daylight insight card, Public/Coinbase-inspired narrative.
  * Headline + whyItMatters bullets + optional Watch block + metric chips.
  */
 export function InsightCard({

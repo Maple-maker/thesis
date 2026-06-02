@@ -1,52 +1,82 @@
-# Today’s plan — Thesis (education expansion)
+# Today’s plan — Thesis
 
-**Date:** 2026-05-29  
-**Repo:** https://github.com/Maple-maker/thesis  
-**Program:** [`docs/education-full-program.md`](education-full-program.md)
+**North star:** **Pie you trust → conviction loop → device beta** (TestFlight when Apple enrolls)
 
----
-
-## North star today
-
-Ship the **foundation for courses + Ask Thesis**, not everything in one shot.
-
-| Priority | Phase | Outcome |
-|----------|-------|---------|
-| 1 | **C1** | `courses.ts` data model |
-| 2 | **C2** | 4 courses × 4 lessons (credit, compound interest, Roth IRA, etc.) |
-| 3 | **C3** | Learn hub: **Ask \| Courses \| Glossary** |
-| Stretch | **A1** | Assistant system prompt + context builder |
-
-**Active slice:** `docs/current-slice.md` → **C1**
+Education and TestFlight setup are **paused**.
 
 ---
 
-## Claude Code kickoff
+## Build focus now (Phase 2)
+
+**Golden path** — one pass on Simulator:
 
 ```text
-Repo: Maple-maker/thesis — git pull origin main.
+Home “Today for your thesis” → right next step
+→ Watchlist (thesis-fit search) → add name
+→ Builder → portfolio → customize pie → Save
+→ Thesis model → life scenario → conviction dossier on one stock
+→ Duel → mind-change note → back to Thesis model (conviction at top)
+```
 
-Read CLAUDE.md, docs/current-slice.md, docs/education-full-program.md, docs/education-slices/MASTER-education-build.md.
+### Shipped this session
 
-Implement ONLY phase C1. Full education program is phased — do not build Ask UI or all 16 lessons in this session.
+- **Home Today card** — prioritizes: save book → customize pie → first conviction dossier → duel → thesis model
+- **Thesis model hub** — latest conviction + changelog up top; quick **Edit pie / Watchlist / Duel**
 
-npx tsc --noEmit when done.
+### Still to verify (10 min)
+
+| Check | Pass? |
+|-------|-------|
+| Today card after save points to “customize pie” if never edited | ☐ |
+| After pie save, Today → conviction dossier on first stock | ☐ |
+| Thesis model shows duel note after duel | ☐ |
+| `npm run dev` + stock price (Massive EOD) on Simulator | ☐ |
+
+---
+
+## Phase 1 pie (mostly done)
+
+| Item | Status |
+|------|--------|
+| `finalizePieRows` → 100% | ✓ |
+| Reset to thesis weights | ✓ |
+| Save alert + dry powder | ✓ |
+| Sleeve suggestions (SCHD, VXUS, …) | ✓ |
+| API pie-rebalance endpoint | Skip until needed |
+
+---
+
+## Run locally
+
+```bash
+cd /Users/jaidenrabatin/Projects/thesis
+npm run dev
+```
+
+- **server/.env** — `MASSIVE_API_KEY`, LLM keys
+- **Simulator** — API URL defaults to `127.0.0.1:8787`
+- **Phone (later)** — LAN IP in root `.env`
+
+---
+
+## Parked
+
+- Apple TestFlight (waiting enrollment)
+- Education content
+- `tsc` cleanup unless it blocks run
+
+---
+
+## Blockers log
+
+```text
+1.
+2.
+3.
 ```
 
 ---
 
-## This week (order)
+## Next session
 
-```text
-C1 → C2 → C3 → C4 → C5 → C6   (courses)
-A1 → A2 → A3 → A4 → A5         (Ask Thesis AI)
-```
-
-Finish **E3/E4** (duel + stock ExplainSheet taps) if not already on `main`.
-
----
-
-## End of day
-
-- [ ] Push `docs/*` + any `src/` changes
-- [ ] Cursor sets `current-slice.md` to **C2** for tomorrow
+Fix blocker #1 from log, or stretch: pie-rebalance API, sector-book radar.

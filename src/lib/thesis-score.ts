@@ -178,7 +178,7 @@ function scoreRiskFit(
   if (score >= 70) {
     reason = "Volatility matches your risk tolerance";
   } else if (profile.risk === "very-low" || profile.risk === "low") {
-    reason = `This stock is ${stock.volatility}-volatility — above your stated comfort zone`;
+    reason = `This stock is ${stock.volatility}-volatility, above your stated comfort zone`;
   } else {
     reason = `${stock.volatility} volatility may be ${stockVol > userRisk ? "above" : "below"} your comfort level`;
   }
@@ -331,7 +331,7 @@ function scoreMoatQuality(
   let reason: string;
   if (score >= 70) reason = "Strong business quality and margins";
   else if (score >= 45) reason = "Moderate business quality indicators";
-  else reason = "Lower quality signals — check fundamentals closely";
+  else reason = "Lower quality signals, check fundamentals closely";
 
   return { category: "moat-quality", label: "Business quality", score, reason, tone: toneForScore(score) };
 }

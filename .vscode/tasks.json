@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev: Server + Simulator",
+      "detail": "Start Thesis API server and Expo iOS Simulator in split terminals",
+      "dependsOn": ["Dev: Server", "Dev: Expo iOS"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: Server",
+      "type": "shell",
+      "command": "npm run server:dev",
+      "options": { "cwd": "${workspaceFolder:thesis-app}" },
+      "presentation": { "reveal": "always", "panel": "dedicated", "group": "server" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "fileLocation": "relative",
+        "pattern": { "regexp": "^.*$", "file": 1, "location": 1, "message": 1 },
+        "background": { "activeOnStart": true, "beginsPattern": "listening|ready|started|running", "endsPattern": "." }
+      }
+    },
+    {
+      "label": "Dev: Expo iOS",
+      "type": "shell",
+      "command": "npm run ios:sim",
+      "options": { "cwd": "${workspaceFolder:thesis-app}" },
+      "presentation": { "reveal": "always", "panel": "dedicated", "group": "expo" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "fileLocation": "relative",
+        "pattern": { "regexp": "^.*$", "file": 1, "location": 1, "message": 1 },
+        "background": { "activeOnStart": true, "beginsPattern": "Welcome to Metro|Starting Metro|ready|Bundling", "endsPattern": "." }
+      }
+    },
+    {
+      "label": "TypeCheck Watch",
+      "type": "shell",
+      "command": "npx tsc --noEmit --watch",
+      "options": { "cwd": "${workspaceFolder:thesis-app}" },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "isBackground": true,
+      "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "label": "Metro: Stop",
+      "type": "shell",
+      "command": "npm run metro:stop",
+      "options": { "cwd": "${workspaceFolder:thesis-app}" },
+      "presentation": { "reveal": "silent", "panel": "shared" }
+    }
+  ]
+}

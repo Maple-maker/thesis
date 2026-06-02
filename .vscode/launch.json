@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Start Thesis Server",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run server:dev",
+      "cwd": "${workspaceFolder:thesis-app}",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Start Expo iOS Simulator",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run ios:sim",
+      "cwd": "${workspaceFolder:thesis-app}",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "TypeCheck (tsc)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npx tsc --noEmit",
+      "cwd": "${workspaceFolder:thesis-app}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Thesis Full Dev",
+      "configurations": ["Start Thesis Server", "Start Expo iOS Simulator"],
+      "presentation": { "group": "dev", "order": 1 }
+    }
+  ]
+}

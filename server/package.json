@@ -1,0 +1,32 @@
+{
+  "name": "thesis-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "verify:deepseek": "node scripts/verify-deepseek.mjs",
+    "test:chat": "node scripts/test-chat.mjs",
+    "eval:cfo": "node scripts/eval-cfo.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "otplib": "^13.4.1",
+    "qrcode": "^1.5.4",
+    "yahoo-finance2": "^2.13.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/qrcode": "^1.5.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

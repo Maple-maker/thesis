@@ -20,7 +20,7 @@ export function conceptsForExperience(exp: ExperienceLevel): Concept[] {
 }
 
 /**
- * The primary tier for a given experience level — used for
+ * The primary tier for a given experience level, used for
  * section order and default display.
  */
 export function primaryTier(exp: ExperienceLevel): ConceptTier {

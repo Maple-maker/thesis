@@ -33,7 +33,8 @@ export type IconName =
   | "target"
   | "arrow"
   | "profile"
-  | "close";
+  | "close"
+  | "play";
 
 type Props = {
   name: IconName;
@@ -268,6 +269,13 @@ export function Icon({ name, size = 22, sw = 1.8, color = "#16201C", fill = fals
       break;
     case "close":
       inner = <Path {...stroke} d="M6 6l12 12M18 6l-12 12" />;
+      break;
+    case "play":
+      inner = (
+        <G fill={color}>
+          <Path d="M9 6.5v11l9-5.5z" />
+        </G>
+      );
       break;
   }
 

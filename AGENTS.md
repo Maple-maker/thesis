@@ -1,12 +1,23 @@
 # Thesis — agent guide
 
-Educational investing app (Expo / React Native). **Cursor** owns product framing; **implementers** execute `docs/current-slice.md`.
+Educational investing app (Expo / React Native) — **Investopedia/NerdWallet-style**: Learn → thesis → watchlist; **affiliate** monetization (brokerage, HYSA, credit). See `docs/product-vision.md`. **Cursor** owns framing; implementers use `docs/current-slice.md`.
+
+**Tabs:** Home · Education · **Builder** (center) · Accounts · Watchlist (no Journal tab).
+
+## Agent optimization (Cursor)
+
+- **Superpowers** — `.cursor/skills/` + `.cursor/rules/superpowers.mdc` ([obra/superpowers](https://github.com/obra/superpowers))
+- **CodeGraph** — MCP in `.cursor/mcp.json`, index in `.codegraph/` ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph))
+
+Setup: `cd /Users/jaidenrabatin/Projects/thesis && npm run setup:agent-tooling` then restart Cursor. Details: **`docs/agent-tooling.md`**.
+
+Prefer **CodeGraph MCP** for symbol navigation; read relevant **Superpowers** `SKILL.md` before planning, debugging, or marking work complete.
 
 ## Before you write code
 
 1. Read **`docs/current-slice.md`** — goal, non-goals, files, acceptance checks.
 2. Do **not** re-derive product strategy (onboarding depth, thesis-first UX, no pitch deck) unless the slice says so.
-3. Respect **`.cursor/rules/`** (product + stack + handoff).
+3. Respect **`.cursor/rules/`** (product + stack + handoff + superpowers + codegraph).
 
 ## Stack (conventions)
 
@@ -42,6 +53,14 @@ iOS native: open `ios/thesis.xcworkspace` after `pod install` — see `.cursor/s
 ```text
 Implement docs/current-slice.md only. Read AGENTS.md and .cursor/rules/. Do not expand scope.
 ```
+
+## Education program (courses + Ask Thesis)
+
+- **Courses:** structured lessons (credit score, interest, compound interest, Roth IRA, etc.) — `docs/education-full-program.md` phases **C1–C6**
+- **Ask Thesis:** profile + theme-aware Q&A — phases **A1–A5**, system rules in `docs/assistant-system-prompt.md`
+- **Glossary:** existing `learn.tsx` + `concepts.ts` — becomes “Glossary” inside Learn hub
+- Implement **one phase per session**; master prompts in `docs/education-slices/MASTER-education-build.md`
+- Robinhood Educate–style lesson UX: `docs/design-reference-robinhood-learn.md`
 
 ## Design references (insights UI)
 

@@ -7,7 +7,7 @@ type Props = {
   label?: string;
 };
 
-/** 270° arc health gauge — score in the middle, label below. */
+/** 270° arc health gauge, score in the middle, label below. */
 export function HealthGauge({ score, size = 150, label }: Props) {
   const sw = 11;
   const radius = size / 2 - 14;

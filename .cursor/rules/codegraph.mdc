@@ -1,0 +1,34 @@
+---
+description: Use CodeGraph MCP for navigation — pre-indexed symbol graph, fewer blind greps
+alwaysApply: true
+---
+
+# CodeGraph
+
+This repo is indexed with [colbymchenry/codegraph](https://github.com/colbymchenry/codegraph) (local MCP in `.cursor/mcp.json`).
+
+## When to prefer CodeGraph
+
+- Finding where a symbol is defined or used (`scoreThesis`, `useStore`, `buildThesisPortfolio`, etc.)
+- Understanding call chains across `src/` and `server/`
+- Scoping a change before editing multiple files
+
+Use **CodeGraph MCP tools** first instead of repeated broad `Grep` / `SemanticSearch` when `.codegraph/` exists.
+
+## Maintenance
+
+After large refactors or new modules:
+
+```bash
+cd /Users/jaidenrabatin/Projects/thesis && codegraph sync
+```
+
+Full rebuild:
+
+```bash
+cd /Users/jaidenrabatin/Projects/thesis && codegraph index --force
+```
+
+Install / re-index for new machines: `npm run setup:agent-tooling`
+
+Restart Cursor after MCP config changes.

@@ -2,6 +2,30 @@ import { ETFS } from "@/data/etfs";
 import { stockBySymbol } from "@/data/stocks";
 import type { ETF, Stock, UserProfile } from "@/store/types";
 
+export type EtfOverlapResult = {
+  shared: string[];
+  sharedCount: number;
+  overlapPct: number;
+  onlyA: string[];
+  onlyB: string[];
+};
+
+/** % of the smaller fund's holdings that also appear in the other fund. */
+export function etfHoldingOverlap(a: ETF, b: ETF): EtfOverlapResult {
+  const setB = new Set(b.holdings);
+  const shared = a.holdings.filter((s) => setB.has(s));
+  const onlyA = a.holdings.filter((s) => !setB.has(s));
+  const onlyB = b.holdings.filter((s) => !a.holdings.includes(s));
+  const denom = Math.min(a.holdings.length, b.holdings.length) || 1;
+  return {
+    shared,
+    sharedCount: shared.length,
+    overlapPct: Math.round((shared.length / denom) * 100),
+    onlyA: onlyA.slice(0, 5),
+    onlyB: onlyB.slice(0, 5),
+  };
+}
+
 export type ETFSuggestion = {
   etf: ETF;
   containsBoth: boolean;
@@ -104,4 +128,40 @@ export function suggestForSymbols(
   const b = stockBySymbol(symB);
   if (!a || !b) return [];
   return suggestEtfForPair(a, b, profile, limit);
+}
+
+export function suggestEtfVsEtf(a: ETF, b: ETF, profile?: UserProfile, limit = 3): ETFSuggestion[] {
+  const o = etfHoldingOverlap(a, b);
+  const cheaper = a.expense <= b.expense ? a : b;
+  const pricier = cheaper === a ? b : a;
+  const suggestions: ETFSuggestion[] = [
+    {
+      etf: cheaper,
+      containsBoth: o.sharedCount >= 3,
+      matchScore: 100 - cheaper.expense * 10,
+      why: `Lower fee (${cheaper.expense}% vs ${pricier.expense}%). ~${o.overlapPct}% holdings overlap with ${pricier.symbol}, holding both may duplicate ${o.shared.slice(0, 3).join(", ")}.`,
+    },
+  ];
+  if (o.onlyA.length || o.onlyB.length) {
+    const uniqueA = o.onlyA.slice(0, 2).join(", ");
+    const uniqueB = o.onlyB.slice(0, 2).join(", ");
+    suggestions.push({
+      etf: pricier,
+      containsBoth: false,
+      matchScore: 50,
+      why: `Adds names the other lacks${uniqueB ? ` (e.g. ${uniqueB})` : ""}${uniqueA ? `, ${a.symbol} unique: ${uniqueA}` : ""}.`,
+    });
+  }
+  if (profile?.incomeNeed === "primary") {
+    const income = ETFS.find((e) => e.themes.includes("income"));
+    if (income && income.symbol !== a.symbol && income.symbol !== b.symbol) {
+      suggestions.push({
+        etf: income,
+        containsBoth: false,
+        matchScore: 30,
+        why: `Neither duel pick is income-focused, ${income.symbol} may fill a gap if dividends matter to you.`,
+      });
+    }
+  }
+  return suggestions.slice(0, limit);
 }

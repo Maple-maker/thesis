@@ -38,7 +38,8 @@ Report: files changed, manual QA steps in Simulator.
 ```text
 Phase C1 only.
 
-Create src/data/courses.ts with CourseId, Course, Lesson types (see education-full-program.md).
+Create src/data/courses.ts with CourseId, Course, Lesson, LessonStep types.
+LessonStep: kind "content" | "quiz" — see docs/design-reference-robinhood-learn.md (Robinhood ETF lesson screenshots).
 Export courses(), courseById(), lessonById(), lessonsForCourse().
 No UI yet. npx tsc --noEmit.
 ```
@@ -74,7 +75,7 @@ Keep modal close behavior. npx tsc --noEmit.
 
 ### C4 — Course + lesson player (Robinhood Educate–style)
 
-Read docs/design-reference-robinhood-learn.md first.
+Read docs/design-reference-robinhood-learn.md (split panel, segmented progress, quiz steps).
 
 ```text
 Phase C4 only.
@@ -82,12 +83,22 @@ Phase C4 only.
 Add routes:
 - src/app/courses/index.tsx — catalog (ListRow + progress bar)
 - src/app/courses/[courseId]/index.tsx — syllabus with ~min labels
-- src/app/courses/[courseId]/[lessonId].tsx — paginated lesson player:
-  one section per screen, LessonProgressDots, Continue/Back, Mark complete on last step
-  conceptLinks → ExplainSheet; takeaways on final step only
+- src/app/courses/[courseId]/[lessonId].tsx — lesson player:
+  - LessonPlayerLayout: text panel + visual panel (stack on phone)
+  - One lesson.steps[] item per screen; segmented progress bar at top
+  - content steps: title, paragraphs, optional didYouKnow, profileAside, time pill on step 0
+  - quiz steps: MC options, brand border + feedback (Exactly! / Not quite)
+  - Continue pill; X → syllabus; takeaways after final step
+  - conceptLinks → ExplainSheet
 
-Robinhood-inspired flow, Daylight styling. No trade/fund CTAs.
-npx tsc --noEmit. QA: step through full lesson.
+Daylight styling. No trade/fund CTAs. npx tsc --noEmit.
+```
+
+### C4b — Quiz steps in course content (if not in C2)
+
+```text
+Add at least 2 quiz steps across pilot courses (see Robinhood ETF lesson quizzes).
+Wire in C4 LessonQuizStep component.
 ```
 
 ### C5 — Progress persistence

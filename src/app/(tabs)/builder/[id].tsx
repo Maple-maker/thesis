@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -14,13 +14,18 @@ import { ProConChip } from "@/components/ui/Tag";
 import { MetricChip } from "@/components/ui/MetricChip";
 import { Tick } from "@/components/ui/Tick";
 import { ThemeId } from "@/store/types";
+import { EtfListRow } from "@/components/EtfListRow";
 import { ETFS } from "@/data/etfs";
 import { STOCKS, stockBySymbol } from "@/data/stocks";
+import { NotFoundState } from "@/components/NotFoundState";
+import { youtubeForNotFound } from "@/data/youtube-resources";
 import { themeById } from "@/data/themes";
 import { personaForTheme } from "@/data/thesis-personas";
 import { scoreThesis } from "@/lib/thesis-score";
 import { rankStocksForTheme } from "@/lib/theme-engine";
 import { useStore } from "@/store";
+import { backtestForTheme, BACKTEST_DISCLAIMER } from "@/data/thesis-backtest-mock";
+import { canAdoptTheme, THESIS_LIMIT_COPY } from "@/lib/thesis-limits";
 
 export default function BuilderDetail() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -53,15 +58,30 @@ export default function BuilderDetail() {
     return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   }, [persona, profile, themeIds]);
 
+  const backtest = useMemo(
+    () => (theme ? backtestForTheme(theme.id as ThemeId) : undefined),
+    [theme?.id]
+  );
+
   if (!theme || !persona) {
+    const query = (params.id ?? "").trim();
     return (
       <Screen padded>
-        <Header back title="Not found" />
+        <Header back />
+        <NotFoundState
+          title="Thesis not found"
+          query={query || undefined}
+          message="Pick a thesis from Library first, then open the builder from that theme."
+          videos={youtubeForNotFound("builder", query)}
+          primaryLabel="Open Library"
+          onPrimary={() => router.push("/(tabs)/themes")}
+        />
       </Screen>
     );
   }
 
   const isAdopted = themeIds.includes(theme.id);
+  const canAdopt = canAdoptTheme(themeIds, theme.id as ThemeId);
   const etfs = ETFS.filter((e) => e.themes.includes(theme.id as ThemeId)).slice(0, 3);
 
   return (
@@ -107,16 +127,25 @@ export default function BuilderDetail() {
 
       {/* Adopt / remove */}
       <View className="mb-5">
+        {!canAdopt && !isAdopted && (
+          <Text className="text-ink-2 text-[12px] font-sansMd mb-2 leading-[17px]">
+            {THESIS_LIMIT_COPY.atCapacity}
+          </Text>
+        )}
         <Button
-          label={isAdopted ? "In your thesis" : "Adopt this thesis"}
+          label={isAdopted ? "Remove from thesis" : "Adopt this thesis"}
           fullWidth
           size="lg"
           variant={isAdopted ? "secondary" : "primary"}
+          disabled={!canAdopt && !isAdopted}
           leftAdornment={
             <Icon name={isAdopted ? "check" : "plus"} size={18} color={isAdopted ? "#16201C" : "#FFFFFF"} sw={2.3} />
           }
           onPress={() => {
-            useStore.getState().toggleTheme(theme.id as ThemeId);
+            const ok = useStore.getState().toggleTheme(theme.id as ThemeId);
+            if (!ok) {
+              Alert.alert(THESIS_LIMIT_COPY.headline, THESIS_LIMIT_COPY.atCapacity);
+            }
           }}
         />
       </View>
@@ -218,22 +247,7 @@ export default function BuilderDetail() {
         {persona.modelETFs.map((sym) => {
           const etf = ETFS.find((e) => e.symbol === sym);
           if (!etf) return null;
-          return (
-            <Card key={sym} pad={12}>
-              <View className="flex-row items-center">
-                <View className="bg-violet-bg w-[36px] h-[36px] rounded-[10px] items-center justify-center mr-3">
-                  <Icon name="grid" size={18} color="#7C3AED" />
-                </View>
-                <View className="flex-1">
-                  <View className="flex-row items-center">
-                    <Text className="text-ink font-monoBold text-[13px]">{etf.symbol}</Text>
-                    <Text className="text-ink-3 text-[11px] font-sansMd ml-2">{etf.expense}% fee</Text>
-                  </View>
-                  <Text className="text-ink-2 text-[12px] font-sansSb mt-0.5">{etf.name}</Text>
-                </View>
-              </View>
-            </Card>
-          );
+          return <EtfListRow key={sym} etf={etf} />;
         })}
       </View>
 
@@ -273,10 +287,56 @@ export default function BuilderDetail() {
                     ? "This thesis aligns well with your risk tolerance, time horizon, and stated interests."
                     : avgAlignment >= 45
                     ? "Some dimensions fit, others conflict. Explore the details below to understand the trade-offs."
-                    : "This thesis diverged from your profile. That does not mean it is wrong — just that it pushes against your stated preferences."}
+                    : "This thesis diverged from your profile. That does not mean it is wrong, just that it pushes against your stated preferences."}
                 </Text>
               </View>
             </View>
+          </Card>
+        </View>
+      )}
+
+      {/* Illustrative backtest */}
+      {backtest && (
+        <View className="mb-5">
+          <SectionTitle>Hypothetical performance</SectionTitle>
+          <Card pad={16}>
+            <Text className="text-ink-2 text-[12px] font-sansMd leading-[17px] mb-4">
+              If you had held a representative basket for this thesis (not advice), here is how it would have moved.
+            </Text>
+            <View className="gap-y-3">
+              {([
+                { label: "1 year", key: "y1" as const },
+                { label: "5 year (ann.)", key: "y5" as const },
+                { label: "10 year (ann.)", key: "y10" as const },
+              ]).map(({ label, key }) => {
+                const val = backtest[key];
+                const isNeg = val < 0;
+                return (
+                  <View key={key}>
+                    <View className="flex-row justify-between mb-1.5">
+                      <Text className="text-ink-2 text-[12px] font-sansMd">{label}</Text>
+                      <Text
+                        className={`text-[12px] font-monoBold ${isNeg ? "text-neg" : "text-pos"}`}
+                      >
+                        {isNeg ? "" : "+"}
+                        {val.toFixed(1)}%
+                      </Text>
+                    </View>
+                    <View className="h-[8px] rounded-full bg-bg-surface2 overflow-hidden">
+                      <View
+                        className={`h-full rounded-full ${isNeg ? "bg-neg" : "bg-brand"}`}
+                        style={{
+                          width: `${Math.min(Math.abs(val) / 40 * 100, 100)}%`,
+                        }}
+                      />
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+            <Text className="text-ink-3 text-[10.5px] font-sansMd leading-[15px] mt-4 pt-3 border-t border-line">
+              {BACKTEST_DISCLAIMER}
+            </Text>
           </Card>
         </View>
       )}

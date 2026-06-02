@@ -1,0 +1,20 @@
+/** Robinhood-style flat illustration palette (Thesis brand). */
+export const ILL = {
+  brand: "#0E7A66",
+  brandLight: "#D5E4DF",
+  brandDeep: "#06483C",
+  pos: "#149059",
+  posLight: "#E5F5EC",
+  amber: "#D98512",
+  amberLight: "#FCF1E0",
+  violet: "#7C3AED",
+  violetLight: "#F2ECFD",
+  ink: "#16201C",
+  ink2: "#4D5A54",
+  ink3: "#8C988F",
+  line: "#D6DBD4",
+  bg: "#F7F9F5",
+  surface: "#FFFFFF",
+  neg: "#D8472C",
+  negLight: "#FBEAE5",
+} as const;

@@ -80,6 +80,54 @@ export default function RootLayout() {
               animation: "slide_from_bottom",
             }}
           />
+          <Stack.Screen
+            name="courses"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="ask"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen
+            name="radar"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="thesis-profile"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen name="credit" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="screener" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen
+            name="pro"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen name="cfo" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="accounts" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="investments" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="lenses" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="xray" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="brief" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="advice" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="forecast" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="thesis-studio" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="thesis-model/index" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="explore-climate" options={{ animation: "slide_from_right" }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

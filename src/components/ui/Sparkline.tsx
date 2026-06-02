@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { useCallback, useState } from "react";
+import { LayoutChangeEvent, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from "react-native-svg";
 
 type Props = {
@@ -7,23 +8,43 @@ type Props = {
   height?: number;
   showDot?: boolean;
   fill?: boolean;
+  /** Fixed width; omit to fill parent container. */
+  width?: number;
 };
 
-/** Minimal SVG sparkline — no axes, no grid, just the line + optional fill. */
+/** Minimal SVG sparkline, scales to container width (no horizontal overflow). */
 export function Sparkline({
   data,
   color = "#0E7A66",
   height = 48,
   showDot = true,
   fill = false,
+  width: widthProp,
 }: Props) {
-  if (data.length < 2) return null;
+  const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  const width = data.length * 12; // scale based on point count
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      if (widthProp != null) return;
+      const w = Math.floor(e.nativeEvent.layout.width);
+      if (w > 0 && w !== measuredWidth) setMeasuredWidth(w);
+    },
+    [widthProp, measuredWidth]
+  );
+
+  const width = widthProp ?? measuredWidth;
+
+  if (data.length < 2) {
+    return <View style={{ height, width: widthProp ?? "100%" }} onLayout={onLayout} />;
+  }
+
+  if (!width) {
+    return <View style={{ height, width: "100%" }} onLayout={onLayout} />;
+  }
+
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-
   const xStep = width / (data.length - 1);
 
   const points = data.map((v, i) => ({
@@ -41,7 +62,7 @@ export function Sparkline({
       : undefined;
 
   return (
-    <View style={{ width, height }}>
+    <View style={{ width: widthProp ?? "100%", height }} onLayout={onLayout}>
       <Svg width={width} height={height}>
         {fill && fillPath && (
           <>
@@ -54,9 +75,21 @@ export function Sparkline({
             <Path d={fillPath} fill="url(#sparkFill)" />
           </>
         )}
-        <Path d={linePath} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+        <Path
+          d={linePath}
+          fill="none"
+          stroke={color}
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
         {showDot && (
-          <Circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r={3} fill={color} />
+          <Circle
+            cx={points[points.length - 1].x}
+            cy={points[points.length - 1].y}
+            r={3}
+            fill={color}
+          />
         )}
       </Svg>
     </View>

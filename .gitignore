@@ -30,8 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# local env files (never commit secrets)
+.env
 .env*.local
+server/.env
 
 # typescript
 *.tsbuildinfo
@@ -44,6 +46,12 @@ example
 .DS_Store
 __pycache__/
 *.pyc
-.DS_Store
-__pycache__/
-*.pyc
+
+# Yahoo catalog generation cache
+scripts/.cache/
+
+# CodeGraph local index (machine-specific; re-run setup:agent-tooling)
+.codegraph/
+
+# Local Netlify folder
+.netlify

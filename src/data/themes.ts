@@ -5,7 +5,7 @@ export const THEMES: Theme[] = [
     id: "ai-infrastructure",
     title: "The Decade Ahead",
     thesis:
-      "The build-out of intelligence — chips, power, and data centers — as the defining investment of the 2020s.",
+      "The build-out of intelligence, chips, power, and data centers, as the defining investment of the 2020s.",
     color: "#0E7A66",
     glyph: "bolt",
     kicker: "AI & COMPUTE",
@@ -18,12 +18,17 @@ export const THEMES: Theme[] = [
       "Reshoring of fabs",
     ],
     emoji: "⚙️",
+    keywords: [
+      "ai", "compute", "chips", "semiconductor", "nvidia", "data center",
+      "gpu", "hyperscaler", "machine learning", "deep learning",
+      "power infrastructure", "fab", "tsmc", "reshoring",
+    ],
   },
   {
     id: "compounders",
     title: "Wonderful Companies",
     thesis:
-      "Buy great businesses with durable moats at a fair price — then let time and compounding do the work.",
+      "Buy great businesses with durable moats at a fair price, then let time and compounding do the work.",
     color: "#2563EB",
     glyph: "moat",
     kicker: "QUALITY",
@@ -36,6 +41,11 @@ export const THEMES: Theme[] = [
       "Margin of safety",
     ],
     emoji: "📈",
+    keywords: [
+      "quality", "moat", "buffett", "value", "blue chip", "wonderful companies",
+      "compounding", "pricing power", "management", "durable",
+      "dividend aristocrat", "margin of safety", "owner operator",
+    ],
   },
   {
     id: "cash-flow-defensives",
@@ -54,12 +64,17 @@ export const THEMES: Theme[] = [
       "Sleep at night",
     ],
     emoji: "🛡️",
+    keywords: [
+      "defensive", "all weather", "dalio", "risk parity", "uncorrelated",
+      "safe", "stable", "free cash flow", "reits", "utilities",
+      "consumer staples", "healthcare", "low volatility", "sleep at night",
+    ],
   },
   {
     id: "clean-energy",
     title: "The Energy Transition",
     thesis:
-      "Electrification of everything — and the grid, storage, and metals that have to scale to power it.",
+      "Electrification of everything, and the grid, storage, and metals that have to scale to power it.",
     color: "#16A34A",
     glyph: "leaf",
     kicker: "ENERGY",
@@ -72,6 +87,11 @@ export const THEMES: Theme[] = [
       "Critical minerals supply",
     ],
     emoji: "🌱",
+    keywords: [
+      "energy", "green", "solar", "wind", "battery", "electrification",
+      "grid", "esg", "sustainable", "uranium", "nuclear", "clean tech",
+      "critical minerals", "lithium", "copper", "storage", "renewable",
+    ],
   },
   {
     id: "aging-demographics",
@@ -90,6 +110,11 @@ export const THEMES: Theme[] = [
       "Care infrastructure demand",
     ],
     emoji: "🧬",
+    keywords: [
+      "healthcare", "aging", "longevity", "glp-1", "pharma", "medical",
+      "demographics", "65 plus", "obesity drugs", "medical devices",
+      "care infrastructure", "biotech", "hospitals", "senior living",
+    ],
   },
   {
     id: "income",
@@ -108,12 +133,17 @@ export const THEMES: Theme[] = [
       "Lower portfolio volatility",
     ],
     emoji: "💵",
+    keywords: [
+      "dividend", "yield", "income", "distributions", "cash flow",
+      "retirement", "reits", "bonds", "fixed income", "dividend growth",
+      "payout", "buybacks", "shareholder return", "monthly income",
+    ],
   },
   {
     id: "cybersecurity",
     title: "The Defense Layer",
     thesis:
-      "Attack surfaces expand with every device and service — defense budgets only go up.",
+      "Attack surfaces expand with every device and service, defense budgets only go up.",
     color: "#DC2626",
     glyph: "lock",
     kicker: "CYBERSECURITY",
@@ -126,6 +156,11 @@ export const THEMES: Theme[] = [
       "Regulatory teeth",
     ],
     emoji: "🔒",
+    keywords: [
+      "cyber", "security", "hacking", "zero trust", "defense",
+      "cloud security", "ransomware", "firewall", "endpoint",
+      "network security", "threat intelligence", "sase", "sse",
+    ],
   },
   {
     id: "fintech",
@@ -144,12 +179,17 @@ export const THEMES: Theme[] = [
       "Cash → digital in emerging markets",
     ],
     emoji: "💳",
+    keywords: [
+      "fintech", "payments", "digital", "banking", "crypto", "blockchain",
+      "cards", "visa", "mastercard", "embedded finance", "cross border",
+      "real time payments", "neobank", "digital wallet",
+    ],
   },
   {
     id: "biotech",
     title: "The Biotech Frontier",
     thesis:
-      "Speculative but transformative — gene editing, GLP-1s, oncology, longevity. High variance, high asymmetry.",
+      "Speculative but transformative, gene editing, GLP-1s, oncology, longevity. High variance, high asymmetry.",
     color: "#C084FC",
     glyph: "seed",
     kicker: "BIOTECH",
@@ -162,12 +202,17 @@ export const THEMES: Theme[] = [
       "Personalized oncology",
     ],
     emoji: "🔬",
+    keywords: [
+      "biotech", "gene therapy", "crispr", "drugs", "pharma",
+      "oncology", "glp-1", "gene editing", "personalized medicine",
+      "clinical trials", "fda", "immunotherapy", "rare disease",
+    ],
   },
   {
     id: "consumer-staples",
     title: "Brands You Already Buy",
     thesis:
-      "Things people buy regardless of economy — household, food, beverages with global brand moats.",
+      "Things people buy regardless of economy, household, food, beverages with global brand moats.",
     color: "#FB923C",
     glyph: "gem",
     kicker: "STAPLES",
@@ -180,12 +225,17 @@ export const THEMES: Theme[] = [
       "Defensive cash machines",
     ],
     emoji: "🛒",
+    keywords: [
+      "staples", "consumer", "brands", "defensive", "household",
+      "food", "beverage", "pricing power", "recession proof",
+      "dividend kings", "global brands", "consumer goods", "cpg",
+    ],
   },
   {
     id: "global-diversification",
     title: "Beyond the S&P",
     thesis:
-      "Exposure beyond the US — developed markets, emerging markets, and currency hedging.",
+      "Exposure beyond the US, developed markets, emerging markets, and currency hedging.",
     color: "#0EA5E9",
     glyph: "grid",
     kicker: "GLOBAL",
@@ -198,12 +248,17 @@ export const THEMES: Theme[] = [
       "Demographic dispersion",
     ],
     emoji: "🌍",
+    keywords: [
+      "international", "global", "emerging markets", "diversification",
+      "foreign", "ex-us", "china", "india", "europe", "developed markets",
+      "currency hedging", "international etf", "geographic", "expat",
+    ],
   },
   {
     id: "emerging-tech",
     title: "What's Next",
     thesis:
-      "Robotics, quantum, autonomy, space — earlier-stage themes with longer payoff curves.",
+      "Robotics, quantum, autonomy, space, earlier-stage themes with longer payoff curves.",
     color: "#818CF8",
     glyph: "sparkle",
     kicker: "FRONTIER",
@@ -216,6 +271,11 @@ export const THEMES: Theme[] = [
       "Space economy scale-up",
     ],
     emoji: "🚀",
+    keywords: [
+      "frontier", "robotics", "quantum", "space", "autonomous",
+      "emerging", "future", "humanoid", "autonomy", "small cap",
+      "disruption", "moonshot", "venture", "early stage", "innovation",
+    ],
   },
 ];
 

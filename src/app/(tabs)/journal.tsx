@@ -58,7 +58,7 @@ export default function JournalScreen() {
             Your decisions will live here
           </Text>
           <Text className="text-ink-2 text-[13.5px] font-sansMd text-center mt-1 leading-[19px]">
-            Run your first duel, log a reason — and start building an honest
+            Run your first duel, log a reason, and start building an honest
             record of how you think.
           </Text>
         </Card>

@@ -2,22 +2,33 @@ import { useRouter } from "expo-router";
 import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
+import { navigateBack } from "@/lib/app-route";
 import { IconBtn } from "./IconBtn";
 
 type Props = {
   title?: string;
   subtitle?: string;
   back?: boolean;
+  /** When set, back navigates here (e.g. `/(tabs)/watchlist`) instead of fragile stack pop */
+  returnTo?: string | string[];
+  onBack?: () => void;
   right?: ReactNode;
 };
 
-export function Header({ title, subtitle, back, right }: Props) {
+export function Header({ title, subtitle, back, returnTo, onBack, right }: Props) {
   const router = useRouter();
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+      return;
+    }
+    navigateBack(router, returnTo);
+  };
   return (
     <View className="pb-3 pt-1">
       <View className="flex-row items-center justify-between">
         {back ? (
-          <IconBtn name="back" onPress={() => router.back()} sw={2.2} />
+          <IconBtn name="back" onPress={handleBack} sw={2.2} />
         ) : (
           <View style={{ width: 40, height: 40 }} />
         )}

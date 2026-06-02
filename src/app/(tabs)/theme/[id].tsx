@@ -10,8 +10,11 @@ import { Header } from "@/components/ui/Header";
 import { Screen } from "@/components/ui/Screen";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Tick } from "@/components/ui/Tick";
+import { EtfListRow } from "@/components/EtfListRow";
 import { ETFS } from "@/data/etfs";
 import { stockBySymbol } from "@/data/stocks";
+import { NotFoundState } from "@/components/NotFoundState";
+import { youtubeForNotFound } from "@/data/youtube-resources";
 import { themeById } from "@/data/themes";
 import { rankStocksForTheme } from "@/lib/theme-engine";
 import { useStore } from "@/store";
@@ -39,9 +42,18 @@ export default function ThemeDetail() {
   );
 
   if (!theme) {
+    const query = (params.id ?? "").trim();
     return (
       <Screen padded>
-        <Header back title="Theme not found" />
+        <Header back />
+        <NotFoundState
+          title="Theme not found"
+          query={query || undefined}
+          message="That thesis isn't in the library yet. Search Library for topics like AI, dividends, or global diversification."
+          videos={youtubeForNotFound("theme", query)}
+          primaryLabel="Search Library"
+          onPrimary={() => router.push("/(tabs)/themes")}
+        />
       </Screen>
     );
   }
@@ -204,29 +216,7 @@ export default function ThemeDetail() {
           <SectionTitle>How to get exposure</SectionTitle>
           <View className="gap-y-2.5 mb-6">
             {etfs.map((etf) => (
-              <Card key={etf.symbol} pad={14}>
-                <View className="flex-row items-center">
-                  <View className="bg-violet-bg w-[40px] h-[40px] rounded-[11px] items-center justify-center mr-3">
-                    <Icon name="grid" size={19} color="#7C3AED" />
-                  </View>
-                  <View className="flex-1">
-                    <View className="flex-row items-center">
-                      <Text className="text-ink font-monoBold text-[14px]">
-                        {etf.symbol}
-                      </Text>
-                      <Text className="text-ink-2 text-[13.5px] font-sansSb ml-2">
-                        {etf.name}
-                      </Text>
-                    </View>
-                    <Text className="text-ink-3 text-[12.5px] font-sansSb mt-0.5">
-                      {etf.description}
-                    </Text>
-                    <Text className="text-ink-3 text-[11px] font-sansMd mt-1">
-                      Expense {etf.expense}% · {etf.holdings.length} holdings
-                    </Text>
-                  </View>
-                </View>
-              </Card>
+              <EtfListRow key={etf.symbol} etf={etf} />
             ))}
           </View>
         </>
@@ -255,18 +245,18 @@ function darken(hex: string, amount: number): string {
     .join("")}`;
 }
 
-// Plain-English explanations for every theme driver — shown on expand.
+// Plain-English explanations for every theme driver, shown on expand.
 const DRIVER_EXPLAINERS: Record<string, string> = {
   "Exponential compute demand":
     "AI training requires roughly 4x more compute every year. This drives demand for GPUs, data centers, and energy at a pace with no historical precedent.",
   "Power & grid bottlenecks":
-    "AI data centers consume enormous amounts of electricity — a single training cluster can use as much power as a small city. Grid capacity is becoming a binding constraint.",
+    "AI data centers consume enormous amounts of electricity, a single training cluster can use as much power as a small city. Grid capacity is becoming a binding constraint.",
   "Capex from hyperscalers":
     "Microsoft, Amazon, and Google are spending hundreds of billions on AI infrastructure. This capital expenditure flows directly to chipmakers, data center builders, and utilities.",
   "Reshoring of fabs":
     "Semiconductor fabrication plants (fabs) are being built in the US again after decades offshore, driven by national security concerns and CHIPS Act subsidies.",
   "Durable competitive moats":
-    "A moat is a company's ability to fend off competitors over long periods — through brand power, network effects, or cost advantages. Wide-moat companies tend to be more predictable investments.",
+    "A moat is a company's ability to fend off competitors over long periods, through brand power, network effects, or cost advantages. Wide-moat companies tend to be more predictable investments.",
   "Pricing power":
     "A company with pricing power can raise prices without losing customers. This protects profits during inflation and is a hallmark of great businesses.",
   "Owner-minded management":
@@ -278,7 +268,7 @@ const DRIVER_EXPLAINERS: Record<string, string> = {
   "Uncorrelated cash flows":
     "Cash flows that do not move in sync with the stock market. Real estate and certain business models generate steady income regardless of market conditions.",
   "Survive any environment":
-    "A portfolio designed to hold up through inflation, deflation, recession, and growth — no matter what the economy does.",
+    "A portfolio designed to hold up through inflation, deflation, recession, and growth, no matter what the economy does.",
   "Sleep at night":
     "Investments chosen for stability so you do not feel the need to check prices or make emotional decisions during volatility.",
   "Electrification of transport":
@@ -294,7 +284,7 @@ const DRIVER_EXPLAINERS: Record<string, string> = {
   "GLP-1 / obesity drugs":
     "A new class of drugs (Ozempic, Wegovy, Mounjaro) highly effective for weight loss and diabetes. One of the largest pharmaceutical market expansions in history.",
   "Medical devices growth":
-    "An aging population needs more joint replacements, pacemakers, and diagnostic equipment — creating steady, predictable demand growth.",
+    "An aging population needs more joint replacements, pacemakers, and diagnostic equipment, creating steady, predictable demand growth.",
   "Care infrastructure demand":
     "Senior housing, home health aides, telemedicine, and nursing facilities will see increased demand as the population ages.",
   "Quality dividend payers":
@@ -310,23 +300,23 @@ const DRIVER_EXPLAINERS: Record<string, string> = {
   "AI-enabled threat vectors":
     "Attackers use AI to craft more convincing phishing emails and automate hacking attempts. This increases demand for AI-powered defense tools.",
   "Zero-trust replacements":
-    "The old 'trust but verify' model is being replaced by 'never trust, always verify' — every access request is authenticated regardless of its origin.",
+    "The old 'trust but verify' model is being replaced by 'never trust, always verify', every access request is authenticated regardless of its origin.",
   "Regulatory teeth":
     "Governments are imposing stricter cybersecurity reporting requirements and penalties for breaches, forcing companies to spend more on security.",
   "Card-network toll-booths":
     "Visa and Mastercard charge a small fee on every transaction. As digital payments grow, these 'toll booths' generate increasingly predictable revenue.",
   "Embedded finance everywhere":
-    "Financial services are being built into non-financial apps — buy now pay later at checkout, insurance when booking a flight, investing inside banking apps.",
+    "Financial services are being built into non-financial apps, buy now pay later at checkout, insurance when booking a flight, investing inside banking apps.",
   "Cross-border real-time rails":
     "New payment networks make international transfers instant and cheap, replacing the slow SWIFT system that still dominates cross-border payments.",
   "Cash → digital in emerging markets":
-    "Many developing countries are leapfrogging credit cards entirely, moving from cash directly to mobile payments — massive growth for digital payment companies.",
+    "Many developing countries are leapfrogging credit cards entirely, moving from cash directly to mobile payments, massive growth for digital payment companies.",
   "Gene editing approvals":
     "CRISPR and other gene-editing technologies are moving from labs to approved treatments, potentially curing genetic diseases with a single treatment.",
   "GLP-1 expansion into new diseases":
-    "Drugs originally developed for diabetes are showing promise for obesity, heart disease, kidney disease, and addiction — the addressable market keeps expanding.",
+    "Drugs originally developed for diabetes are showing promise for obesity, heart disease, kidney disease, and addiction, the addressable market keeps expanding.",
   "AI-accelerated drug discovery":
-    "AI is dramatically speeding up how drugs are discovered — from years to months in some cases. This reduces costs and increases viable drug candidates.",
+    "AI is dramatically speeding up how drugs are discovered, from years to months in some cases. This reduces costs and increases viable drug candidates.",
   "Personalized oncology":
     "Cancer treatments tailored to a patient's specific genetic profile, rather than one-size-fits-all chemo. More effective but requires complex diagnostics.",
   "Pricing power across cycles":
@@ -338,7 +328,7 @@ const DRIVER_EXPLAINERS: Record<string, string> = {
   "Defensive cash machines":
     "Consumer staples businesses generate predictable cash flow in any economy because people need their products regardless of the cycle.",
   "Mean-reversion vs US":
-    "US stocks have outperformed international markets for over a decade. Historically, leadership rotates — international stocks tend to catch up eventually.",
+    "US stocks have outperformed international markets for over a decade. Historically, leadership rotates, international stocks tend to catch up eventually.",
   "Cheaper valuations abroad":
     "Many international stock markets trade at lower P/E ratios than the US, potentially offering more upside if valuations converge.",
   "Currency diversification":
@@ -346,7 +336,7 @@ const DRIVER_EXPLAINERS: Record<string, string> = {
   "Demographic dispersion":
     "Some countries have young, growing workforces (India, Southeast Asia) while others are aging rapidly (Japan, Europe). This creates different investment opportunities.",
   "Humanoid robotics":
-    "General-purpose robots that work in human-designed environments — factories, warehouses, homes. Advances in AI are making this commercially viable.",
+    "General-purpose robots that work in human-designed environments, factories, warehouses, homes. Advances in AI are making this commercially viable.",
   "Quantum compute milestones":
     "Quantum computers that solve problems impossible for classical computers are still years away, but progress milestones drive significant investment.",
   "Autonomous mobility":

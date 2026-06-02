@@ -30,11 +30,65 @@ export type StockTag =
   | "dividend"
   | "speculative"
   | "blue-chip"
+  | "mega-cap"
+  | "large-cap"
+  | "mid-cap"
   | "small-cap"
   | "international"
   | "esg"
   | "moat"
-  | "high-volatility";
+  | "high-volatility"
+  | "defensive"
+  | "cyclical"
+  | "income-heavy"
+  | "semiconductor"
+  | "ai-compute"
+  | "biotech"
+  | "pharma"
+  | "reit"
+  | "infrastructure"
+  | "consumer-staples"
+  | "consumer-discretionary"
+  | "financials"
+  | "energy-commodity"
+  | "energy-transition"
+  | "payments"
+  | "cybersecurity"
+  | "cloud-software"
+  | "turnaround";
+
+export type EtfTag =
+  | "broad-market"
+  | "growth-tilt"
+  | "defensive"
+  | "sector-bundle"
+  | "thematic"
+  | "international"
+  | "emerging-markets"
+  | "income"
+  | "dividend-growth"
+  | "low-cost"
+  | "higher-fee"
+  | "semiconductor"
+  | "clean-energy"
+  | "healthcare"
+  | "cybersecurity"
+  | "biotech"
+  | "real-estate"
+  | "commodity"
+  | "active-concentrated"
+  | "leveraged-inverse"
+  | "small-cap"
+  | "income-heavy"
+  | "cyclical"
+  | "energy-commodity"
+  | "consumer-discretionary"
+  | "consumer-staples"
+  | "fintech"
+  | "payments"
+  | "ai-compute"
+  | "infrastructure"
+  | "speculative";
 
 export type Stock = {
   symbol: string;
@@ -54,6 +108,7 @@ export type ETF = {
   name: string;
   expense: number; // %, e.g. 0.03
   themes: ThemeId[];
+  tags: EtfTag[];
   description: string;
   holdings: string[]; // stock symbols (top representative holdings)
 };
@@ -76,6 +131,7 @@ export type Theme = {
   heat: ThemeHeat;
   author: string; // e.g. "after Leopold Aschenbrenner", "a structural shift"
   drivers: string[]; // 3-4 key drivers
+  keywords?: string[]; // searchable topic terms
 };
 
 // ---- User profile (from questionnaire) ----
@@ -94,7 +150,17 @@ export type Interest =
   | "international"
   | "small-companies"
   | "cybersecurity"
-  | "real-assets";
+  | "real-assets"
+  | "dividends"
+  | "quality-blue-chip"
+  | "healthcare"
+  | "defense"
+  | "energy-commodities"
+  | "broad-index"
+  | "housing-reits"
+  | "fintech-payments"
+  | "emerging-markets"
+  | "quality-dividend";
 
 export type Concern =
   | "inflation"
@@ -155,6 +221,10 @@ export type JournalEntry = {
   loser: string; // symbol
   reason: JournalReason;
   note?: string;
+  /** Next suggested revisit (90 days after creation by default). */
+  revisitAt: number;
+  /** User has snoozed the revisit. */
+  revisitSnoozed?: boolean;
 };
 
 export type DuelResult = {

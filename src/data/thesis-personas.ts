@@ -33,12 +33,12 @@ const PERSONAS: ThesisPersona[] = [
     exposureTags: ["Growth", "Tech-heavy", "US", "High beta", "Thematic"],
     pros: [
       "Direct exposure to the fastest-growing capex cycle in decades",
-      "Semiconductor moats are wide — TSMC and ASML have no near-term competitors",
+      "Semiconductor moats are wide, TSMC and ASML have no near-term competitors",
       "Power constraints create pricing power for existing data center operators",
     ],
     cons: [
-      "Highly cyclical — AI capex could slow if hyperscaler returns disappoint",
-      "Concentrated in semiconductors — single-sector risk is real",
+      "Highly cyclical, AI capex could slow if hyperscaler returns disappoint",
+      "Concentrated in semiconductors, single-sector risk is real",
       "Geopolitical tail risk around Taiwan and chip export controls",
     ],
     modelETFs: ["SMH", "SOXX", "AIQ"],
@@ -47,7 +47,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "compounders",
     philosophy:
-      "I buy wonderful companies with durable competitive advantages at fair prices — then let time and compounding do the heavy lifting. I do not trade. I own.",
+      "I buy wonderful companies with durable competitive advantages at fair prices, then let time and compounding do the heavy lifting. I do not trade. I own.",
     personaName: "The Quality Owner",
     tagline: "Patience is the edge.",
     riskLevel: "moderate",
@@ -62,10 +62,10 @@ const PERSONAS: ThesisPersona[] = [
     pros: [
       "Lower portfolio turnover means fewer taxable events and lower fees",
       "Moat-based businesses tend to survive and compound through downturns",
-      "Proven framework — Buffett, Munger, and others have 50+ year track records",
+      "Proven framework, Buffett, Munger, and others have 50+ year track records",
     ],
     cons: [
-      "Requires patience — underperformance during speculative manias is common",
+      "Requires patience, underperformance during speculative manias is common",
       "Hard to identify true moats before they are obvious to everyone else",
       "Can underperform in rapid technological disruption cycles",
     ],
@@ -75,7 +75,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "cash-flow-defensives",
     philosophy:
-      "I want to sleep at night. I own businesses that people need regardless of the economy — things they buy on Tuesday in a recession and on Tuesday in a boom.",
+      "I want to sleep at night. I own businesses that people need regardless of the economy, things they buy on Tuesday in a recession and on Tuesday in a boom.",
     personaName: "The All-Weather Investor",
     tagline: "Calm in any climate.",
     riskLevel: "low",
@@ -90,7 +90,7 @@ const PERSONAS: ThesisPersona[] = [
     pros: [
       "Predictable cash flows hold up across economic cycles",
       "Dividend growth from staples and healthcare provides inflation protection",
-      "Low correlation to tech/growth — portfolio diversifier",
+      "Low correlation to tech/growth, portfolio diversifier",
     ],
     cons: [
       "Lower upside in strong bull markets",
@@ -103,7 +103,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "clean-energy",
     philosophy:
-      "Electrification of everything is not a political story — it is a physics story. The grid has to double in size, and every electron will come from a different source than it did in 2000.",
+      "Electrification of everything is not a political story, it is a physics story. The grid has to double in size, and every electron will come from a different source than it did in 2000.",
     personaName: "The Energy Transitionalist",
     tagline: "Follow the electrons.",
     riskLevel: "high",
@@ -118,12 +118,12 @@ const PERSONAS: ThesisPersona[] = [
     exposureTags: ["Thematic", "Infrastructure", "Global", "Policy-dependent", "Growth"],
     pros: [
       "Multi-decade structural tailwind independent of short-term politics",
-      "Grid buildout is underinvested globally — trillions in required capex",
+      "Grid buildout is underinvested globally, trillions in required capex",
       "Battery costs continue to fall on Wright's Law curves, improving project economics",
     ],
     cons: [
       "High interest rates make renewable project financing more expensive",
-      "Policy risk — IRA, feed-in tariffs, and tax credits can change with administration",
+      "Policy risk, IRA, feed-in tariffs, and tax credits can change with administration",
       "Commodity exposure to lithium, copper, and rare earths adds volatility",
     ],
     modelETFs: ["ICLN", "TAN", "QCLN"],
@@ -145,14 +145,14 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Defensive Growth", "Healthcare", "US-heavy", "Regulatory risk", "Steady"],
     pros: [
-      "Demographics are predictable decades in advance — cannot be disrupted by technology",
+      "Demographics are predictable decades in advance, cannot be disrupted by technology",
       "Healthcare spending grows faster than GDP in every developed economy",
       "GLP-1 drugs are creating a new multi-hundred-billion market almost overnight",
     ],
     cons: [
       "Regulatory and political risk around drug pricing in the US",
       "Patent cliffs for large pharma companies can create revenue gaps",
-      "Biotech is binary — individual drug approvals make or break small companies",
+      "Biotech is binary, individual drug approvals make or break small companies",
     ],
     modelETFs: ["XLV", "IHI", "IBB"],
     modelStocks: ["UNH", "LLY", "ISRG", "ABBV", "MDT"],
@@ -160,7 +160,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "income",
     philosophy:
-      "I want my portfolio to pay me — not someday, but every quarter. I build around dividend growers with long track records of raising payouts through every cycle.",
+      "I want my portfolio to pay me, not someday, but every quarter. I build around dividend growers with long track records of raising payouts through every cycle.",
     personaName: "The Income Builder",
     tagline: "Paid to wait.",
     riskLevel: "low",
@@ -178,9 +178,9 @@ const PERSONAS: ThesisPersona[] = [
       "REITs and utilities offer inflation-linked cash flows",
     ],
     cons: [
-      "High-yield chasing can lead to value traps — declining businesses with unsustainably high yields",
+      "High-yield chasing can lead to value traps, declining businesses with unsustainably high yields",
       "Rising rates compress REIT and utility valuations",
-      "Misses growth — income portfolios underperform during tech-led bull markets",
+      "Misses growth, income portfolios underperform during tech-led bull markets",
     ],
     modelETFs: ["SCHD", "VYM", "JEPI"],
     modelStocks: ["O", "VZ", "PEP", "ENB"],
@@ -201,14 +201,14 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Growth", "Tech", "Secular", "Recurring revenue", "US"],
     pros: [
-      "Cybersecurity spending is not discretionary — companies cannot opt out",
+      "Cybersecurity spending is not discretionary, companies cannot opt out",
       "Recurring subscription models create predictable revenue streams",
       "Zero-trust architecture migration is still in early innings (<40% enterprise adoption)",
     ],
     cons: [
-      "Consolidation risk — Microsoft bundles security into enterprise agreements",
+      "Consolidation risk, Microsoft bundles security into enterprise agreements",
       "Valuations are high across the sector, leaving little margin for error",
-      "Crowded trade — when the sector thesis is consensus, alpha is harder to find",
+      "Crowded trade, when the sector thesis is consensus, alpha is harder to find",
     ],
     modelETFs: ["HACK", "CIBR"],
     modelStocks: ["CRWD", "PANW", "ZS", "FTNT"],
@@ -229,13 +229,13 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Growth", "Fintech", "Global", "Disruption", "Regulatory risk"],
     pros: [
-      "Payment networks (Visa, Mastercard) are toll-booth businesses — they earn on every transaction",
+      "Payment networks (Visa, Mastercard) are toll-booth businesses, they earn on every transaction",
       "Digital banking adoption in emerging markets is leapfrogging traditional banking",
       "Embedded finance is creating new revenue streams inside non-financial apps",
     ],
     cons: [
-      "Regulatory risk — fintech faces scrutiny on lending practices, fees, and data privacy",
-      "Credit cycle risk for lenders — neo-banks have not been tested in a recession",
+      "Regulatory risk, fintech faces scrutiny on lending practices, fees, and data privacy",
+      "Credit cycle risk for lenders, neo-banks have not been tested in a recession",
       "Incumbents (JPM, BoA) are spending billions on their own digital transformations",
     ],
     modelETFs: ["FINX", "IPAY"],
@@ -258,14 +258,14 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Speculative", "Healthcare", "Binary risk", "Long duration", "Global"],
     pros: [
-      "GLP-1 drugs are expanding into new diseases — the addressable market is growing faster than expected",
+      "GLP-1 drugs are expanding into new diseases, the addressable market is growing faster than expected",
       "CRISPR gene editing is moving from lab to approved treatments",
       "AI-accelerated drug discovery is shortening timelines from years to months",
     ],
     cons: [
-      "Most drugs fail clinical trials — individual stock risk is very high",
+      "Most drugs fail clinical trials, individual stock risk is very high",
       "Drug pricing is a perennial political target in the US",
-      "Requires scientific literacy to evaluate — not suitable for passive investors",
+      "Requires scientific literacy to evaluate, not suitable for passive investors",
     ],
     modelETFs: ["IBB", "XBI", "ARKG"],
     modelStocks: ["VRTX", "REGN", "LLY", "CRSP"],
@@ -286,12 +286,12 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Defensive", "Dividend", "Global brands", "Low volatility", "Recession-resistant"],
     pros: [
-      "Pricing power — consumers do not switch toothpaste brands over a 50¢ difference",
+      "Pricing power, consumers do not switch toothpaste brands over a 50¢ difference",
       "Dividend records stretching back 50+ years at many staples companies",
       "Emerging market consumers trading up to global brands provides growth optionality",
     ],
     cons: [
-      "Slow organic growth — most staples grow at GDP + 1-2%",
+      "Slow organic growth, most staples grow at GDP + 1-2%",
       "Private label competition is rising as retailers push store brands",
       "Valuations can be stretched in low-rate, risk-off environments",
     ],
@@ -301,7 +301,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "global-diversification",
     philosophy:
-      "The US has dominated for 15 years. History says that does not last forever. I want exposure to growth wherever it happens — not just in one country.",
+      "The US has dominated for 15 years. History says that does not last forever. I want exposure to growth wherever it happens, not just in one country.",
     personaName: "The Global Citizen",
     tagline: "The world is bigger than the S&P.",
     riskLevel: "moderate",
@@ -319,7 +319,7 @@ const PERSONAS: ThesisPersona[] = [
       "Demographic tailwinds in India, Southeast Asia, and parts of Latin America",
     ],
     cons: [
-      "International has underperformed US for 15+ years — mean reversion is not guaranteed",
+      "International has underperformed US for 15+ years, mean reversion is not guaranteed",
       "Higher volatility and political risk in emerging markets",
       "Currency moves can amplify losses even when the underlying stock performs well",
     ],
@@ -329,7 +329,7 @@ const PERSONAS: ThesisPersona[] = [
   {
     themeId: "emerging-tech",
     philosophy:
-      "I am early. Robotics, quantum, autonomy, space — these are not 2026 stories. They are 2036 stories. I size small, hold long, and accept that most will fail.",
+      "I am early. Robotics, quantum, autonomy, space, these are not 2026 stories. They are 2036 stories. I size small, hold long, and accept that most will fail.",
     personaName: "The Frontier Scout",
     tagline: "Early is uncomfortable. Early is the point.",
     riskLevel: "high",
@@ -343,13 +343,13 @@ const PERSONAS: ThesisPersona[] = [
     ],
     exposureTags: ["Speculative", "Frontier", "Long duration", "High variance", "Global"],
     pros: [
-      "Asymmetric upside — a single winner can return 100x and cover the portfolio",
+      "Asymmetric upside, a single winner can return 100x and cover the portfolio",
       "Technological progress is accelerating across multiple fronts simultaneously",
       "Government and defense spending is de-risking some frontier bets (space, quantum)",
     ],
     cons: [
       "Most frontier companies are pre-revenue or deeply unprofitable",
-      "Timelines are uncertain — being right too early is the same as being wrong",
+      "Timelines are uncertain, being right too early is the same as being wrong",
       "Requires deep technical knowledge and high tolerance for drawdowns",
     ],
     modelETFs: ["ARKK", "BOTZ"],
