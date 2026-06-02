@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeIn, FadeInUp, FadeOut } from "react-native-reanimated";
 
@@ -49,6 +49,7 @@ export function DuelPickPhase({
   const [query, setQuery] = useState("");
   const [selA, setSelA] = useState<string | null>(null);
   const [selB, setSelB] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState<"A" | "B" | null>(null);
 
   useEffect(() => {
     if (params.a) {
@@ -123,7 +124,7 @@ export function DuelPickPhase({
         <View className="flex-row items-center gap-2">
           {/* Side A */}
           <Pressable
-            onPress={() => { if (selB) { setSelA(selB); setSelB(null); } }}
+            onPress={() => setPickerOpen("A")}
             className="flex-1 bg-brand-bg rounded-[14px] px-4 py-3 border-2 border-brand/40 active:opacity-80"
           >
             <Text className="text-ink-3 text-[10px] font-sansX uppercase tracking-wider">Thesis A</Text>
@@ -153,7 +154,7 @@ export function DuelPickPhase({
 
           {/* Side B */}
           <Pressable
-            onPress={() => { if (selA && selB) { setSelA(null); setSelB(selB); } }}
+            onPress={() => setPickerOpen("B")}
             className="flex-1 rounded-[14px] px-4 py-3 border-2 active:opacity-80"
             style={{
               backgroundColor: "rgba(124,58,237,0.06)",
@@ -362,6 +363,111 @@ export function DuelPickPhase({
           <View className="h-4" />
         </ScrollView>
       </View>
+
+      {/* Picker modal — opens when tapping Thesis A or B */}
+      <Modal visible={!!pickerOpen} animationType="slide" transparent presentationStyle="pageSheet">
+        <View className="flex-1 bg-bg">
+          <SafeAreaView className="flex-1" edges={["top", "left", "right"]}>
+            {/* Picker header */}
+            <View className="flex-row items-center justify-between px-5 pt-2 pb-3 border-b border-line">
+              <Pressable onPress={() => setPickerOpen(null)} className="py-1">
+                <Text className="text-ink-2 text-[14px] font-sansBold">Cancel</Text>
+              </Pressable>
+              <Text className="text-ink text-[16px] font-displayX">
+                Pick Thesis {pickerOpen}
+              </Text>
+              <View className="w-[52px]" />
+            </View>
+
+            {/* Picker content — same list as below */}
+            <View className="flex-1">
+              <ScrollView
+                contentContainerStyle={{ paddingHorizontal: 17, paddingBottom: 30 }}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
+                {/* Search bar */}
+                <View className="bg-bg-surface border border-line rounded-[14px] px-4 py-3 my-3">
+                  <TextInput
+                    value={query}
+                    onChangeText={setQuery}
+                    placeholder={mode === "securities" ? "Search ticker…" : "Search portfolio…"}
+                    placeholderTextColor="#8C988F"
+                    autoCapitalize="none"
+                    className="text-ink text-[16px] font-sansMd"
+                  />
+                </View>
+
+                {/* Mode toggle */}
+                <View className="flex-row p-1 bg-track rounded-[12px] mb-3">
+                  {(
+                    [
+                      { id: "portfolios" as const, label: "Portfolios" },
+                      { id: "securities" as const, label: "Stocks & ETFs" },
+                    ] as const
+                  ).map((t) => {
+                    const on = mode === t.id;
+                    return (
+                      <Pressable
+                        key={t.id}
+                        onPress={() => setMode(t.id)}
+                        className={`flex-1 py-2.5 rounded-[10px] items-center ${on ? "bg-bg-surface" : ""}`}
+                      >
+                        <Text className={`text-[13px] font-sansBold ${on ? "text-ink" : "text-ink-3"}`}>
+                          {t.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+
+                {/* Portfolio options */}
+                {mode === "portfolios" && filteredPortfolios.map((p) => {
+                  const picked = (pickerOpen === "A" && selA === p.ref) || (pickerOpen === "B" && selB === p.ref);
+                  return (
+                    <Pressable
+                      key={p.ref}
+                      onPress={() => { pickRef(p.ref); setPickerOpen(null); }}
+                      className={`px-4 py-3.5 rounded-[14px] border mb-2 active:opacity-80 ${
+                        picked ? "bg-brand-bg border-brand" : "bg-bg-surface border-line"
+                      }`}
+                    >
+                      <View className="flex-row items-center justify-between">
+                        <View className="flex-1">
+                          <Text className={`text-[15px] ${picked ? "text-ink font-sansBold" : "text-ink font-sansSb"}`}>
+                            {p.name}
+                          </Text>
+                          <Text className="text-ink-3 text-[12px] font-sansMd mt-0.5">{p.subtitle}</Text>
+                        </View>
+                        {picked && <Icon name="check" size={16} color="#0E7A66" sw={2.6} />}
+                      </View>
+                    </Pressable>
+                  );
+                })}
+
+                {/* Security options */}
+                {mode === "securities" && filteredSymbols.map((sym) => {
+                  const picked = (pickerOpen === "A" && selA === sym) || (pickerOpen === "B" && selB === sym);
+                  return (
+                    <Pressable
+                      key={sym}
+                      onPress={() => { pickRef(sym); setPickerOpen(null); }}
+                      className={`flex-row items-center px-4 py-3 rounded-[14px] border mb-1.5 active:opacity-80 ${
+                        picked ? "bg-brand-bg border-brand" : "bg-bg-surface border-line"
+                      }`}
+                    >
+                      <Text className={`text-[15px] font-monoBold flex-1 ${picked ? "text-brand" : "text-ink"}`}>
+                        {sym}
+                      </Text>
+                      {picked && <Icon name="check" size={16} color="#0E7A66" sw={2.6} />}
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </SafeAreaView>
+        </View>
+      </Modal>
 
       {/* Floating Duel Bar — pops up as soon as both A and B are selected */}
       {bothPicked && assetA && assetB && (

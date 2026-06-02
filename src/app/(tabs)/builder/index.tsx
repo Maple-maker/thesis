@@ -32,6 +32,7 @@ export default function BuilderScreen() {
   const clearModelThesis = useStore((s) => s.clearModelThesis);
   const clearCustomThesis = useStore((s) => s.clearCustomThesis);
   const toggleTheme = useStore((s) => s.toggleTheme);
+  const toggleWatchlist = useStore((s) => s.toggleWatchlist);
   const setWatchlistPipeline = useStore((s) => s.setWatchlistPipeline);
 
   const hasModel = !!modelThesis?.holdings.length;
@@ -283,7 +284,7 @@ export default function BuilderScreen() {
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
                       } as any)
                     }
-                    onWatchlist={() => setWatchlistPipeline(row.symbol, "shortlisted")}
+                    onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
                 ))}
               </View>
@@ -311,7 +312,7 @@ export default function BuilderScreen() {
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
                       } as any)
                     }
-                    onWatchlist={() => setWatchlistPipeline(row.symbol, "shortlisted")}
+                    onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
                 ))}
               </View>

@@ -535,8 +535,7 @@ export const useStore = create<Store>()(
       recordAssistantMessage: () => {
         const key = todayKey();
         const s = get();
-        const limit = s.subscriptionTier === "pro" ? 40 : 0;
-        if (s.subscriptionTier !== "pro") return false;
+        const limit = s.subscriptionTier === "pro" ? 40 : 5;
         const count = s.assistantUsageDate === key ? s.assistantMessagesToday : 0;
         if (count >= limit) return false;
         set({ assistantUsageDate: key, assistantMessagesToday: count + 1 });

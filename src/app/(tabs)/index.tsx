@@ -1,7 +1,14 @@
 import { useRouter } from "expo-router";
-import { Alert, Pressable, Text, View } from "react-native";
+import { useMemo } from "react";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
+import { AskThesisCard } from "@/components/home/AskThesisCard";
+import { FearGreedIndex } from "@/components/home/FearGreedIndex";
+import { InsightsFeed } from "@/components/home/InsightsFeed";
+import { RadarFeed } from "@/components/home/RadarFeed";
+import { TodayForThesisCard } from "@/components/home/TodayForThesisCard";
+import { MacroMarketsCard } from "@/components/macro/MacroMarketsCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FeaturedCard } from "@/components/ui/FeaturedCard";
@@ -10,8 +17,11 @@ import { Bar } from "@/components/ui/Progress";
 import { Screen } from "@/components/ui/Screen";
 import { Kicker, SectionTitle } from "@/components/ui/SectionTitle";
 import { Tag } from "@/components/ui/Tag";
+import { insightsForHome } from "@/data/insights-feed";
+import { radarReportsForContext } from "@/data/radar-reports";
 import { stockBySymbol } from "@/data/stocks";
 import { themeById } from "@/data/themes";
+import { askPromptsForProfile } from "@/lib/ask-prompts";
 import { useStore } from "@/store";
 
 export default function HomeScreen() {
@@ -25,6 +35,11 @@ export default function HomeScreen() {
   const themes = themeIds.map((id) => themeById(id)!).filter(Boolean);
   const featured = themes[0];
   const canDuel = watchlist.length >= 2;
+  const modelThesis = useStore((s) => s.modelThesis);
+
+  const askPrompts = useMemo(() => askPromptsForProfile(profile, themeIds, { modelThesis }), [profile, themeIds, modelThesis]);
+  const radarReports = useMemo(() => radarReportsForContext(profile, themeIds, watchlist), [profile, themeIds, watchlist]);
+  const insightItems = useMemo(() => insightsForHome(profile, themeIds, watchlist, [], 3), [profile, themeIds, watchlist]);
 
   const onLongPressLogo = () => {
     Alert.alert(
@@ -188,6 +203,42 @@ export default function HomeScreen() {
           ))}
         </View>
       </Card>
+
+      {/* Fear & Greed Index */}
+      <FearGreedIndex />
+
+      {/* AI CFO / Ask Thesis */}
+      <AskThesisCard prompts={askPrompts} />
+
+      {/* Today for Thesis */}
+      <TodayForThesisCard
+        profile={profile}
+        themeIds={themeIds}
+        watchlist={watchlist}
+        modelThesis={modelThesis}
+        completedLessons={[]}
+        journalCount={journal.length}
+      />
+
+      {/* Macro markets / sentiment */}
+      <View className="mb-4">
+        <MacroMarketsCard />
+      </View>
+
+      {/* Quick tools */}
+      <SectionTitle>Research & tools</SectionTitle>
+      <View className="flex-row gap-2.5 mb-5">
+        <ToolCard icon="compare" label="Duel" color="#0E7A66" onPress={() => router.push("/duel")} />
+        <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => router.push("/xray")} />
+        <ToolCard icon="search" label="Screener" color="#D98512" onPress={() => router.push("/screener")} />
+        <ToolCard icon="sparkle" label="Stress test" color="#3B82F6" onPress={() => router.push("/thesis-model")} />
+      </View>
+
+      {/* Thesis Radar */}
+      <RadarFeed reports={radarReports} />
+
+      {/* Insights & briefs */}
+      <InsightsFeed items={insightItems} />
 
       {/* Duel CTA */}
       <Card pad={16} className="mb-4">
@@ -402,4 +453,17 @@ function computeFingerprint(profile: ReturnType<typeof useStore.getState>["profi
       color: "amber",
     },
   ];
+}
+
+function ToolCard({ icon, label, color, onPress }: { icon: IconName; label: string; color: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className="flex-1 bg-bg-surface border border-line rounded-[14px] py-3 items-center active:opacity-70"
+      style={{ minWidth: 72 }}
+    >
+      <Icon name={icon} size={24} color={color} sw={2} />
+      <Text className="text-ink-2 text-[10px] font-sansBold mt-1.5">{label}</Text>
+    </Pressable>
+  );
 }

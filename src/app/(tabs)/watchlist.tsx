@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -11,58 +11,57 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Tag } from "@/components/ui/Tag";
 import { Tick } from "@/components/ui/Tick";
 import { stockBySymbol } from "@/data/stocks";
-import { suggestEtfForWatchlist } from "@/lib/etf-overlap";
+import { themeById } from "@/data/themes";
+import { convictionLeaderboard } from "@/lib/conviction-rank";
+import { searchWatchlistLocal } from "@/lib/watchlist-search";
 import { useStore } from "@/store";
+
+const FIT_TONES: Record<"strong" | "moderate" | "weak", { bg: string; ink: string }> = {
+  strong: { bg: "bg-pos-bg", ink: "text-pos" },
+  moderate: { bg: "bg-amber-bg", ink: "text-amber" },
+  weak: { bg: "bg-bg-subtle", ink: "text-ink-3" },
+};
+
+function fitTone(score: number): "strong" | "moderate" | "weak" {
+  if (score >= 62) return "strong";
+  if (score >= 40) return "moderate";
+  return "weak";
+}
 
 export default function WatchlistScreen() {
   const router = useRouter();
   const watchlist = useStore((s) => s.watchlist);
   const toggle = useStore((s) => s.toggleWatchlist);
+  const profile = useStore((s) => s.profile);
+  const themeIds = useStore((s) => s.themeIds);
+
+  const [query, setQuery] = useState("");
 
   const stocks = watchlist.map(stockBySymbol).filter(Boolean) as NonNullable<
     ReturnType<typeof stockBySymbol>
   >[];
 
-  const etfSuggestions = useMemo(
-    () => suggestEtfForWatchlist(watchlist, 2),
-    [watchlist]
+  const searchResults = useMemo(
+    () => searchWatchlistLocal(query, profile, themeIds, 12),
+    [query, profile, themeIds]
   );
 
-  if (stocks.length === 0) {
-    return (
-      <Screen padded>
-        <Header
-          title="Watchlist"
-          subtitle="Nothing here yet — start with your themes."
-        />
-        <Card pad={28} className="mt-4 items-center">
-          <View className="bg-brand-bg w-16 h-16 rounded-[16px] items-center justify-center">
-            <Icon name="flag" size={28} color="#0E7A66" />
-          </View>
-          <Text className="text-ink text-[16px] font-sansBold text-center mt-4">
-            Add stocks you're curious about
-          </Text>
-          <Text className="text-ink-2 text-[13.5px] font-sansMd text-center mt-1 leading-[19px]">
-            We'll surface duels and ETF alternatives as your list grows.
-          </Text>
-          <View className="mt-5 w-full">
-            <Button
-              label="Browse themes"
-              fullWidth
-              size="md"
-              onPress={() => router.push("/(tabs)/themes")}
-            />
-          </View>
-        </Card>
-      </Screen>
-    );
-  }
+  const leaderboard = useMemo(() => {
+    if (themeIds.length === 0) return null;
+    return convictionLeaderboard(profile, themeIds, 8, 6);
+  }, [profile, themeIds]);
+
+  const isSearching = query.trim().length > 0;
 
   return (
     <Screen padded>
       <Header
         title="Watchlist"
-        subtitle={`${stocks.length} ${stocks.length === 1 ? "name" : "names"} you're tracking.`}
+        subtitle={
+          stocks.length > 0
+            ? `${stocks.length} ${stocks.length === 1 ? "name" : "names"} tracking`
+            : "Track stocks and ETFs that fit your thesis"
+        }
         right={
           stocks.length >= 2 ? (
             <Pressable
@@ -82,83 +81,272 @@ export default function WatchlistScreen() {
         }
       />
 
-      <View className="gap-y-2.5 mt-1">
-        {stocks.map((s) => (
-          <Card key={s.symbol} pad={14}>
-            <View className="flex-row items-center">
-              <Pressable
-                onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
-                className="flex-row items-center flex-1"
-              >
-                <Tick ticker={s.symbol} size={42} />
-                <View className="ml-3 flex-1">
-                  <View className="flex-row items-center">
-                    <Text className="text-ink font-monoBold text-[14px]">
-                      {s.symbol}
-                    </Text>
-                    <View className="w-[3px] h-[3px] rounded-full bg-ink-3 mx-1.5" />
-                    <Text className="text-ink-3 text-[11px] font-sansSb uppercase tracking-wider">
-                      {s.sector}
-                    </Text>
-                  </View>
-                  <Text className="text-ink text-[14px] font-sansSb mt-0.5">
-                    {s.name}
-                  </Text>
-                  <View className="flex-row gap-x-1.5 mt-1.5">
-                    {s.tags.slice(0, 2).map((t) => (
-                      <Tag key={t} label={t} />
-                    ))}
-                  </View>
-                </View>
-              </Pressable>
-              <Pressable
-                onPress={() => toggle(s.symbol)}
-                hitSlop={10}
-                className="ml-2 p-2"
-              >
-                <Icon name="close" size={18} color="#8C988F" sw={1.8} />
-              </Pressable>
-            </View>
-          </Card>
-        ))}
+      {/* Search bar */}
+      <View className="bg-bg-surface border border-line rounded-[14px] px-4 py-3 mt-2">
+        <View className="flex-row items-center">
+          <Icon name="search" size={16} color="#8C988F" sw={1.5} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search stocks or ETFs by ticker or name…"
+            placeholderTextColor="#8C988F"
+            autoCapitalize="characters"
+            className="text-ink text-[15px] font-sansMd ml-2 flex-1"
+          />
+          {query.length > 0 && (
+            <Pressable onPress={() => setQuery("")} hitSlop={8}>
+              <Icon name="close" size={16} color="#8C988F" sw={1.5} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
-      {etfSuggestions.length > 0 && (
-        <View className="mt-7">
-          <SectionTitle>ETFs that cover your list</SectionTitle>
-          <View className="gap-y-2.5">
-            {etfSuggestions.map(({ etf, covered }) => (
-              <Card key={etf.symbol} pad={14}>
-                <View className="flex-row items-center justify-between">
-                  <View className="flex-row items-center">
-                    <View className="bg-violet-bg w-[40px] h-[40px] rounded-[11px] items-center justify-center mr-3">
-                      <Icon name="grid" size={19} color="#7C3AED" />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }} className="flex-1">
+        {/* Search results */}
+        {isSearching && (
+          <View className="mt-4">
+            <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest mb-2">
+              {searchResults.length > 0 ? "Search results" : "No matches — try a different ticker"}
+            </Text>
+            <View className="gap-y-2">
+              {searchResults.map((row) => {
+                const tone = fitTone(row.fit.score);
+                const colors = FIT_TONES[tone];
+                const isWatched = watchlist.includes(row.symbol.toUpperCase());
+                return (
+                  <Card key={row.symbol} pad={12}>
+                    <View className="flex-row items-center">
+                      <Pressable
+                        onPress={() => {
+                          if (row.kind === "etf") {
+                            router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never);
+                          } else {
+                            router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } } as never);
+                          }
+                        }}
+                        className="flex-row items-center flex-1 active:opacity-70"
+                      >
+                        <View className={`w-[38px] h-[38px] rounded-[10px] items-center justify-center mr-3 ${colors.bg}`}>
+                          <Text className={`text-[16px] font-monoBold ${colors.ink}`}>
+                            {row.symbol.slice(0, 3)}
+                          </Text>
+                        </View>
+                        <View className="flex-1">
+                          <View className="flex-row items-center gap-1.5">
+                            <Text className="text-ink font-monoBold text-[13px]">{row.symbol}</Text>
+                            <Tag label={row.kind === "etf" ? "ETF" : "Stock"} tone={row.kind === "etf" ? "violet" : "default"} />
+                          </View>
+                          <Text className="text-ink-2 text-[12px] font-sansMd mt-0.5" numberOfLines={1}>
+                            {row.headline}
+                          </Text>
+                          <View className="flex-row items-center mt-1 gap-2">
+                            <Text className={`text-[10px] font-sansBold ${colors.ink}`}>
+                              Fit {row.fit.score}%
+                            </Text>
+                            {row.kind === "etf" && (
+                              <Pressable
+                                onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                              >
+                                <Text className="text-violet text-[10px] font-sansBold underline">ETF research →</Text>
+                              </Pressable>
+                            )}
+                          </View>
+                        </View>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => toggle(row.symbol)}
+                        hitSlop={10}
+                        className={`ml-2 px-3 py-1.5 rounded-[10px] border active:opacity-70 ${
+                          isWatched ? "bg-brand-bg border-brand" : "bg-bg-surface border-line"
+                        }`}
+                      >
+                        <Text className={`text-[12px] font-sansBold ${isWatched ? "text-brand" : "text-ink-2"}`}>
+                          {isWatched ? "Added" : "+ Add"}
+                        </Text>
+                      </Pressable>
                     </View>
-                    <View>
-                      <Text className="text-ink font-monoBold text-[14px]">
-                        {etf.symbol}
-                      </Text>
-                      <Text className="text-ink-3 text-[12px] font-sansSb mt-0.5">
-                        {etf.name}
-                      </Text>
-                    </View>
-                  </View>
-                  <Tag
-                    label={`Covers ${covered.length}`}
-                    tone="brand"
-                  />
-                </View>
-                <Text className="text-ink-2 text-[12.5px] font-sansMd mt-3 leading-[18px]">
-                  {etf.description}
-                </Text>
-                <Text className="text-ink-3 text-[11px] font-sansMd mt-2">
-                  Expense {etf.expense}% · Holds: {covered.join(", ")}
-                </Text>
-              </Card>
-            ))}
+                  </Card>
+                );
+              })}
+            </View>
           </View>
-        </View>
-      )}
+        )}
+
+        {/* Currently watching */}
+        {!isSearching && stocks.length > 0 && (
+          <View className="mt-4">
+            <SectionTitle>Tracking</SectionTitle>
+            <View className="gap-y-2">
+              {stocks.map((s) => (
+                <Card key={s.symbol} pad={14}>
+                  <View className="flex-row items-center">
+                    <Pressable
+                      onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
+                      className="flex-row items-center flex-1 active:opacity-70"
+                    >
+                      <Tick ticker={s.symbol} size={42} />
+                      <View className="ml-3 flex-1">
+                        <View className="flex-row items-center gap-1.5">
+                          <Text className="text-ink font-monoBold text-[14px]">{s.symbol}</Text>
+                          <Text className="text-ink-3 text-[10px] font-sansSb uppercase tracking-wider">{s.sector}</Text>
+                        </View>
+                        <Text className="text-ink text-[13px] font-sansSb mt-0.5">{s.name}</Text>
+                        <View className="flex-row gap-x-1.5 mt-1">
+                          {s.tags.slice(0, 2).map((t) => (
+                            <Tag key={t} label={t} />
+                          ))}
+                        </View>
+                      </View>
+                    </Pressable>
+                    <Pressable onPress={() => toggle(s.symbol)} hitSlop={10} className="ml-2 p-2">
+                      <Icon name="close" size={18} color="#8C988F" sw={1.8} />
+                    </Pressable>
+                  </View>
+                </Card>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Thesis-fit suggestions (when not searching + leaderboard exists) */}
+        {!isSearching && leaderboard && (leaderboard.stocks.length > 0 || leaderboard.etfs.length > 0) && (
+          <View className="mt-6">
+            <SectionTitle>
+              {themeIds.length > 0
+                ? `Potential thesis fits for ${themeById(themeIds[0])?.title ?? "you"}`
+                : "Explore opportunities"}
+            </SectionTitle>
+            <Text className="text-ink-2 text-[12px] font-sansMd mb-3 -mt-1.5 leading-[17px]">
+              Ranked by alignment with your thesis. Tap to research, + Add to track.
+            </Text>
+
+            {leaderboard.stocks.length > 0 && (
+              <View className="mb-3">
+                <Text className="text-ink-3 text-[10px] font-sansX uppercase tracking-widest mb-2">Stocks</Text>
+                <View className="gap-y-2">
+                  {leaderboard.stocks.slice(0, 5).map((row) => {
+                    const isWatched = watchlist.includes(row.symbol.toUpperCase());
+                    const tone = fitTone(row.score);
+                    const colors = FIT_TONES[tone];
+                    return (
+                      <Card key={row.symbol} pad={12}>
+                        <View className="flex-row items-center">
+                          <Pressable
+                            onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } } as never)}
+                            className="flex-row items-center flex-1 active:opacity-70"
+                          >
+                            <View className={`w-[36px] h-[36px] rounded-[9px] items-center justify-center mr-3 ${colors.bg}`}>
+                              <Text className={`text-[15px] font-monoBold ${colors.ink}`}>{row.symbol.slice(0, 3)}</Text>
+                            </View>
+                            <View className="flex-1">
+                              <Text className="text-ink font-monoBold text-[13px]">{row.symbol}</Text>
+                              <Text className="text-ink-2 text-[11px] font-sansMd mt-0.5">{row.name}</Text>
+                            </View>
+                          </Pressable>
+                          <View className="items-end mr-2">
+                            <Text className={`text-[11px] font-monoBold ${colors.ink}`}>{row.score}%</Text>
+                            <Text className="text-ink-3 text-[9px] font-sansMd">fit</Text>
+                          </View>
+                          <Pressable
+                            onPress={() => toggle(row.symbol)}
+                            hitSlop={8}
+                            className={`px-2.5 py-1.5 rounded-[8px] border active:opacity-70 ${
+                              isWatched ? "bg-brand-bg border-brand" : "bg-bg-surface border-line"
+                            }`}
+                          >
+                            <Text className={`text-[11px] font-sansBold ${isWatched ? "text-brand" : "text-ink-2"}`}>
+                              {isWatched ? "✓" : "+"}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </Card>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
+            {leaderboard.etfs.length > 0 && (
+              <View>
+                <Text className="text-ink-3 text-[10px] font-sansX uppercase tracking-widest mb-2">ETFs</Text>
+                <View className="gap-y-2">
+                  {leaderboard.etfs.slice(0, 4).map((row) => {
+                    const isWatched = watchlist.includes(row.symbol.toUpperCase());
+                    const tone = fitTone(row.score);
+                    const colors = FIT_TONES[tone];
+                    return (
+                      <Card key={row.symbol} pad={12}>
+                        <View className="flex-row items-center">
+                          <Pressable
+                            onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                            className="flex-row items-center flex-1 active:opacity-70"
+                          >
+                            <View className="bg-violet-bg/50 w-[36px] h-[36px] rounded-[9px] items-center justify-center mr-3">
+                              <Icon name="grid" size={16} color="#7C3AED" />
+                            </View>
+                            <View className="flex-1">
+                              <View className="flex-row items-center gap-1.5">
+                                <Text className="text-ink font-monoBold text-[13px]">{row.symbol}</Text>
+                                <Tag label="ETF" tone="violet" />
+                              </View>
+                              <Text className="text-ink-2 text-[11px] font-sansMd mt-0.5">{row.name}</Text>
+                            </View>
+                          </Pressable>
+                          <View className="items-end mr-2">
+                            <Text className={`text-[11px] font-monoBold ${colors.ink}`}>{row.score}%</Text>
+                            <Text className="text-ink-3 text-[9px] font-sansMd">fit</Text>
+                          </View>
+                          <Pressable
+                            onPress={() => toggle(row.symbol)}
+                            hitSlop={8}
+                            className={`px-2.5 py-1.5 rounded-[8px] border active:opacity-70 ${
+                              isWatched ? "bg-brand-bg border-brand" : "bg-bg-surface border-line"
+                            }`}
+                          >
+                            <Text className={`text-[11px] font-sansBold ${isWatched ? "text-brand" : "text-ink-2"}`}>
+                              {isWatched ? "✓" : "+"}
+                            </Text>
+                          </Pressable>
+                        </View>
+                        {/* ETF research link */}
+                        <Pressable
+                          onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                          className="mt-2 pt-2 border-t border-line"
+                        >
+                          <Text className="text-violet text-[11px] font-sansBold">
+                            ETF research → {row.name} · {row.symbol}
+                          </Text>
+                        </Pressable>
+                      </Card>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* No themes yet, empty state with CTA */}
+        {!isSearching && stocks.length === 0 && !leaderboard && (
+          <Card pad={28} className="mt-4 items-center">
+            <View className="bg-brand-bg w-16 h-16 rounded-[16px] items-center justify-center">
+              <Icon name="flag" size={28} color="#0E7A66" />
+            </View>
+            <Text className="text-ink text-[16px] font-sansBold text-center mt-4">
+              Start your thesis to unlock fits
+            </Text>
+            <Text className="text-ink-2 text-[13.5px] font-sansMd text-center mt-1 leading-[19px]">
+              Complete the onboarding to get personalized stock and ETF suggestions ranked by thesis alignment.
+            </Text>
+            <View className="mt-5 w-full">
+              <Button label="Go to builder" fullWidth size="md" onPress={() => router.push("/(tabs)/builder")} />
+            </View>
+          </Card>
+        )}
+
+        {/* Extra padding */}
+        <View className="h-10" />
+      </ScrollView>
     </Screen>
   );
 }
