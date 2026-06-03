@@ -2,11 +2,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AffiliateOfferCard, openAffiliateOffer } from "@/components/AffiliateOfferCard";
+import { AffiliateOfferCard } from "@/components/AffiliateOfferCard";
 import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { AFFILIATE_OFFERS } from "@/data/affiliate-offers";
+import { AFFILIATE_OFFERS, openAffiliateOffer } from "@/data/affiliate-offers";
 import { creditCardById, CREDIT_CATEGORY_LABELS } from "@/data/credit/cards";
 
 export default function CreditCardDetail() {

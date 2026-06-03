@@ -324,7 +324,22 @@ export default function StockDetail() {
         <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest mb-2">
           Thesis
         </Text>
-        <GlossaryText content={stock.thesis} textSize={14} lineHeight={22} />
+        <GlossaryText
+          content={stock.thesis}
+          textSize={14}
+          lineHeight={22}
+          onTermPress={(tid) => {
+            const map: Record<string, string> = {
+              volatility: "volatility",
+              drawdown: "drawdown",
+              beta: "beta",
+              "sharpe-ratio": "sharpe-ratio",
+            };
+            const cid = map[tid] as any;
+            if (cid) { openConcept(cid); return true; }
+            return false;
+          }}
+        />
         <Text className="text-ink-3 text-[10px] font-sansMd mt-2 leading-[15px]">
           Tap highlighted terms to learn what they mean.
         </Text>

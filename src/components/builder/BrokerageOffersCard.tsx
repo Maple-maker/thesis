@@ -1,27 +1,12 @@
-import * as WebBrowser from "expo-web-browser";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui/Card";
 import {
   AFFILIATE_DISCLOSURE,
   offersByCategory,
+  openAffiliateOffer,
   type AffiliateOffer,
 } from "@/data/affiliate-offers";
-
-async function openOffer(url: string | null, name: string) {
-  if (!url) {
-    Alert.alert(name, `${AFFILIATE_DISCLOSURE}\n\nPartner link coming soon.`, [{ text: "OK" }]);
-    return;
-  }
-  try {
-    await WebBrowser.openBrowserAsync(url, {
-      toolbarColor: "#F3F5F1",
-      controlsColor: "#0E7A66",
-    });
-  } catch {
-    Alert.alert("Could not open link", "Please try again or visit the provider's site directly.");
-  }
-}
 
 type Props = {
   title?: string;
@@ -50,7 +35,7 @@ export function BrokerageOffersCard({
             key={offer.id}
             offer={offer}
             isLast={i === offers.length - 1}
-            onPress={() => openOffer(offer.url, offer.name)}
+            onPress={() => openAffiliateOffer(offer)}
           />
         ))}
       </Card>

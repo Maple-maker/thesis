@@ -29,6 +29,8 @@ import { stockBySymbol } from "@/data/stocks";
 import { themeById } from "@/data/themes";
 import { askPromptsForProfile } from "@/lib/ask-prompts";
 import { useMilestoneCheck } from "@/lib/use-milestone-check";
+import { AffiliateOpportunitiesCard } from "@/components/home/AffiliateOpportunitiesCard";
+import { offersForProfile } from "@/data/affiliate-offers";
 import { buildProfileSummary } from "@/lib/profile-summary";
 import { useStore } from "@/store";
 
@@ -58,6 +60,7 @@ export default function HomeScreen() {
   const askPrompts = useMemo(() => askPromptsForProfile(profile, themeIds, { modelThesis }), [profile, themeIds, modelThesis]);
   const radarReports = useMemo(() => radarReportsForContext(profile, themeIds, watchlist), [profile, themeIds, watchlist]);
   const insightItems = useMemo(() => insightsForHome(profile, themeIds, watchlist, [], 3), [profile, themeIds, watchlist]);
+  const affiliateOffers = useMemo(() => offersForProfile(profile), [profile]);
 
   const onLongPressLogo = () => {
     Alert.alert(
@@ -278,6 +281,14 @@ export default function HomeScreen() {
         <ToolCard icon="search" label="Screener" color="#D98512" onPress={() => router.push("/screener")} />
         <ToolCard icon="sparkle" label="Stress test" color="#3B82F6" onPress={() => router.push("/thesis-model")} />
       </View>
+
+      {/* Affiliate opportunities */}
+      {affiliateOffers.length > 0 && (
+        <AffiliateOpportunitiesCard
+          profile={profile}
+          onSeeAll={() => router.push("/offers" as never)}
+        />
+      )}
 
       {/* Thesis Radar */}
       <RadarFeed reports={radarReports} />

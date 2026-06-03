@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
+import { GlossaryText } from "@/components/education/GlossaryText";
+import { TermLink } from "@/components/TermLink";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Header } from "@/components/ui/Header";
@@ -17,6 +19,8 @@ import { NotFoundState } from "@/components/NotFoundState";
 import { youtubeForNotFound } from "@/data/youtube-resources";
 import { themeById } from "@/data/themes";
 import { rankStocksForTheme } from "@/lib/theme-engine";
+import { useExplain } from "@/hooks/use-explain";
+import type { ConceptId } from "@/data/concepts";
 import { useStore } from "@/store";
 import type { ThemeId } from "@/store/types";
 
@@ -28,6 +32,7 @@ export default function ThemeDetail() {
   const toggle = useStore((s) => s.toggleWatchlist);
   const themeIds = useStore((s) => s.themeIds);
   const [expandedDrivers, setExpandedDrivers] = useState<number[]>([]);
+  const { openConcept } = useExplain();
 
   const toggleDriver = (i: number) =>
     setExpandedDrivers((prev) =>
@@ -120,12 +125,22 @@ export default function ThemeDetail() {
       </View>
 
       {/* Summary */}
-      <Text
-        className="text-ink text-[16px] font-displayMd leading-[24px] mb-6"
-        style={{ fontFamily: "PlusJakartaSans_500Medium" }}
-      >
-        {theme.thesis}
-      </Text>
+      <GlossaryText
+        content={theme.thesis}
+        textSize={16}
+        lineHeight={24}
+        onTermPress={(tid) => {
+          const map: Record<string, ConceptId> = {
+            volatility: "volatility",
+            drawdown: "drawdown",
+            beta: "beta",
+            "sharpe-ratio": "sharpe-ratio",
+          };
+          const cid = map[tid];
+          if (cid) { openConcept(cid); return true; }
+          return false;
+        }}
+      />
 
       {/* Drivers grid */}
       <SectionTitle>Key drivers</SectionTitle>

@@ -9,6 +9,8 @@ type Props = {
   content: string;
   textSize?: number;
   lineHeight?: number;
+  /** Called when a detected financial term is tapped. Return true to suppress default Alert. */
+  onTermPress?: (termId: string) => boolean | void;
 };
 
 /** Ordered patterns — longer / multi-word first to avoid partial matches. */
@@ -76,7 +78,7 @@ function parseSpans(content: string): Array<{ text: string; termId?: string }> {
   return spans;
 }
 
-export function GlossaryText({ content, textSize = 14, lineHeight = 20 }: Props) {
+export function GlossaryText({ content, textSize = 14, lineHeight = 20, onTermPress }: Props) {
   if (!content) return null;
 
   const spans = parseSpans(content);
@@ -84,19 +86,25 @@ export function GlossaryText({ content, textSize = 14, lineHeight = 20 }: Props)
   return (
     <Text style={{ fontSize: textSize, lineHeight }}>
       {spans.map((span, i) => {
-        const def = span.termId ? DEF_BY_ID.get(span.termId) : undefined;
-        if (def) {
+        const termId = span.termId;
+        if (termId) {
           return (
             <Text
               key={i}
               className="text-brand underline decoration-brand/30"
               style={{ fontSize: textSize, lineHeight }}
               onPress={() => {
-                Alert.alert(
-                  def.term,
-                  [def.definition, def.example ? `\n\nExample: ${def.example}` : ""].join(""),
-                  [{ text: "Got it", style: "default" }]
-                );
+                const handled = onTermPress ? onTermPress(termId) : false;
+                if (!handled) {
+                  const def = DEF_BY_ID.get(termId);
+                  if (def) {
+                    Alert.alert(
+                      def.term,
+                      [def.definition, def.example ? `\n\nExample: ${def.example}` : ""].join(""),
+                      [{ text: "Got it", style: "default" }]
+                    );
+                  }
+                }
               }}
               accessibilityRole="link"
             >

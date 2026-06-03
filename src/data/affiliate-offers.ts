@@ -1,3 +1,6 @@
+import * as WebBrowser from "expo-web-browser";
+import { Alert } from "react-native";
+
 import type { UserProfile } from "@/store/types";
 
 export type AffiliateCategory =
@@ -19,6 +22,22 @@ export type AffiliateOffer = {
 
 export const AFFILIATE_DISCLOSURE =
   "Thesis may earn a commission if you open an account through our links. Offers are educational comparisons, not endorsements. Terms change; verify on the provider's site.";
+
+/** Open an affiliate offer URL in an in-app browser, or show disclosure if no URL. */
+export async function openAffiliateOffer(offer: AffiliateOffer) {
+  if (!offer.url) {
+    Alert.alert(offer.name, `${AFFILIATE_DISCLOSURE}\n\nPartner link coming soon.`);
+    return;
+  }
+  try {
+    await WebBrowser.openBrowserAsync(offer.url, {
+      toolbarColor: "#F3F5F1",
+      controlsColor: "#0E7A66",
+    });
+  } catch {
+    Alert.alert("Could not open link", "Please try again or visit the provider's site directly.");
+  }
+}
 
 /** Real affiliate programs, educational framing only, no specific rates or promotional language. */
 export const AFFILIATE_OFFERS: AffiliateOffer[] = [

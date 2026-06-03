@@ -20,6 +20,8 @@ import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { ExplainProvider } from "@/hooks/use-explain";
+
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
@@ -56,6 +58,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#F3F5F1" }}>
       <SafeAreaProvider>
         <StatusBar style="dark" />
+        <ExplainProvider>
         <Stack
           screenOptions={{
             headerShown: false,
@@ -139,6 +142,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
+        </ExplainProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

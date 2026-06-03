@@ -1,25 +1,12 @@
-import * as WebBrowser from "expo-web-browser";
-import { Alert, Pressable, Text, View } from "react-native";
-
+import { Pressable, Text, View } from "react-native";
 import { Icon } from "@/components/Icon";
 import { Card } from "@/components/ui/Card";
-import { AFFILIATE_DISCLOSURE, type AffiliateOffer } from "@/data/affiliate-offers";
+import { AFFILIATE_DISCLOSURE, openAffiliateOffer, type AffiliateOffer } from "@/data/affiliate-offers";
 
 type Props = {
   offer: AffiliateOffer;
   compact?: boolean;
 };
-
-export async function openAffiliateOffer(offer: AffiliateOffer) {
-  if (!offer.url) {
-    Alert.alert(offer.name, `${AFFILIATE_DISCLOSURE}\n\nPartner link coming soon.`);
-    return;
-  }
-  await WebBrowser.openBrowserAsync(offer.url, {
-    toolbarColor: "#F3F5F1",
-    controlsColor: "#0E7A66",
-  });
-}
 
 export function AffiliateOfferCard({ offer, compact }: Props) {
   return (
