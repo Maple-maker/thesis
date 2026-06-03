@@ -127,13 +127,14 @@ export default function RootLayout() {
           <Stack.Screen name="xray" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="brief" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="advice" options={{ animation: "slide_from_right" }} />
-          <Stack.Screen name="forecast" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="forecast" options={{ animation: "slide_from_right", gestureEnabled: false }} />
           <Stack.Screen name="thesis-studio" options={{ animation: "slide_from_right" }} />
-          <Stack.Screen name="thesis-model/index" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="thesis-model/index" options={{ animation: "slide_from_right", gestureEnabled: false }} />
           <Stack.Screen name="explore-climate" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="support" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="thesis-health" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="compounder" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="offers" options={{ animation: "slide_from_right" }} />
           <Stack.Screen
             name="feedback"
             options={{

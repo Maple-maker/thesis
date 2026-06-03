@@ -286,7 +286,7 @@ export default function HomeScreen() {
       {affiliateOffers.length > 0 && (
         <AffiliateOpportunitiesCard
           profile={profile}
-          onSeeAll={() => router.push("/offers" as never)}
+          onSeeAll={() => router.push("/offers")}
         />
       )}
 

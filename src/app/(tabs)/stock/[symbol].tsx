@@ -17,6 +17,7 @@ import { EtfListRow } from "@/components/EtfListRow";
 import { ETFS } from "@/data/etfs";
 import { NotFoundState } from "@/components/NotFoundState";
 import { insightForSymbol } from "@/data/context-insights";
+import type { ConceptId } from "@/data/concepts";
 import { youtubeForNotFound } from "@/data/youtube-resources";
 import { priceHistory } from "@/data/price-data";
 import { isCuratedStock, stockBySymbol } from "@/data/stocks";
@@ -312,9 +313,11 @@ export default function StockDetail() {
                 {formatPctChange(quote.changePct1y)} 1Y
               </Text>
             ) : null}
-            <Text className="text-ink-3 text-[9px] font-sansMd mt-1 text-right">
-              {quoteSourceLabel(quote)}
-            </Text>
+            <View className="mt-1.5 px-1.5 py-0.5 rounded-[5px] bg-bg-surface2 self-end">
+              <Text className="text-ink-3 text-[9px] font-sansMd text-right">
+                {quoteSourceLabel(quote)}
+              </Text>
+            </View>
           </View>
         ) : null}
       </View>
@@ -329,13 +332,13 @@ export default function StockDetail() {
           textSize={14}
           lineHeight={22}
           onTermPress={(tid) => {
-            const map: Record<string, string> = {
+            const map: Record<string, ConceptId> = {
               volatility: "volatility",
               drawdown: "drawdown",
               beta: "beta",
               "sharpe-ratio": "sharpe-ratio",
             };
-            const cid = map[tid] as any;
+            const cid = map[tid];
             if (cid) { openConcept(cid); return true; }
             return false;
           }}

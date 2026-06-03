@@ -5,7 +5,6 @@ import { Pressable, Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { GlossaryText } from "@/components/education/GlossaryText";
-import { TermLink } from "@/components/TermLink";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Header } from "@/components/ui/Header";

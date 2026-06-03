@@ -14,7 +14,7 @@ const CURATED_STOCKS: Stock[] = [
   // --- AI Infrastructure ---
   {
     symbol: "NVDA",
-    name: "NVIDIA",
+    name: "Nvidia",
     sector: "Technology",
     themes: ["ai-infrastructure", "compounders"],
     tags: ["growth", "moat", "blue-chip"],
@@ -396,7 +396,7 @@ const CURATED_STOCKS: Stock[] = [
   },
   {
     symbol: "ASML",
-    name: "ASML",
+    name: "ASML Holding",
     sector: "Technology",
     themes: ["compounders", "ai-infrastructure", "global-diversification"],
     tags: ["growth", "moat", "international"],

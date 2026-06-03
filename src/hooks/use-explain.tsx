@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
+
+import { ExplainSheet } from "@/components/ExplainSheet";
 import type { ConceptId } from "@/data/concepts";
 
 type ExplainContextValue = {
@@ -26,6 +28,12 @@ export function ExplainProvider({ children }: { children: React.ReactNode }) {
   return (
     <ExplainContext.Provider value={{ openConcept, conceptId, visible, onClose }}>
       {children}
+      <ExplainSheet
+        conceptId={conceptId}
+        visible={visible}
+        onClose={onClose}
+        onSelectRelated={openConcept}
+      />
     </ExplainContext.Provider>
   );
 }

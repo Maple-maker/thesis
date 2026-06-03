@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Pressable, Text } from "react-native";
+import { Text } from "react-native";
 
 import type { ConceptId } from "@/data/concepts";
 import { useExplain } from "@/hooks/use-explain";
@@ -18,17 +18,17 @@ export function TermLink({ conceptId, children, textSize = 14 }: Props) {
   const { openConcept } = useExplain();
 
   return (
-    <Pressable onPress={() => openConcept(conceptId)}>
-      <Text
-        className="text-brand font-sansSb"
-        style={{
-          fontSize: textSize,
-          textDecorationLine: "underline",
-          textDecorationColor: "rgba(14,122,102,0.3)",
-        }}
-      >
-        {children}
-      </Text>
-    </Pressable>
+    <Text
+      className="text-brand font-sansSb"
+      onPress={() => openConcept(conceptId)}
+      style={{
+        fontSize: textSize,
+        textDecorationLine: "underline",
+        textDecorationColor: "rgba(14,122,102,0.3)",
+      }}
+      accessibilityRole="link"
+    >
+      {children}
+    </Text>
   );
 }

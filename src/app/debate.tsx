@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "@/components/Icon";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { runDebateAsync, getDebateJob, type DebateResult } from "@/lib/thesis-api";
+import { runDebateAsync, getDebateJob, fetchBackendStatus, isBackendConfigured, type DebateResult } from "@/lib/thesis-api";
 import { searchDuelSymbols } from "@/lib/duel-asset";
 import { useStore } from "@/store";
 
@@ -64,6 +64,17 @@ export default function DebateScreen() {
   const [ran, setRan] = useState(false);
   const [jobId, setJobId] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<string | null>(null);
+  const [backendReachable, setBackendReachable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!isBackendConfigured()) {
+      setBackendReachable(false);
+      return;
+    }
+    fetchBackendStatus()
+      .then((s) => setBackendReachable(s.reachable))
+      .catch(() => setBackendReachable(false));
+  }, []);
 
   // Ticker search
   const suggestions = useMemo(() => {
@@ -283,7 +294,13 @@ export default function DebateScreen() {
           <Card pad={16} className="mb-4">
             <Text className="text-neg text-[14px] font-sansSb">{error}</Text>
             <Text className="text-ink-3 text-[12px] font-sansMd mt-2">
-              Make sure the Thesis API server is running on port 8787 with DEEPSEEK_API_KEY set.
+              The debate engine runs on the Thesis API server. Start it with:
+            </Text>
+            <Text className="text-ink-2 text-[12px] font-monoMd mt-1.5 bg-bg-surface2 px-3 py-2 rounded-[8px]">
+              cd server && npm run dev
+            </Text>
+            <Text className="text-ink-3 text-[12px] font-sansMd mt-2">
+              Make sure DEEPSEEK_API_KEY (or another PACE provider key) is set in server/.env.
             </Text>
           </Card>
         )}
@@ -393,6 +410,18 @@ export default function DebateScreen() {
         {/* Empty state */}
         {!loading && !result && !error && (
           <Card pad={16} className="mb-4">
+            {backendReachable === false && (
+              <View
+                className="rounded-[10px] px-3 py-2.5 mb-3"
+                style={{ backgroundColor: "rgba(217, 133, 18, 0.10)" }}
+              >
+                <Text className="text-amber text-[12px] font-sansBold">API server not reachable</Text>
+                <Text className="text-ink-2 text-[12px] font-sansMd mt-1 leading-[17px]">
+                  The Thesis API server is not running. Start it with{" "}
+                  <Text className="font-monoMd">cd server && npm run dev</Text> and ensure DEEPSEEK_API_KEY is set in server/.env.
+                </Text>
+              </View>
+            )}
             <Text className="text-ink font-sansBold text-[15px] mb-2">How it works</Text>
             <Text className="text-ink-2 text-[13px] font-sansMd leading-[20px]">
               Type a ticker above and tap Run. Four specialized LLM analysts — Value, Growth, Macro

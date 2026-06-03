@@ -261,6 +261,13 @@
 </head>
 <body>
 
+  <!-- Hidden backup form for subscribe function -->
+  <form name="subscribe" data-netlify="true" netlify hidden>
+    <input type="email" name="email" />
+    <input type="text" name="source" />
+    <input type="text" name="timestamp" />
+  </form>
+
   <!-- ══ HERO ══ -->
   <header class="hero">
     <div class="wrap">
@@ -624,6 +631,15 @@
         var body = new URLSearchParams();
         fd.forEach(function(v, k) { body.append(k, v); });
         fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+
+        // Backup: also POST to subscribe function for JSON store
+        var email = input.value.trim();
+        var source = form.getAttribute('name') || 'landing';
+        fetch('/.netlify/functions/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, source: source })
+        }).catch(function() { /* best-effort */ });
       });
     });
 
