@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Support & Legal — Thesis</title>
+<meta name="description" content="Business documents, privacy policy, terms of service, and security information for Thesis.">
+<meta name="theme-color" content="#0E7A66">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --serif: 'Newsreader', Georgia, serif;
+    --mono: 'Spline Sans Mono', ui-monospace, monospace;
+    --green: #0E7A66;
+    --green-deep: #06483C;
+    --paper: #F4EFE6;
+    --paper-2: #EFE8DA;
+    --surface: #FCF9F2;
+    --ink: #16201C;
+    --ink-2: #545C56;
+    --ink-3: #8A8E84;
+    --line: #E6DECF;
+    --line-strong: #D8CDB8;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -.02em; }
+  p { margin: 0; text-wrap: pretty; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { width: min(860px, 100% - 44px); margin: 0 auto; }
+
+  /* Nav */
+  .top-nav { padding: 24px 0; border-bottom: 1px solid var(--line); background: var(--surface); }
+  .top-nav a {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--green);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .top-nav a:hover { text-decoration: none; color: var(--green-deep); }
+
+  /* Hero */
+  .page-hero { background: var(--surface); padding: clamp(40px, 6vw, 72px) 0 clamp(36px, 5vw, 56px); border-bottom: 1px solid var(--line); }
+  .page-hero h1 { font-family: var(--serif); font-size: clamp(34px, 4.4vw, 52px); color: var(--ink); line-height: 1.08; }
+  .page-hero .sub { margin-top: 14px; font-size: 16px; line-height: 1.55; color: var(--ink-2); font-weight: 500; max-width: 56ch; }
+
+  /* Contact bar */
+  .contact-bar {
+    background: rgba(14,122,102,.06); border: 1px solid rgba(14,122,102,.12);
+    border-radius: 14px; padding: 16px 20px; margin-top: 28px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .contact-bar .c-icon {
+    width: 36px; height: 36px; border-radius: 10px; background: rgba(14,122,102,.12);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .contact-bar p { font-size: 14px; color: var(--ink-2); font-weight: 500; line-height: 1.5; }
+  .contact-bar strong { color: var(--ink); }
+
+  /* Section */
+  .docs-section { padding: clamp(48px, 7vw, 80px) 0; }
+  .docs-section h2 { font-family: var(--serif); font-size: clamp(26px, 3.2vw, 38px); margin-bottom: 32px; }
+
+  /* Doc card */
+  .doc-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 16px; margin-bottom: 12px; overflow: hidden;
+    transition: border-color .16s;
+  }
+  .doc-card.open { border-color: var(--line-strong); }
+
+  .doc-toggle {
+    width: 100%; border: none; background: none; cursor: pointer;
+    font-family: var(--font); text-align: left; padding: 18px 22px;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .doc-toggle:hover { background: rgba(14,122,102,.025); }
+  .doc-toggle .title { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .doc-toggle .desc { font-size: 13px; color: var(--ink-3); font-weight: 500; margin-top: 2px; }
+  .doc-toggle .plus {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; transition: background .16s, color .16s;
+    background: var(--paper-2); color: var(--ink-3);
+  }
+  .doc-card.open .doc-toggle .plus { background: var(--green); color: #fff; }
+
+  .doc-body { display: none; padding: 0 22px 28px; }
+  .doc-card.open .doc-body { display: block; }
+
+  /* Markdown content */
+  .md { font-size: 14px; line-height: 1.65; color: var(--ink-2); }
+  .md h1 { font-size: 22px; font-weight: 700; color: var(--ink); margin: 22px 0 6px; letter-spacing: -.01em; }
+  .md h2 { font-size: 16px; font-weight: 700; color: var(--ink); margin: 24px 0 6px; }
+  .md h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin: 20px 0 4px; }
+  .md p { margin: 8px 0; }
+  .md strong { color: var(--ink); font-weight: 700; }
+  .md em { font-style: italic; }
+  .md ul, .md ol { margin: 6px 0; padding-left: 20px; }
+  .md li { margin: 3px 0; }
+  .md hr { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+  .md blockquote {
+    border-left: 3px solid var(--green); margin: 10px 0; padding: 6px 0 6px 14px;
+    color: var(--ink-2); font-style: italic;
+  }
+  .md code {
+    font-family: var(--mono); font-size: 12px; background: var(--paper-2);
+    padding: 1px 5px; border-radius: 4px;
+  }
+  .md table {
+    width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px;
+  }
+  .md th, .md td {
+    text-align: left; padding: 8px 12px; border: 1px solid var(--line);
+  }
+  .md th { background: var(--paper-2); font-weight: 700; color: var(--ink); font-size: 12px; }
+  .md td { color: var(--ink-2); }
+  .md a { color: var(--green); }
+  .md .last-updated { font-size: 12px; color: var(--ink-3); font-style: italic; margin-top: 16px; }
+
+  /* Footer */
+  footer { background: var(--green-deep); color: rgba(246,241,230,.46); padding: 42px 0; margin-top: 48px; }
+  .foot-in { display: flex; flex-direction: column; gap: 18px; }
+  .foot-in .logo { display: inline-flex; align-items: center; gap: 11px; }
+  .foot-in .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: rgba(246,241,230,.14); display: flex; align-items: center; justify-content: center;
+  }
+  .foot-in .logo-word { font-family: var(--serif); font-size: 21px; font-weight: 600; color: rgba(246,241,230,.9); }
+  .foot-disc { font-size: 13px; line-height: 1.6; max-width: 64ch; }
+
+  .last-updated-banner { text-align: center; font-size: 12px; color: var(--ink-3); padding: 24px 0 0; }
+
+  @media (max-width: 540px) {
+    .wrap { width: calc(100% - 32px); }
+    .doc-toggle { padding: 15px 16px; }
+    .doc-body { padding: 0 16px 22px; }
+    .md table { font-size: 11px; }
+    .md th, .md td { padding: 6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="top-nav">
+  <div class="wrap">
+    <a href="/">&larr; Back to Thesis</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="wrap">
+    <h1>Support &amp; Legal</h1>
+    <p class="sub">These documents were prepared as part of the Plaid integration application process and cover information security, data access, terms of service, privacy policy, and the Thesis business model.</p>
+    <div class="contact-bar">
+      <div class="c-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#0E7A66" stroke-width="2"/><path d="M3 7l9 6.5L21 7" stroke="#0E7A66" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <p>Questions? Contact <strong>founder@makeyourthesis.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- Documents -->
+<section class="docs-section">
+  <div class="wrap">
+
+    <!-- 01 Business Details -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Business Details</div>
+          <div class="desc">Company overview, business model, and corporate structure</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Business Details</h1>
+<h2>Company Overview</h2>
+<table>
+<tr><th>Field</th><th>Detail</th></tr>
+<tr><td><strong>Legal Name</strong></td><td>Thesis (operating name)</td></tr>
+<tr><td><strong>Business Type</strong></td><td>Financial Technology Platform</td></tr>
+<tr><td><strong>Jurisdiction</strong></td><td>United States</td></tr>
+<tr><td><strong>Regulatory Status</strong></td><td>Unregulated (not an RIA, Broker-Dealer, or Bank)</td></tr>
+<tr><td><strong>SEC Registration</strong></td><td>Not required — does not meet the definition of Investment Adviser under the Investment Advisers Act of 1940</td></tr>
+<tr><td><strong>State Registration</strong></td><td>Not required</td></tr>
+<tr><td><strong>FINRA Membership</strong></td><td>Not applicable</td></tr>
+<tr><td><strong>SIPC Membership</strong></td><td>Not applicable</td></tr>
+<tr><td><strong>FDIC Insurance</strong></td><td>Not applicable</td></tr>
+</table>
+<h2>Business Model</h2>
+<p>Thesis is an <strong>educational investing platform</strong> — a mobile application that helps users learn investing fundamentals, build their own investment thesis (the "why" behind their buys), and compare their real brokerage holdings against their self-directed thesis model.</p>
+<h3>Revenue</h3>
+<p>Revenue is generated exclusively through <strong>affiliate partnerships</strong> with brokerages, high-yield savings providers, and credit card issuers. Thesis earns a referral fee when a user opens an account through an affiliate link.</p>
+<p>Thesis does <strong>not</strong>:</p>
+<ul>
+<li>Charge users fees</li>
+<li>Charge AUM-based fees</li>
+<li>Accept payment for investment recommendations</li>
+<li>Sell order flow</li>
+<li>Execute trades</li>
+<li>Hold client funds or securities</li>
+</ul>
+<h3>Core Product</h3>
+<ul>
+<li>Educational courses (investing basics, compound interest, ETFs, Roth IRA, credit)</li>
+<li>Investment thesis builder (user-driven theme selection, portfolio customization)</li>
+<li>Portfolio aggregation (read-only, via Plaid)</li>
+<li>Research tools (duel comparisons, catalyst sweeps, multi-analyst AI research)</li>
+<li>Affiliate marketplace (brokerage, HYSA, credit card offers)</li>
+</ul>
+<h3>What Thesis Is Not</h3>
+<ul>
+<li>A registered investment adviser</li>
+<li>A broker-dealer</li>
+<li>A bank or credit union</li>
+<li>A fiduciary</li>
+<li>A robo-advisor</li>
+<li>A trading platform</li>
+</ul>
+<h2>Corporate Structure</h2>
+<ul>
+<li><strong>Entity Type:</strong> Sole Proprietorship (or LLC — update as formed)</li>
+<li><strong>Owner/Founder:</strong> Jaiden Rabatin</li>
+<li><strong>Employees:</strong> 0 (sole founder/developer)</li>
+<li><strong>Office:</strong> Remote / United States</li>
+</ul>
+<h2>Contact</h2>
+<ul>
+<li><strong>Business Email:</strong> founder@makeyourthesis.com</li>
+<li><strong>Support Email:</strong> founder@makeyourthesis.com</li>
+<li><strong>Website:</strong> makeyourthesis.com</li>
+</ul>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 02 Use Case -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Use Case Description</div>
+          <div class="desc">Primary use case, user journey, and Plaid product usage</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Use Case Description</h1>
+<h2>Primary Use Case</h2>
+<p><strong>Personal Financial Management (PFM) with Investment Thesis Builder</strong></p>
+<p>Thesis is a mobile application in the Personal Financial Management category — similar to Monarch, Copilot, and Mint with an added educational investing layer. Users connect their existing financial accounts to view their complete financial picture and compare their real portfolio allocation against a self-built investment thesis model.</p>
+<h2>User Journey</h2>
+<pre style="font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--ink-2);background:var(--paper-2);padding:14px 18px;border-radius:10px;">
+Learn (courses + glossary + Ask AI)
+    ↓
+Thesis Builder (pick themes, customize allocation, name conviction)
+    ↓
+Connect Accounts (Plaid — see real portfolio)
+    ↓
+Compare (real holdings vs thesis model)
+    ↓
+Research (duel comparisons, catalyst sweeps, AI analyst debates)
+    ↓
+Act (open brokerage account via affiliate link — execute thesis independently)
+</pre>
+<h2>Specific Plaid Product Usage</h2>
+<h3>Auth</h3>
+<p><strong>Purpose:</strong> Authenticate users' bank and brokerage accounts so they can link them to Thesis.</p>
+<p><strong>User benefit:</strong> One-tap account linking instead of manual data entry.</p>
+<h3>Balance</h3>
+<p><strong>Purpose:</strong> Display real-time account balances across all linked accounts.</p>
+<p><strong>User benefit:</strong> Users see their total financial picture — cash, investments, debts — in one place.</p>
+<h3>Transactions</h3>
+<p><strong>Purpose:</strong> Import 24 months of transaction history for cash flow analysis.</p>
+<p><strong>User benefit:</strong> Users understand their monthly investable capacity before building a thesis.</p>
+<h3>Investments</h3>
+<p><strong>Purpose:</strong> Import brokerage holdings, securities data, cost basis, and portfolio composition.</p>
+<p><strong>User benefit:</strong> Users compare their <em>actual</em> portfolio (via Plaid) against their <em>thesis</em> portfolio (self-built in the app). This is the core value prop: "Your portfolio is 65% aligned with your AI Infrastructure thesis."</p>
+<h3>Investments Refresh</h3>
+<p><strong>Purpose:</strong> On-demand holdings updates when users open the app.</p>
+<p><strong>User benefit:</strong> Portfolio data is current, not stale.</p>
+<h3>Liabilities</h3>
+<p><strong>Purpose:</strong> Import loan data — student loans, credit cards, mortgage, auto loans.</p>
+<p><strong>User benefit:</strong> Full financial context. Users should understand their debt situation before allocating capital to investments.</p>
+<h2>User Control</h2>
+<p>All investment decisions are made <strong>by the user, not by Thesis</strong>:</p>
+<ul>
+<li>The user selects investment themes (AI compute, dividend growth, value, etc.)</li>
+<li>The user customizes portfolio weights (slider-based, manual overrides)</li>
+<li>The user saves their thesis model</li>
+<li>The user decides whether to act on the model (by opening a brokerage account independently)</li>
+<li>Thesis never recommends specific buys, sells, or trades</li>
+</ul>
+<h2>Comparison to Similar Platforms</h2>
+<table>
+<tr><th>Feature</th><th>Thesis</th><th>Monarch</th><th>Copilot</th><th>Robinhood</th><th>Betterment</th></tr>
+<tr><td>Account aggregation</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td>Investment thesis builder</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>Educational courses</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td><td>No</td></tr>
+<tr><td>AI research tools</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>Trade execution</td><td>No</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Investment advice</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+<tr><td>AUM fees</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+</table>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 03 Data Access -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Data Access &amp; Privacy Practices</div>
+          <div class="desc">What data we access via Plaid, storage, and data sharing</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Data Access &amp; Privacy Practices</h1>
+<h2>Data We Access (via Plaid)</h2>
+<table>
+<tr><th>Data Category</th><th>Plaid Product</th><th>What We Access</th><th>Purpose</th></tr>
+<tr><td>Account identity</td><td>Auth</td><td>Account holder name, institution, account type, mask</td><td>Identify linked accounts for display</td></tr>
+<tr><td>Balances</td><td>Balance</td><td>Current and available balances</td><td>Show financial overview</td></tr>
+<tr><td>Transactions</td><td>Transactions</td><td>24-month transaction history, amounts, dates, merchant names</td><td>Cash flow analysis, monthly investable capacity</td></tr>
+<tr><td>Investments</td><td>Investments</td><td>Holdings, securities, quantities, cost basis, account allocation</td><td>Portfolio comparison against thesis model</td></tr>
+<tr><td>Liabilities</td><td>Liabilities</td><td>Loan types, balances, interest rates, payment schedules</td><td>Debt context for thesis risk calibration</td></tr>
+</table>
+<h2>Data We Do NOT Access</h2>
+<ul>
+<li>We do not access or store online banking credentials (handled entirely by Plaid)</li>
+<li>We do not initiate transfers, payments, or trades</li>
+<li>We do not access credit reports</li>
+<li>We do not access identity documents (SSN, driver's license, passport)</li>
+<li>We do not access income or employment verification data (v1)</li>
+<li>We do not access Plaid Check or FCRA-regulated data</li>
+</ul>
+<h2>Data Storage</h2>
+<h3>Server-Side</h3>
+<ul>
+<li><strong>Plaid access tokens:</strong> Stored in encrypted storage</li>
+<li><strong>User profile data:</strong> Theme preferences, thesis models, watchlist — stored in Supabase</li>
+<li><strong>No PII from Plaid:</strong> We do not store account numbers, routing numbers, full names, or addresses from Plaid</li>
+</ul>
+<h3>Client-Side (Mobile App)</h3>
+<ul>
+<li><strong>User thesis model:</strong> Stored locally (AsyncStorage)</li>
+<li><strong>Derived portfolio data:</strong> Holdings summaries cached client-side for performance</li>
+<li><strong>No raw Plaid data:</strong> The mobile app never receives access tokens — only the server holds them</li>
+</ul>
+<h2>Data Security</h2>
+<ul>
+<li>All Plaid API communication is server-to-server (access tokens never exposed to client)</li>
+<li>API endpoints are authenticated</li>
+<li>Plaid Link token creation is server-side (client never sees Plaid secret)</li>
+<li>Data in transit uses HTTPS/TLS</li>
+<li>Production database encrypts access tokens at rest</li>
+</ul>
+<h2>Data Sharing</h2>
+<p>Thesis does not:</p>
+<ul>
+<li>Sell user data to third parties</li>
+<li>Share Plaid-derived data with affiliates or partners</li>
+<li>Use transaction data for advertising</li>
+<li>Share portfolio data with brokerages (affiliate relationships are link-based, not data-based)</li>
+</ul>
+<h2>Data Deletion</h2>
+<p>Users can disconnect accounts at any time:</p>
+<ol>
+<li>User taps "Disconnect" in the Accounts tab</li>
+<li>Client sends disconnect request to server</li>
+<li>Server deletes stored Plaid access token</li>
+<li>Local account data is cleared from device storage</li>
+<li>Users can also revoke access directly through Plaid's portal</li>
+</ol>
+<h2>Plaid Compliance</h2>
+<ul>
+<li>Thesis uses Plaid in accordance with Plaid's Developer Agreement</li>
+<li>All Plaid data is used exclusively for the services described in our Privacy Policy</li>
+<li>Users provide explicit consent via Plaid Link before any data access</li>
+<li>Users can revoke access at any time</li>
+<li>Thesis does not request or store online banking credentials</li>
+</ul>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 04 Compliance -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Regulatory Compliance</div>
+          <div class="desc">Regulatory position, disclaimers, and risk mitigation</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Regulatory Compliance Position</h1>
+<h2>Regulatory Determination</h2>
+<h3>Investment Advisers Act of 1940 — NOT an Investment Adviser</h3>
+<p>Under Section 202(a)(11) of the Investment Advisers Act, an "investment adviser" is any person who, <strong>for compensation</strong>, engages in the business of <strong>advising others</strong> about the <strong>value of securities</strong> or the advisability of investing in securities.</p>
+<p>Thesis does not meet this three-part test:</p>
+<table>
+<tr><th>Prong</th><th>Requirement</th><th>Thesis Position</th></tr>
+<tr><td><strong>1. Advice about securities</strong></td><td>Must provide specific recommendations about securities</td><td>❌ Thesis provides educational content, research tools, and a thesis builder. Users build their own thesis. No buy/sell/hold recommendations are made. All AI-generated content includes disclaimers.</td></tr>
+<tr><td><strong>2. As part of a business</strong></td><td>Must be engaged in the business of providing advice</td><td>⚠️ Thesis is a business, but does not hold itself out as an adviser. Marketing explicitly states: "Educational tool. Not investment advice."</td></tr>
+<tr><td><strong>3. For compensation</strong></td><td>Must receive compensation for advisory services</td><td>❌ Thesis revenue is exclusively affiliate referral fees from brokerages. No fees are charged for investment recommendations, portfolio construction, or any advisory service. Users pay nothing.</td></tr>
+</table>
+<p><strong>Conclusion:</strong> Thesis satisfies at most 1 of 3 prongs. Thesis is NOT an Investment Adviser under federal law. SEC registration is not required.</p>
+<h3>State Law</h3>
+<p>Most state investment adviser statutes mirror the federal definition. Thesis does not meet state-level RIA definitions for the same reasons. No state registration is required.</p>
+<h3>Broker-Dealer Registration</h3>
+<p>Thesis does not:</p>
+<ul>
+<li>Execute securities transactions</li>
+<li>Accept customer orders</li>
+<li>Handle customer funds or securities</li>
+<li>Receive transaction-based compensation</li>
+</ul>
+<p>Thesis is not required to register as a broker-dealer under Section 15 of the Securities Exchange Act of 1934.</p>
+<h2>Disclaimers &amp; User Protections</h2>
+<h3>In-App Disclaimers (Implemented)</h3>
+<p>All analysis screens include educational disclaimers:</p>
+<ul>
+<li><strong>Thesis Builder:</strong> "Educational tool. Not investment advice. Past performance does not guarantee future results."</li>
+<li><strong>Duel:</strong> "Educational comparisons. Not a buy/sell recommendation."</li>
+<li><strong>Alpha Research:</strong> "Check Alpha's work before investing. Given the probabilistic nature of machine learning, Alpha's responses won't always be right. Do your own research. No investment recommendations. Alpha gives you information, not advice."</li>
+<li><strong>Conviction Dossier:</strong> "Educational tool. Not investment advice. Verify fundamentals on issuer sites and SEC filings."</li>
+<li><strong>Financial Health:</strong> "Financial data is illustrative. Verify on SEC filings and issuer investor relations."</li>
+</ul>
+<h3>Product Design Safeguards</h3>
+<ol>
+<li><strong>No "Buy"/"Sell" buttons</strong> — Thesis never prompts users to execute trades</li>
+<li><strong>No trade execution</strong> — Users must open their own brokerage account independently</li>
+<li><strong>User-driven thesis</strong> — The thesis model is built by the user, not generated as a recommendation</li>
+<li><strong>Affiliate transparency</strong> — All affiliate links are labeled with clear disclosure</li>
+<li><strong>AI labeling</strong> — All AI-generated content is labeled "Experimental" with disclaimers</li>
+</ol>
+<h2>Regulatory Risk Mitigation</h2>
+<table>
+<tr><th>Risk</th><th>Mitigation</th></tr>
+<tr><td>Being perceived as an RIA</td><td>Clear disclaimers, no compensation for advice, user-driven thesis builder</td></tr>
+<tr><td>AI-generated content being seen as advice</td><td>"No investment recommendations" label on every AI output, probabilistic disclaimer</td></tr>
+<tr><td>Affiliate model resembling advice-for-compensation</td><td>Affiliate links are to brokerage <em>accounts</em>, not specific securities. Users choose what to buy independently.</td></tr>
+<tr><td>State regulators</td><td>Standardized disclaimers, no AUM fees, no discretionary authority</td></tr>
+</table>
+<h2>If Contacted by Regulators</h2>
+<p>Thesis will:</p>
+<ol>
+<li>Demonstrate the three-prong test analysis showing no RIA status</li>
+<li>Provide copies of all in-app disclaimers</li>
+<li>Show the user-driven nature of the thesis builder</li>
+<li>Document the affiliate-only revenue model</li>
+<li>Provide this compliance analysis</li>
+</ol>
+<h2>Future Considerations</h2>
+<p>If Thesis ever:</p>
+<ul>
+<li>Charges subscription fees for portfolio recommendations → may require RIA registration</li>
+<li>Offers model portfolios as recommendations (not templates) → may blur the line</li>
+<li>Provides one-on-one investment advice → RIA registration likely required</li>
+<li>Manages client assets → RIA + potentially custody requirements</li>
+</ul>
+<p>None of these are planned for v1 or the foreseeable roadmap.</p>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+<p><strong>Disclaimer:</strong> This document is an internal compliance analysis, not legal advice. Consult qualified securities counsel for a formal regulatory opinion before launch.</p>
+      </div>
+    </div>
+
+    <!-- 05 Terms of Service -->
+    <div class="doc-card" id="terms">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Terms of Service</div>
+          <div class="desc">Terms governing use of the Thesis application</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Terms of Service</h1>
+<p><strong>Last Updated:</strong> June 2026</p>
+<h2>1. Acceptance of Terms</h2>
+<p>By accessing or using the Thesis mobile application ("Thesis," "the App," "we," "our," or "us"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the App.</p>
+<h2>2. Description of Service</h2>
+<p>Thesis is an <strong>educational investing platform</strong>. We provide:</p>
+<ul>
+<li>Educational content about investing, personal finance, and related topics</li>
+<li>An investment thesis builder that allows users to construct their own portfolio models</li>
+<li>Portfolio aggregation tools that display your existing brokerage holdings (via Plaid)</li>
+<li>Research and comparison tools (duels, catalyst sweeps, AI-powered analysis)</li>
+<li>Affiliate referrals to third-party financial service providers (brokerages, banks, credit card issuers)</li>
+</ul>
+<h2>3. NOT Investment Advice</h2>
+<p><strong>IMPORTANT: THESIS IS NOT AN INVESTMENT ADVISER.</strong></p>
+<ul>
+<li>Thesis does <strong>not</strong> provide investment advice, recommendations, or solicitations.</li>
+<li>Thesis does <strong>not</strong> make buy, sell, or hold recommendations about any security.</li>
+<li>All content — including educational materials, AI-generated analysis, thesis models, duel comparisons, conviction scores, and market research — is provided for <strong>educational and informational purposes only</strong>.</li>
+<li>Any investment decisions you make are <strong>your own</strong>. You are solely responsible for evaluating the merits and risks of any investment.</li>
+<li>Past performance, backtested results, and AI-generated projections do not guarantee future results.</li>
+<li>You should consult a qualified financial professional before making investment decisions.</li>
+</ul>
+<p><strong>Thesis is not a fiduciary.</strong> We do not act in your best interest as a legal standard — we provide tools and information for you to make your own decisions.</p>
+<h2>4. NOT a Broker-Dealer</h2>
+<p>Thesis is not a broker-dealer, exchange, or trading platform. We do not:</p>
+<ul>
+<li>Execute securities transactions</li>
+<li>Accept, transmit, or route customer orders</li>
+<li>Handle customer funds or securities</li>
+<li>Provide custody of assets</li>
+</ul>
+<p>To invest, you must open an account with a registered broker-dealer independently. Affiliate links to brokerages are provided for convenience and do not constitute a recommendation of any specific brokerage.</p>
+<h2>5. Account Linking (Plaid)</h2>
+<p>Thesis uses Plaid Technologies, Inc. ("Plaid") to enable you to connect your financial accounts. By linking accounts:</p>
+<ul>
+<li>You authorize Plaid to access your financial account data on your behalf</li>
+<li>You agree to Plaid's own Terms of Service and Privacy Policy</li>
+<li>Thesis receives read-only access to your account information (balances, holdings, transactions)</li>
+<li>Thesis <strong>never</strong> receives, stores, or has access to your online banking credentials</li>
+<li>You may disconnect accounts at any time through the App settings</li>
+</ul>
+<p>Thesis is not responsible for the accuracy, completeness, or availability of data provided through Plaid.</p>
+<h2>6. AI-Generated Content (Alpha Research)</h2>
+<p>Thesis includes experimental AI-powered research features ("Alpha Research"). By using these features:</p>
+<ul>
+<li>You acknowledge that AI-generated content is <strong>probabilistic, not deterministic</strong> — it may contain errors, omissions, or inaccuracies</li>
+<li>AI-generated analysis does <strong>not</strong> constitute investment advice or recommendations</li>
+<li>You should independently verify any information before relying on it</li>
+<li>"Check Alpha's work before investing" is not just a disclaimer — it's how these tools are meant to be used</li>
+</ul>
+<h2>7. User Responsibilities</h2>
+<p>You agree that you will not:</p>
+<ul>
+<li>Use the App for any unlawful purpose</li>
+<li>Attempt to gain unauthorized access to the App or its systems</li>
+<li>Reverse engineer, decompile, or extract the App's source code</li>
+<li>Use the App to provide investment advice to others</li>
+<li>Misrepresent your identity or financial situation</li>
+</ul>
+<h2>8. Intellectual Property</h2>
+<p>The Thesis application, including its design, code, educational content, and branding, is the intellectual property of Thesis. You may not copy, modify, distribute, or create derivative works without permission.</p>
+<p>User-generated content (thesis models, conviction notes) remains your intellectual property.</p>
+<h2>9. Third-Party Links &amp; Affiliate Disclosure</h2>
+<p>Thesis contains links to third-party websites and services, including affiliate links to brokerages, banks, and credit card issuers.</p>
+<ul>
+<li><strong>Affiliate Disclosure:</strong> Thesis may receive compensation when you open an account through an affiliate link. This does not affect the price you pay. Affiliate relationships do not influence the educational content or tools provided.</li>
+<li>Thesis is not responsible for the content, terms, or practices of third-party services.</li>
+<li>You should review the terms and privacy policies of any third-party service before use.</li>
+</ul>
+<h2>10. Disclaimer of Warranties</h2>
+<p>THE APP IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO:</p>
+<ul>
+<li>Accuracy of financial data, market prices, or AI-generated analysis</li>
+<li>Uninterrupted or error-free operation</li>
+<li>Fitness for a particular purpose</li>
+<li>Merchantability</li>
+</ul>
+<p>Financial data may be delayed, inaccurate, or unavailable. Thesis relies on third-party data providers and is not responsible for data quality.</p>
+<h2>11. Limitation of Liability</h2>
+<p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+<ul>
+<li>Thesis shall not be liable for any investment losses, financial damages, or other damages arising from your use of the App</li>
+<li>Thesis's total liability for any claim shall not exceed the amount you paid Thesis for the service (which is $0 for the free tier)</li>
+<li>You acknowledge that investing involves risk of loss and that past performance does not guarantee future results</li>
+</ul>
+<h2>12. Indemnification</h2>
+<p>You agree to indemnify and hold harmless Thesis and its founder, employees, and affiliates from any claims, damages, or expenses arising from your use of the App or violation of these Terms.</p>
+<h2>13. Changes to Terms</h2>
+<p>We may update these Terms from time to time. Material changes will be communicated through the App. Continued use after changes constitutes acceptance.</p>
+<h2>14. Governing Law</h2>
+<p>These Terms are governed by the laws of the United States and the state of the user's residence, without regard to conflict of law principles.</p>
+<h2>15. Contact</h2>
+<p>For questions about these Terms:</p>
+<ul>
+<li>Email: founder@makeyourthesis.com</li>
+<li>In-app feedback: Settings → Report an issue</li>
+</ul>
+<hr>
+<h2>Appendix: Summary of Key Disclaimers</h2>
+<p>This is a plain-English summary — the full Terms above govern:</p>
+<ol>
+<li><strong>Not investment advice</strong> — We educate; you decide.</li>
+<li><strong>Not a broker</strong> — We don't execute trades.</li>
+<li><strong>AI is experimental</strong> — Verify before acting.</li>
+<li><strong>We earn from affiliate links</strong> — Disclosed, not hidden.</li>
+<li><strong>You are responsible</strong> — For your own investment decisions.</li>
+<li><strong>No warranties</strong> — Data may be wrong, markets are risky.</li>
+</ol>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 06 Privacy Policy -->
+    <div class="doc-card" id="privacy">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Privacy Policy</div>
+          <div class="desc">How we collect, use, and protect your data</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Privacy Policy</h1>
+<p><strong>Last Updated:</strong> June 2026</p>
+<h2>1. Introduction</h2>
+<p>Thesis ("we," "our," "us") is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your rights regarding your data.</p>
+<h2>2. Information We Collect</h2>
+<h3>2.1 Information You Provide</h3>
+<ul>
+<li><strong>Profile data:</strong> Age range, investment goals, risk tolerance, experience level, investment interests (collected during onboarding questionnaire)</li>
+<li><strong>Investment thesis data:</strong> Themes you select, portfolio allocations you create, conviction notes, watchlist items</li>
+<li><strong>Research data:</strong> Duel comparisons you run, catalyst sweeps you request, AI debate queries</li>
+<li><strong>Account data:</strong> Email address (if you create an account for cloud sync)</li>
+</ul>
+<h3>2.2 Financial Account Data (via Plaid)</h3>
+<p>When you link financial accounts through Plaid:</p>
+<ul>
+<li><strong>We receive:</strong> Account names, types, balances, transaction history, investment holdings, securities data</li>
+<li><strong>We do NOT receive:</strong> Online banking usernames or passwords (these are handled entirely by Plaid and never shared with Thesis)</li>
+<li><strong>We do NOT receive:</strong> Full account numbers, routing numbers, Social Security numbers, or other identity documents</li>
+</ul>
+<h3>2.3 Automatically Collected Information</h3>
+<ul>
+<li><strong>Usage data:</strong> Features used, screens visited, actions taken (for product improvement)</li>
+<li><strong>Device data:</strong> Device type, operating system version, app version</li>
+<li><strong>Performance data:</strong> Crash logs, error reports, load times</li>
+</ul>
+<h3>2.4 Information We Do NOT Collect</h3>
+<ul>
+<li>Government-issued identification (SSN, driver's license, passport)</li>
+<li>Credit reports or credit scores</li>
+<li>Biometric data</li>
+<li>Precise location data</li>
+<li>Contacts or address book data</li>
+</ul>
+<h2>3. How We Use Your Information</h2>
+<table>
+<tr><th>Purpose</th><th>Data Used</th></tr>
+<tr><td>Build and display your investment thesis</td><td>Profile data, theme selections, portfolio allocations</td></tr>
+<tr><td>Show your real financial picture</td><td>Plaid account data, balances, holdings</td></tr>
+<tr><td>Provide AI-powered research</td><td>Profile data, thesis model, research queries</td></tr>
+<tr><td>Improve the app and fix bugs</td><td>Usage data, crash logs</td></tr>
+<tr><td>Recommend relevant educational content</td><td>Experience level, interests, thesis themes</td></tr>
+<tr><td>Display affiliate offers</td><td>Profile data, account types</td></tr>
+</table>
+<h2>4. Data Storage &amp; Security</h2>
+<h3>Storage</h3>
+<ul>
+<li><strong>Plaid access tokens:</strong> Stored server-side in encrypted storage</li>
+<li><strong>User profile &amp; thesis data:</strong> Stored in Supabase (cloud database with encryption at rest and in transit)</li>
+<li><strong>App preferences:</strong> Stored locally on your device (AsyncStorage)</li>
+</ul>
+<h3>Security Measures</h3>
+<ul>
+<li>All data in transit is encrypted using HTTPS/TLS</li>
+<li>Plaid API keys and access tokens are stored server-side only — never exposed to the mobile client</li>
+<li>Database access is authenticated and scoped</li>
+<li>Regular dependency updates to patch security vulnerabilities</li>
+</ul>
+<h3>Data Retention</h3>
+<ul>
+<li>Financial account data is retained while your accounts are linked</li>
+<li>When you disconnect accounts, Plaid access tokens are deleted immediately</li>
+<li>Cached financial data is cleared from your device</li>
+<li>Thesis model and profile data is retained until you delete it or request deletion</li>
+</ul>
+<h2>5. Data Sharing</h2>
+<h3>We Do NOT:</h3>
+<ul>
+<li>Sell your personal data to third parties</li>
+<li>Share your financial data with advertisers</li>
+<li>Share your portfolio or transaction data with affiliate partners</li>
+<li>Use your data for purposes unrelated to the Thesis app</li>
+</ul>
+<h3>Limited Sharing:</h3>
+<ul>
+<li><strong>Plaid Technologies, Inc.:</strong> Your financial data is accessed through Plaid. Plaid's use of your data is governed by their own Privacy Policy.</li>
+<li><strong>Service Providers:</strong> We use Supabase (database) and AI API providers (DeepSeek, Anthropic). Data shared is limited to what is necessary for the service to function.</li>
+<li><strong>Legal Requirements:</strong> We may disclose data if required by law, court order, or government regulation.</li>
+</ul>
+<h2>6. AI &amp; Machine Learning</h2>
+<ul>
+<li>AI research queries (debates, catalyst sweeps, sentiment analysis, conviction dossiers) are processed by third-party AI providers (DeepSeek API, Anthropic API)</li>
+<li>Query data is transmitted to these providers for processing only — it is not used to train their models (API terms prohibit this)</li>
+<li>No financial account data or personally identifiable information is included in AI queries</li>
+</ul>
+<h2>7. Your Rights</h2>
+<p>You have the right to:</p>
+<ul>
+<li><strong>Access:</strong> Request a copy of your data</li>
+<li><strong>Correction:</strong> Update or correct your profile and thesis data</li>
+<li><strong>Deletion:</strong> Delete your account and associated data</li>
+<li><strong>Disconnect:</strong> Revoke Plaid access at any time through the app</li>
+<li><strong>Export:</strong> Export your thesis models and research</li>
+</ul>
+<p>To exercise these rights, contact us at founder@makeyourthesis.com or use the in-app settings.</p>
+<h2>8. Children's Privacy</h2>
+<p>Thesis is not intended for users under 13 years of age. We do not knowingly collect data from children under 13.</p>
+<h2>9. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. Material changes will be communicated through the App. Continued use after changes constitutes acceptance.</p>
+<h2>10. Contact</h2>
+<p>For privacy-related questions or requests:</p>
+<ul>
+<li>Email: founder@makeyourthesis.com</li>
+<li>In-app: Settings → Privacy → Contact</li>
+</ul>
+<h2>11. Plaid End User Privacy Policy</h2>
+<p>As required by Plaid, users linking financial accounts are also subject to Plaid's End User Privacy Policy, available at: <a href="https://plaid.com/legal/#end-user-privacy-policy" target="_blank" rel="noopener">https://plaid.com/legal/#end-user-privacy-policy</a></p>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 07 Affiliate Model -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Affiliate Revenue Model</div>
+          <div class="desc">How Thesis generates revenue through affiliate partnerships</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Affiliate Revenue Model</h1>
+<h2>Overview</h2>
+<p>Thesis generates revenue exclusively through <strong>affiliate partnerships</strong> with financial service providers. When a user opens an account through an affiliate link in the app, Thesis earns a one-time referral fee. This is the sole revenue model for v1.</p>
+<h2>How It Works</h2>
+<ol>
+<li><strong>Education first:</strong> Users learn investing fundamentals through courses, glossary, and Ask Thesis</li>
+<li><strong>Thesis builder:</strong> Users build their own investment thesis model</li>
+<li><strong>Contextual offers:</strong> At the right moment (e.g., user has a thesis but no brokerage), Thesis displays an affiliate offer</li>
+<li><strong>User decides:</strong> User reviews the offer, compares options, and chooses whether to open an account</li>
+<li><strong>Referral:</strong> If the user opens and funds an account, Thesis earns a referral fee</li>
+</ol>
+<h2>Why This Is NOT Investment Advice Compensation</h2>
+<table>
+<tr><th>Characteristic</th><th>Investment Adviser Fee</th><th>Thesis Affiliate Fee</th></tr>
+<tr><td>What triggers payment</td><td>Providing advice about securities</td><td>User opening a brokerage account</td></tr>
+<tr><td>Tied to specific securities?</td><td>Yes — advice about what to buy</td><td>No — user independently chooses investments</td></tr>
+<tr><td>Ongoing vs one-time</td><td>Typically ongoing (AUM)</td><td>One-time per account</td></tr>
+<tr><td>User pays?</td><td>Yes (directly or via fund fees)</td><td>No — brokerage pays the referral fee</td></tr>
+<tr><td>Does fee vary by user action?</td><td>Typically % of AUM, flat fee, or hourly</td><td>Fixed referral amount regardless of user's investments</td></tr>
+</table>
+<p>The affiliate fee is a <strong>customer acquisition cost</strong> paid by the brokerage, not compensation for investment advice. The user pays nothing to Thesis.</p>
+<h2>Affiliate Categories</h2>
+<h3>1. Brokerage Accounts</h3>
+<ul>
+<li><strong>Examples:</strong> Robinhood, Public, Charles Schwab, Fidelity, Webull</li>
+<li><strong>When shown:</strong> After user completes thesis builder and has a model portfolio</li>
+<li><strong>Disclosure:</strong> "When you open and fund a brokerage account through this link, Thesis may receive a referral fee. This does not affect your cost."</li>
+<li><strong>Typical fee:</strong> $50-$150 per funded account (varies by partner)</li>
+</ul>
+<h3>2. High-Yield Savings Accounts (HYSA)</h3>
+<ul>
+<li><strong>Examples:</strong> Marcus, Ally, Wealthfront Cash, Betterment Cash Reserve</li>
+<li><strong>When shown:</strong> When user indicates they have no emergency fund or have excess cash</li>
+<li><strong>Disclosure:</strong> Same format as brokerage disclosure</li>
+<li><strong>Typical fee:</strong> $25-$100 per funded account</li>
+</ul>
+<h3>3. Credit Cards</h3>
+<ul>
+<li><strong>Examples:</strong> Issuer-specific cards (Chase, Amex, Citi)</li>
+<li><strong>When shown:</strong> When user profile indicates credit-building goals or responsible credit use</li>
+<li><strong>Disclosure:</strong> Same format</li>
+<li><strong>Typical fee:</strong> $50-$200 per approved application</li>
+</ul>
+<h3>4. IRA Accounts</h3>
+<ul>
+<li><strong>Examples:</strong> Robinhood IRA, Fidelity IRA, Charles Schwab IRA</li>
+<li><strong>When shown:</strong> When user indicates retirement as a primary goal</li>
+<li><strong>Disclosure:</strong> Same format</li>
+<li><strong>Typical fee:</strong> $50-$150 per funded account</li>
+</ul>
+<h2>Affiliate Disclosure Requirements</h2>
+<h3>In-App Disclosure (Implemented)</h3>
+<blockquote>When you open and fund an account through this link, Thesis may receive a referral fee. This does not affect your cost. Offers ranked by user profile fit, not commission amount.</blockquote>
+<h3>Global Disclosure (Settings)</h3>
+<blockquote>Thesis earns referral fees when users open accounts through affiliate links. We never accept payment to recommend specific securities. Investment decisions are yours alone.</blockquote>
+<h2>Offer Ranking</h2>
+<p>Affiliate offers are ranked by <strong>user profile fit</strong>, not by commission amount:</p>
+<ol>
+<li>Relevance to user's goals (retirement → IRA, investing → brokerage)</li>
+<li>User experience level (beginner-friendly platforms first)</li>
+<li>Account minimums (no/low minimums preferred)</li>
+<li>Educational resources provided by the partner</li>
+<li>Commission amount (tiebreaker only)</li>
+</ol>
+<h2>What Thesis Does NOT Do</h2>
+<ul>
+<li>❌ Accept payment for recommending specific stocks, ETFs, or securities</li>
+<li>❌ Accept payment for favorable placement in research or analysis</li>
+<li>❌ Accept payment for positive coverage in AI-generated content</li>
+<li>❌ Sell user portfolio data to affiliate partners</li>
+<li>❌ Share transaction data with affiliate partners for targeting</li>
+<li>❌ Route trades or receive payment for order flow</li>
+<li>❌ Offer different educational content or tools based on affiliate relationships</li>
+</ul>
+<h2>Regulatory Position</h2>
+<ol>
+<li><strong>Not compensation for investment advice:</strong> The fee is triggered by account opening, not by securities transactions</li>
+<li><strong>Not transaction-based compensation:</strong> Thesis does not receive commissions on trades</li>
+<li><strong>Consumer-friendly:</strong> User pays nothing; brokerage pays a customer acquisition cost</li>
+<li><strong>Fully disclosed:</strong> Affiliate relationships are transparent and labeled</li>
+<li><strong>Common model:</strong> NerdWallet, Bankrate, Credit Karma, and Investopedia all use this model</li>
+</ol>
+<h2>Revenue Projections (Illustrative)</h2>
+<table>
+<tr><th>Metric</th><th>Conservative</th><th>Moderate</th><th>Optimistic</th></tr>
+<tr><td>Monthly active users</td><td>1,000</td><td>5,000</td><td>25,000</td></tr>
+<tr><td>Conversion rate (user → account)</td><td>2%</td><td>4%</td><td>6%</td></tr>
+<tr><td>Average fee per account</td><td>$75</td><td>$100</td><td>$125</td></tr>
+<tr><td>Monthly revenue</td><td>$1,500</td><td>$20,000</td><td>$187,500</td></tr>
+</table>
+<h2>Future Monetization (v2+)</h2>
+<p>Potential future revenue streams, all of which will be re-evaluated for regulatory implications:</p>
+<ul>
+<li><strong>Premium tier (subscription):</strong> Advanced research tools, unlimited AI queries, priority features</li>
+<li><strong>Data licensing:</strong> Anonymized, aggregated investment behavior trends (no individual data)</li>
+<li><strong>Enterprise/API:</strong> Embedding Thesis research tools in other platforms</li>
+</ul>
+<p>Any subscription tier will include renewed regulatory analysis to ensure it does not cross into "compensation for investment advice."</p>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+<p><strong>Note:</strong> Actual affiliate partnerships, fee amounts, and terms are subject to individual agreements with each partner. The figures above are illustrative for business planning.</p>
+      </div>
+    </div>
+
+    <!-- 08 Plaid Product Justifications -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Plaid Product Justifications</div>
+          <div class="desc">Justification for each Plaid product used by Thesis</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Plaid Product Justifications</h1>
+<h2>Enrich</h2>
+<p>Thesis uses Enrich to automatically categorize bank transactions so users see their real monthly investable capacity without manual data entry. Income minus categorized expenses (housing, food, subscriptions, debt payments) = investable capacity. This powers the Investable Capacity Calculator ("You have ~$400/month to invest") and the Emergency Fund Check (compares essential spending against savings balances). No manual categorization required.</p>
+<h2>Investments</h2>
+<p>Thesis imports brokerage holdings via Investments to power the core product: comparing a user's real portfolio against their self-built thesis model. A user builds an "AI Infrastructure" thesis with target weights (NVDA 25%, AMD 15%, SMH 10%), then connects their brokerage to see their Thesis Alignment Score ("Your portfolio is 62% aligned. You're overweight NVDA and missing semiconductor ETF exposure.") Also powers Portfolio X-Ray (ETF look-through overlap detection) and concentration risk flags. Read-only comparison — users make their own decisions.</p>
+<h2>Liabilities</h2>
+<p>Thesis imports loan data to give users the full financial picture before they build an investment thesis. Credit card debt at 22% APR mathematically beats most stock returns — Thesis surfaces this: "Paying down this debt is your highest-return move right now." Student loans, mortgages, and auto loans calibrate thesis risk: a user with $80K in student debt gets different suggestions than someone debt-free. Also powers the net worth dashboard and contextual affiliate offers (balance transfer cards when high-interest debt is detected). Education-first: fix the foundation before building the portfolio.</p>
+<h2>Transactions</h2>
+<p>Thesis imports 24 months of transaction history to calculate real monthly investable capacity from actual data rather than user estimates. Income minus spending minus debt obligations = investable capacity. Powers three features: (1) Investable Capacity Calculator, (2) Emergency Fund Check comparing essential spending to savings, (3) CFO/AI context so responses are grounded in real cash flow data. Educational tool — teaches good financial habits, not product recommendations.</p>
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+      </div>
+    </div>
+
+    <!-- 09 Information Security Policy -->
+    <div class="doc-card" id="security">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Information Security Policy</div>
+          <div class="desc">Security policy, access controls, encryption, and incident response</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Thesis — Information Security Policy</h1>
+<p><strong>Last Updated:</strong> June 2026<br><strong>Owner:</strong> Jaiden Rabatin, Owner/CEO</p>
+<h2>1. Scope</h2>
+<p>This policy applies to all systems, data, and personnel involved in the Thesis application ("the App"), including the mobile client, backend API server, database, and third-party integrations (Plaid, Supabase, DeepSeek API).</p>
+<h2>2. Roles &amp; Responsibilities</h2>
+<table>
+<tr><th>Role</th><th>Name</th><th>Responsibility</th></tr>
+<tr><td>Security Owner</td><td>Jaiden Rabatin</td><td>All security decisions, incident response, policy maintenance</td></tr>
+<tr><td>Developer</td><td>Jaiden Rabatin</td><td>Secure coding, dependency management, deployment</td></tr>
+</table>
+<p>As a sole-founder operation, all security responsibilities are held by the owner. A group contact email is maintained for continuity: founder@makeyourthesis.com.</p>
+<h2>3. Asset Classification</h2>
+<table>
+<tr><th>Asset</th><th>Classification</th><th>Location</th></tr>
+<tr><td>Plaid access tokens</td><td><strong>Sensitive</strong> — financial data access</td><td>Server (encrypted storage)</td></tr>
+<tr><td>Plaid API keys</td><td><strong>Critical</strong> — would allow unauthorized data access</td><td>Environment variables only, never in source code</td></tr>
+<tr><td>User profile data</td><td><strong>Confidential</strong> — PII-lite (email, investment preferences)</td><td>Supabase (encrypted at rest)</td></tr>
+<tr><td>Source code</td><td><strong>Internal</strong></td><td>GitHub private repository</td></tr>
+<tr><td>Mobile app</td><td><strong>Public</strong></td><td>Expo / TestFlight distribution</td></tr>
+</table>
+<h2>4. Access Controls</h2>
+<h3>4.1 Production Access</h3>
+<ul>
+<li>Single developer (Jaiden Rabatin) has production access</li>
+<li>Server access: SSH key-based authentication only (no password login)</li>
+<li>Database access: Supabase dashboard with MFA, service-role key restricted to server-side API routes</li>
+<li>No third-party contractors or employees with production access</li>
+</ul>
+<h3>4.2 Sensitive Data Access</h3>
+<ul>
+<li>Plaid API keys: Stored in environment variables (<code>.env</code>), never committed to version control</li>
+<li>Plaid access tokens: Server-side only, never exposed to mobile client</li>
+<li>User data: Accessed through Supabase Row-Level Security (RLS) policies, scoped to authenticated user</li>
+</ul>
+<h3>4.3 Client Access</h3>
+<ul>
+<li>Users authenticate via Google OAuth (Supabase Auth) before accessing any features</li>
+<li>Plaid Link is only surfaced after authentication</li>
+<li>Mobile app never receives or stores Plaid access tokens</li>
+</ul>
+<h2>5. Encryption</h2>
+<h3>5.1 Data in Transit</h3>
+<ul>
+<li>All client-server communication uses HTTPS/TLS 1.2+</li>
+<li>Plaid API communication is server-to-server over HTTPS</li>
+<li>Supabase connections use TLS</li>
+</ul>
+<h3>5.2 Data at Rest</h3>
+<ul>
+<li>Plaid access tokens: Stored on server in encrypted storage</li>
+<li>User data in Supabase: Encrypted at rest (AES-256) by Supabase</li>
+<li>Mobile device storage: AsyncStorage (local only, cleared on app deletion)</li>
+</ul>
+<h2>6. Authentication</h2>
+<h3>6.1 Consumer Authentication</h3>
+<ul>
+<li>Users authenticate via Google OAuth 2.0 (Supabase Auth)</li>
+<li>Google OAuth enforces Google's MFA policies on the consumer side</li>
+<li>Thesis does not store passwords — authentication is delegated to Google</li>
+</ul>
+<h3>6.2 Administrative Authentication</h3>
+<ul>
+<li>Supabase dashboard: MFA enabled</li>
+<li>Plaid dashboard: MFA enabled</li>
+<li>GitHub: MFA enabled</li>
+<li>Server SSH: Key-based authentication</li>
+</ul>
+<h2>7. Vulnerability Management</h2>
+<h3>7.1 Dependency Scanning</h3>
+<ul>
+<li><code>npm audit</code> run on each dependency installation</li>
+<li>Dependabot enabled on GitHub repository for automated vulnerability alerts</li>
+<li>Critical/High vulnerabilities patched within 7 days; Medium within 30 days</li>
+</ul>
+<h3>7.2 Code Review</h3>
+<ul>
+<li>All code changes reviewed before merge</li>
+<li>TypeScript strict mode catches type-level issues at compile time</li>
+<li>Server-side input validation on all API endpoints (Zod schemas)</li>
+</ul>
+<h3>7.3 Production Monitoring</h3>
+<ul>
+<li>Deployment logs monitored for anomalies</li>
+<li>Server health endpoint checked on deploy</li>
+<li>API error rates manually reviewed</li>
+</ul>
+<h2>8. Incident Response</h2>
+<h3>8.1 Detection</h3>
+<ul>
+<li>Server errors logged with context</li>
+<li>Plaid webhook endpoint ready for ITEM/HOLDINGS error notifications</li>
+<li>Supabase provides database error monitoring</li>
+</ul>
+<h3>8.2 Response Procedure</h3>
+<ol>
+<li><strong>Identify:</strong> Determine scope and affected systems</li>
+<li><strong>Contain:</strong> Revoke affected credentials, rotate keys, disable compromised endpoints</li>
+<li><strong>Investigate:</strong> Review logs, determine root cause</li>
+<li><strong>Notify:</strong> Inform affected users within 72 hours; notify Plaid if Plaid data is involved</li>
+<li><strong>Remediate:</strong> Patch vulnerability, restore service</li>
+<li><strong>Post-mortem:</strong> Document findings, update policy</li>
+</ol>
+<h3>8.3 Contact</h3>
+<ul>
+<li>Security contact: founder@makeyourthesis.com</li>
+<li>Alternate: jaiden@makeyourthesis.com</li>
+</ul>
+<h2>9. Data Retention &amp; Deletion</h2>
+<ul>
+<li>Plaid access tokens: Deleted immediately when user disconnects accounts</li>
+<li>User profile and thesis data: Retained until user requests deletion</li>
+<li>Cached financial data: Cleared from client on disconnect</li>
+<li>Users can request full data deletion by email or in-app settings</li>
+</ul>
+<h2>10. Third-Party Risk Management</h2>
+<table>
+<tr><th>Provider</th><th>Service</th><th>Security Review</th></tr>
+<tr><td>Plaid</td><td>Financial data aggregation</td><td>SOC 2 Type II, ISO 27001 certified</td></tr>
+<tr><td>Supabase</td><td>Database &amp; authentication</td><td>SOC 2, encrypted at rest, RLS</td></tr>
+<tr><td>Railway</td><td>Server hosting</td><td>SOC 2, isolated containers</td></tr>
+<tr><td>DeepSeek</td><td>AI/LLM API</td><td>API key authentication, no financial data sent</td></tr>
+<tr><td>Google OAuth</td><td>Consumer authentication</td><td>Industry-standard OAuth 2.0</td></tr>
+</table>
+<h2>11. Policy Review</h2>
+<p>This policy is reviewed every 6 months or after any significant system change, whichever comes first. Next review: December 2026.</p>
+<hr>
+<p><strong>Acknowledged by:</strong><br>Jaiden Rabatin, Owner/CEO — June 2026</p>
+      </div>
+    </div>
+
+    <!-- 10 Plaid Security Questionnaire -->
+    <div class="doc-card">
+      <button class="doc-toggle" onclick="toggleDoc(this)" aria-expanded="false">
+        <div>
+          <div class="title">Plaid Security Questionnaire</div>
+          <div class="desc">Answers to Plaid's security questionnaire for application</div>
+        </div>
+        <span class="plus">+</span>
+      </button>
+      <div class="doc-body md" hidden>
+<h1>Plaid Security Questionnaire — Answer Key</h1>
+<p><strong>Application:</strong> Thesis (makeyourthesis.com)<br><strong>Contact:</strong> Jaiden Rabatin, founder@makeyourthesis.com<br><strong>Date:</strong> June 2026</p>
+<hr>
+<h2>Q1: Security Contact</h2>
+<ul>
+<li>Name: Jaiden Rabatin</li>
+<li>Title: Owner/CEO</li>
+<li>Email: founder@makeyourthesis.com</li>
+<li>Alternate: jaiden@makeyourthesis.com</li>
+</ul>
+<hr>
+<h2>Q2: Documented Information Security Policy?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Refer to the Information Security Policy document (above).</p>
+<hr>
+<h2>Q3: Access Controls?</h2>
+<ul>
+<li>[x] Role-based access controls (single admin; Supabase RLS)</li>
+<li>[x] MFA for administrative access (all dashboards)</li>
+<li>[x] SSH key-based authentication (server, no passwords)</li>
+<li>[x] Environment variable-based secrets management</li>
+<li>[x] Principle of least privilege</li>
+</ul>
+<hr>
+<h2>Q4: MFA for Consumers Before Plaid Link?</h2>
+<p><strong>Answer: Yes — Phishing-resistant MFA (TOTP/Google Authenticator)</strong></p>
+<p>Implementation: POST /v1/mfa/setup → QR code → Google Authenticator → POST /v1/mfa/verify</p>
+<hr>
+<h2>Q5: MFA for Critical Systems?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Supabase, Plaid, and GitHub dashboards all have MFA. Server access via SSH keys only.</p>
+<hr>
+<h2>Q6: TLS 1.2+ in Transit?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>HTTPS/TLS 1.2+ on all connections (Railway, Supabase, Plaid API).</p>
+<hr>
+<h2>Q7: Encryption at Rest for Plaid Data?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Filesystem encryption on server. Supabase AES-256 at rest. Tokens never on mobile device.</p>
+<hr>
+<h2>Q8: Vulnerability Scans?</h2>
+<ul>
+<li>[x] Dependency scanning (npm audit, Dependabot)</li>
+<li>[x] Static analysis (TypeScript strict, Zod validation)</li>
+<li>[x] Manual code review</li>
+</ul>
+<hr>
+<h2>Q9: Privacy Policy?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Document: Privacy Policy (see above)<br>URL: makeyourthesis.com/privacy</p>
+<hr>
+<h2>Q10: Consumer Consent?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Plaid Link in-flow consent + Privacy Policy + Terms of Service acceptance.</p>
+<hr>
+<h2>Q11: Data Deletion &amp; Retention Policy?</h2>
+<p><strong>Answer: Yes</strong></p>
+<p>Plaid tokens deleted on disconnect. User deletion by request. Policy reviewed every 6 months.</p>
+<hr>
+<h2>Document Upload Checklist</h2>
+<table>
+<tr><th>Question</th><th>File</th></tr>
+<tr><td>Q2</td><td>Information Security Policy</td></tr>
+<tr><td>Q4</td><td>Screenshot of MFA setup screen (QR code)</td></tr>
+<tr><td>Q9</td><td>Privacy Policy (or link to makeyourthesis.com/privacy)</td></tr>
+</table>
+      </div>
+    </div>
+
+    <p class="last-updated-banner">Last updated: June 2026</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap foot-in">
+    <span class="logo">
+      <span class="logo-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 17c3-1 4.5-5 7-9 1.5 4 3 6 5 5.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="18.5" cy="6" r="2.1" fill="#fff"/>
+        </svg>
+      </span>
+      <span class="logo-word">Thesis</span>
+    </span>
+    <p class="foot-disc">Disclaimer: Thesis is an educational research tool designed to help you think through investment ideas. Nothing in the app constitutes investment advice or a recommendation to buy, sell, or hold any security. Any forecasts, simulations, or projections are for illustrative purposes only. All investing involves risk, including the possible loss of principal.</p>
+  </div>
+</footer>
+
+<script>
+  function expandCard(card) {
+    var body = card.querySelector('.doc-body');
+    var plus = card.querySelector('.plus');
+    var btn = card.querySelector('.doc-toggle');
+    card.classList.add('open');
+    body.removeAttribute('hidden');
+    plus.textContent = '−';
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function collapseCard(card) {
+    var body = card.querySelector('.doc-body');
+    var plus = card.querySelector('.plus');
+    var btn = card.querySelector('.doc-toggle');
+    card.classList.remove('open');
+    body.setAttribute('hidden', '');
+    plus.textContent = '+';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleDoc(btn) {
+    var card = btn.closest('.doc-card');
+    var isOpen = card.classList.contains('open');
+
+    if (isOpen) {
+      collapseCard(card);
+    } else {
+      // Close any other open cards
+      document.querySelectorAll('.doc-card.open').forEach(function(other) {
+        collapseCard(other);
+      });
+      expandCard(card);
+      // Scroll card into view
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Auto-expand card matching URL hash (e.g. /support#privacy)
+  (function() {
+    var hash = window.location.hash;
+    if (hash) {
+      var target = document.getElementById(hash.slice(1));
+      if (target && target.classList.contains('doc-card')) {
+        setTimeout(function() {
+          expandCard(target);
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>

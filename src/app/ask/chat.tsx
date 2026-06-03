@@ -195,11 +195,27 @@ export default function AskChatScreen() {
           })
           .catch(() => {});
       } catch (e) {
-        logCfoDevIssue(String(e));
+        const msg = String(e);
+        let userMsg: string;
+        if (msg.includes("not configured") || msg.includes("URL not configured")) {
+          userMsg =
+            "The AI CFO backend isn't connected yet. This requires setting up the Thesis API server. Check that EXPO_PUBLIC_THESIS_API_URL is set in your .env file. For self-hosting instructions, see the README.";
+        } else if (
+          msg.includes("Network request failed") ||
+          msg.includes("fetch failed") ||
+          msg.includes("abort") ||
+          msg.includes("timeout")
+        ) {
+          userMsg =
+            "Can't reach the AI CFO server. Make sure `npm run dev` is running in the server/ directory on port 8787, then try again.";
+        } else {
+          userMsg = CFO_UNAVAILABLE_USER;
+        }
+        logCfoDevIssue(msg);
         appendChat({
           id: `err-${Date.now()}`,
           role: "assistant",
-          content: CFO_UNAVAILABLE_USER,
+          content: userMsg,
           createdAt: Date.now(),
         });
       } finally {
@@ -283,6 +299,16 @@ export default function AskChatScreen() {
           <Icon name="grid" size={16} color="#16201C" sw={2} />
         </Pressable>
       </View>
+
+      {(apiLine.includes("offline") || apiLine.includes("not configured")) && (
+        <View className="mx-4 mt-2 bg-neg-bg/40 border border-neg/20 rounded-[12px] px-3 py-2.5">
+          <Text className="text-neg text-[12px] font-sansMd leading-[17px]">
+            {apiLine.includes("not configured")
+              ? "AI CFO needs setup. Add EXPO_PUBLIC_THESIS_API_URL to your .env file and ensure your server has DEEPSEEK_API_KEY set."
+              : "AI CFO server unreachable. Run the API server (npm run dev in server/) and check your connection."}
+          </Text>
+        </View>
+      )}
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}

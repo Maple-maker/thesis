@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Linking, Pressable, Text, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
 import { Card } from "@/components/ui/Card";
@@ -88,7 +88,13 @@ export function ThesisResearchCard() {
           </Text>
           <Text className="text-ink-3 text-[10px] font-sansMd leading-[16px]">
             As part of the Thesis Research free preview, and one of its first beta testers, your feedback
-            is important. Report issues in the feedback log.
+            is important.{" "}
+            <Text
+              className="text-[#7C3AED] font-sansBold underline"
+              onPress={() => router.push("/feedback" as never)}
+            >
+              Report an issue →
+            </Text>
           </Text>
         </View>
 

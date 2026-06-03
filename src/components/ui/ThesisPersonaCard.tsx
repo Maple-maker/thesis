@@ -63,7 +63,7 @@ export function PersonaCard({
           </View>
           <View className="flex-1 min-w-0">
             <Text className="text-ink font-displayX text-[14px]" style={{ letterSpacing: -0.2 }} numberOfLines={2}>
-              {theme.title}
+              {theme.emoji ? `${theme.emoji} ` : ""}{theme.title}
             </Text>
             <Text className="text-ink-3 text-[10.5px] font-sansMd mt-0.5" numberOfLines={1}>
               {persona.personaName}
@@ -139,7 +139,7 @@ export function PersonaHero({
 
           {/* Theme title + tagline */}
           <Text className="text-white text-[13px] font-sansBold opacity-90">
-            {theme.title}
+            {theme.emoji ? `${theme.emoji} ` : ""}{theme.title}
           </Text>
           <Text className="text-white/75 text-[12px] font-sansMd mt-0.5">
             {persona.tagline}

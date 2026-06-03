@@ -42,6 +42,10 @@ import {
   type StockQuoteDisplay,
 } from "@/lib/stock-quote-display";
 import { navigateBack } from "@/lib/app-route";
+import { ExplainSheet } from "@/components/ExplainSheet";
+import { useExplainSheet } from "@/hooks/useExplainSheet";
+import { InsightSheet } from "@/components/InsightSheet";
+import { StockSignalsCard } from "@/components/StockSignalsCard";
 import { useStore } from "@/store";
 
 export default function StockDetail() {
@@ -54,6 +58,8 @@ export default function StockDetail() {
   const [tab, setTab] = useState<"overview" | "conviction">("overview");
   const [liveQuote, setLiveQuote] = useState<StockQuoteDisplay | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(true);
+  const { openConcept, sheetProps: explainSheetProps } = useExplainSheet();
+  const [insightSheetVisible, setInsightSheetVisible] = useState(false);
 
   const stock = stockBySymbol(params.symbol ?? "");
   const curated = stock ? isCuratedStock(stock.symbol) : false;
@@ -333,20 +339,26 @@ export default function StockDetail() {
             whyItMatters={insight.whyItMatters}
             watch={insight.watch}
             chips={insight.chips}
+            onPressReadMore={() => setInsightSheetVisible(true)}
           />
+          <StockSignalsCard symbol={stock.symbol} onConceptPress={openConcept} />
         </View>
       )}
 
       {/* Stats grid */}
-      <View className="flex-row gap-x-2 mb-5">
-        <Stat label="Mkt Cap" value={`$${stock.marketCap}B`} />
+      <View className="flex-row gap-x-2 mb-4">
+        <Stat label="Mkt Cap" value={`$${stock.marketCap}B`} onPress={() => openConcept("market-cap")} />
         <Stat
           label="Dividend"
           value={stock.divYield > 0 ? `${stock.divYield}%` : "-"}
+          onPress={() => openConcept("dividend-yield")}
         />
-        <Stat label="P/E" value={stock.peRatio ? String(stock.peRatio) : "-"} />
-        <Stat label="Vol" value={stock.volatility} />
+        <Stat label="P/E" value={stock.peRatio ? String(stock.peRatio) : "-"} onPress={() => openConcept("pe-ratio")} />
+        <Stat label="Vol" value={stock.volatility} onPress={() => openConcept("volatility")} />
       </View>
+      <Text className="text-ink-3 text-[10.5px] font-sansMd text-center mb-5 leading-[15px]">
+        Tap a label to learn what it means.
+      </Text>
 
       {/* Price trend sparkline */}
       {sparkData && quote && (
@@ -452,14 +464,27 @@ export default function StockDetail() {
           onPress={() => toggle(stock.symbol)}
         />
       </View>
+
+      {/* E4 — ExplainSheet for stat tap */}
+      <ExplainSheet {...explainSheetProps} />
+
+      {/* U4 — InsightSheet for "Read more" */}
+      {insight && (
+        <InsightSheet
+          insight={insight}
+          visible={insightSheetVisible}
+          onClose={() => setInsightSheetVisible(false)}
+          onConceptPress={openConcept}
+        />
+      )}
     </Screen>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
+function Stat({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) {
+  const inner = (
     <View
-      className="flex-1 bg-bg-surface border border-line rounded-[12px] p-3"
+      className="bg-bg-surface border border-line rounded-[12px] p-3 flex-1"
       style={{
         shadowColor: "#142F22",
         shadowOpacity: 0.04,
@@ -473,6 +498,8 @@ function Stat({ label, value }: { label: string; value: string }) {
       <Text className="text-ink font-monoBold text-[13px] mt-1">{value}</Text>
     </View>
   );
+  if (onPress) return <Pressable onPress={onPress} className="flex-1 active:opacity-70">{inner}</Pressable>;
+  return inner;
 }
 
 // ─── Conviction Tab Components ────────────────────────────────────

@@ -9,8 +9,8 @@ type Props = {
   children: ReactNode;
 };
 
-/** Gradient-bordered "thesis recommendation" card */
-export function ThesisBadge({ label = "Thesis recommendation", children }: Props) {
+/** Gradient-bordered "thesis alignment" card */
+export function ThesisBadge({ label = "Thesis alignment score", children }: Props) {
   return (
     <LinearGradient
       colors={["#0E7A66", "#D98512"]}

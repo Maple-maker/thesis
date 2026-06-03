@@ -120,7 +120,7 @@ export function ThesisScoreCard({ symbol }: { symbol: string }) {
         )}
 
         <Text className="text-ink-3 text-[9.5px] font-sansMd text-center mt-3 leading-[13px]">
-          Score reflects profile alignment, not a recommendation. Based on illustrative data.
+          Score reflects profile alignment, not a suggestion to buy or sell. Based on illustrative data.
         </Text>
       </ThesisBadge>
     </View>

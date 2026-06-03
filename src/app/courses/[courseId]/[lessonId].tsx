@@ -1,10 +1,11 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { KeepLearningSection } from "@/components/KeepLearningSection";
 import { ExplainSheet } from "@/components/ExplainSheet";
 import { Icon } from "@/components/Icon";
+import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
 import { LessonPlayerLayout } from "@/components/lesson/LessonPlayerLayout";
 import { LessonSlideVisual } from "@/components/lesson/LessonSlideVisual";
 import { conceptById, type ConceptId } from "@/data/concepts";
@@ -17,6 +18,7 @@ import {
 import { COURSE_ICON_BG, COURSE_ICON_COLOR, COURSE_ICONS } from "@/lib/course-meta";
 import { keepLearningForLesson } from "@/lib/lesson-keep-learning";
 import { visualForStep } from "@/lib/lesson-visuals";
+import { useMilestoneCheck } from "@/lib/use-milestone-check";
 import { useStore } from "@/store";
 
 export default function LessonPlayer() {
@@ -28,6 +30,9 @@ export default function LessonPlayer() {
 
   const profile = useStore((s) => s.profile);
   const markComplete = useStore((s) => s.markLessonComplete);
+  const recordQuizAnswer = useStore((s) => s.recordQuizAnswer);
+  const trackActiveToday = useStore((s) => s.trackActiveToday);
+  const { check, currentMilestone, dismissCurrent } = useMilestoneCheck();
 
   const course = courseId ? courseById(courseId) : undefined;
   const lesson = lessonId ? lessonById(lessonId) : undefined;
@@ -41,6 +46,17 @@ export default function LessonPlayer() {
   const totalScreens = steps.length + 1;
   const onTakeaways = screenIndex >= steps.length;
   const currentStep: LessonStep | undefined = !onTakeaways ? steps[screenIndex] : undefined;
+
+  // Track quiz results across the whole lesson
+  const quizResults = useRef<{ total: number; correct: number }>({ total: 0, correct: 0 });
+  const handleQuizAnswer = useCallback((idx: number, correctIndex: number) => {
+    setQuizSelected(idx);
+    setQuizAnswered(true);
+    quizResults.current.total += 1;
+    if (idx === correctIndex) {
+      quizResults.current.correct += 1;
+    }
+  }, []);
 
   const keepLearning = useMemo(
     () => (lesson ? keepLearningForLesson(lesson) : []),
@@ -101,6 +117,11 @@ export default function LessonPlayer() {
   const advance = () => {
     if (onTakeaways) {
       markComplete(lesson.id);
+      if (quizResults.current.total > 0) {
+        recordQuizAnswer(lesson.id, quizResults.current.total, quizResults.current.correct);
+      }
+      trackActiveToday();
+      check();
       exitToSyllabus();
       return;
     }
@@ -147,10 +168,7 @@ export default function LessonPlayer() {
               step={currentStep}
               selected={quizSelected}
               answered={quizAnswered}
-              onSelect={(idx) => {
-                setQuizSelected(idx);
-                setQuizAnswered(true);
-              }}
+              onSelect={(idx) => handleQuizAnswer(idx, currentStep.correctIndex)}
             />
           ) : null}
         </ScrollView>
@@ -162,6 +180,10 @@ export default function LessonPlayer() {
         onClose={() => setExplainId(null)}
         onSelectRelated={setExplainId}
       />
+
+      {currentMilestone && (
+        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
+      )}
     </>
   );
 }

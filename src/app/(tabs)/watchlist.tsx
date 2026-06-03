@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +10,7 @@ import { Screen } from "@/components/ui/Screen";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Tag } from "@/components/ui/Tag";
 import { Tick } from "@/components/ui/Tick";
+import { WatchlistAlertsSheet } from "@/components/watchlist/WatchlistAlertsSheet";
 import { stockBySymbol } from "@/data/stocks";
 import { themeById } from "@/data/themes";
 import { convictionLeaderboard } from "@/lib/conviction-rank";
@@ -34,8 +35,11 @@ export default function WatchlistScreen() {
   const toggle = useStore((s) => s.toggleWatchlist);
   const profile = useStore((s) => s.profile);
   const themeIds = useStore((s) => s.themeIds);
+  const watchlistAlerts = useStore((s) => s.watchlistAlerts);
 
   const [query, setQuery] = useState("");
+  const [alertsVisible, setAlertsVisible] = useState(false);
+  const [alertFocusSymbol, setAlertFocusSymbol] = useState<string | undefined>();
 
   const stocks = watchlist.map(stockBySymbol).filter(Boolean) as NonNullable<
     ReturnType<typeof stockBySymbol>
@@ -53,6 +57,32 @@ export default function WatchlistScreen() {
 
   const isSearching = query.trim().length > 0;
 
+  // ── Alert helpers ─────────────────────────────────────────
+
+  /** Number of alerts (active or triggered) for a given symbol */
+  function alertCountForSymbol(symbol: string): number {
+    return watchlistAlerts.filter(
+      (a) => a.symbol.toUpperCase() === symbol.toUpperCase()
+    ).length;
+  }
+
+  /** Number of triggered alerts for a given symbol */
+  function triggeredCountForSymbol(symbol: string): number {
+    return watchlistAlerts.filter(
+      (a) => a.symbol.toUpperCase() === symbol.toUpperCase() && a.triggered
+    ).length;
+  }
+
+  function openAlertsForSymbol(symbol: string) {
+    setAlertFocusSymbol(symbol);
+    setAlertsVisible(true);
+  }
+
+  function openAlertsOverview() {
+    setAlertFocusSymbol(undefined);
+    setAlertsVisible(true);
+  }
+
   return (
     <Screen padded>
       <Header
@@ -63,21 +93,23 @@ export default function WatchlistScreen() {
             : "Track stocks and ETFs that fit your thesis"
         }
         right={
-          stocks.length >= 2 ? (
-            <Pressable
-              onPress={() => router.push("/duel")}
-              className="bg-brand px-3.5 h-9 items-center justify-center rounded-[12px] flex-row"
-              style={{
-                shadowColor: "#0E7A66",
-                shadowOpacity: 0.25,
-                shadowRadius: 8,
-                shadowOffset: { width: 0, height: 4 },
-              }}
-            >
-              <Icon name="compare" size={15} color="#FFFFFF" sw={2.2} />
-              <Text className="text-white font-sansX text-[13px] ml-1.5">Duel</Text>
-            </Pressable>
-          ) : null
+          <View className="flex-row gap-2 items-center">
+            {stocks.length >= 2 ? (
+              <Pressable
+                onPress={() => router.push("/duel")}
+                className="bg-brand px-3.5 h-9 items-center justify-center rounded-[12px] flex-row"
+                style={{
+                  shadowColor: "#0E7A66",
+                  shadowOpacity: 0.25,
+                  shadowRadius: 8,
+                  shadowOffset: { width: 0, height: 4 },
+                }}
+              >
+                <Icon name="compare" size={15} color="#FFFFFF" sw={2.2} />
+                <Text className="text-white font-sansX text-[13px] ml-1.5">Duel</Text>
+              </Pressable>
+            ) : null}
+          </View>
         }
       />
 
@@ -175,35 +207,69 @@ export default function WatchlistScreen() {
         {/* Currently watching */}
         {!isSearching && stocks.length > 0 && (
           <View className="mt-4">
-            <SectionTitle>Tracking</SectionTitle>
+            <SectionTitle
+              action="Alerts"
+              onAction={openAlertsOverview}
+            >
+              Tracking
+            </SectionTitle>
             <View className="gap-y-2">
-              {stocks.map((s) => (
-                <Card key={s.symbol} pad={14}>
-                  <View className="flex-row items-center">
-                    <Pressable
-                      onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
-                      className="flex-row items-center flex-1 active:opacity-70"
-                    >
-                      <Tick ticker={s.symbol} size={42} />
-                      <View className="ml-3 flex-1">
-                        <View className="flex-row items-center gap-1.5">
-                          <Text className="text-ink font-monoBold text-[14px]">{s.symbol}</Text>
-                          <Text className="text-ink-3 text-[10px] font-sansSb uppercase tracking-wider">{s.sector}</Text>
+              {stocks.map((s) => {
+                const alertCount = alertCountForSymbol(s.symbol);
+                const triggeredCount = triggeredCountForSymbol(s.symbol);
+                return (
+                  <Card key={s.symbol} pad={14}>
+                    <View className="flex-row items-center">
+                      <Pressable
+                        onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
+                        className="flex-row items-center flex-1 active:opacity-70"
+                      >
+                        <Tick ticker={s.symbol} size={42} />
+                        <View className="ml-3 flex-1">
+                          <View className="flex-row items-center gap-1.5">
+                            <Text className="text-ink font-monoBold text-[14px]">{s.symbol}</Text>
+                            <Text className="text-ink-3 text-[10px] font-sansSb uppercase tracking-wider">{s.sector}</Text>
+                          </View>
+                          <Text className="text-ink text-[13px] font-sansSb mt-0.5">{s.name}</Text>
+                          <View className="flex-row gap-x-1.5 mt-1">
+                            {s.tags.slice(0, 2).map((t) => (
+                              <Tag key={t} label={t} />
+                            ))}
+                          </View>
                         </View>
-                        <Text className="text-ink text-[13px] font-sansSb mt-0.5">{s.name}</Text>
-                        <View className="flex-row gap-x-1.5 mt-1">
-                          {s.tags.slice(0, 2).map((t) => (
-                            <Tag key={t} label={t} />
-                          ))}
-                        </View>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => toggle(s.symbol)} hitSlop={10} className="ml-2 p-2">
-                      <Icon name="close" size={18} color="#8C988F" sw={1.8} />
-                    </Pressable>
-                  </View>
-                </Card>
-              ))}
+                      </Pressable>
+
+                      {/* Bell icon with alert count badge */}
+                      <Pressable
+                        onPress={() => openAlertsForSymbol(s.symbol)}
+                        hitSlop={10}
+                        className="ml-1 p-2 relative active:opacity-70"
+                      >
+                        <Icon
+                          name="bell"
+                          size={20}
+                          color={triggeredCount > 0 ? "#D98512" : "#8C988F"}
+                          sw={1.8}
+                        />
+                        {alertCount > 0 && (
+                          <View className="absolute -top-0.5 -right-0.5 bg-brand min-w-[16px] h-[16px] rounded-full items-center justify-center px-1">
+                            <Text className="text-white text-[9px] font-sansBold">
+                              {alertCount}
+                            </Text>
+                          </View>
+                        )}
+                        {triggeredCount > 0 && alertCount === 0 && (
+                          <View className="absolute top-0 right-0 w-[8px] h-[8px] rounded-full bg-amber" />
+                        )}
+                      </Pressable>
+
+                      <Pressable onPress={() => toggle(s.symbol)} hitSlop={10} className="ml-1 p-2">
+                        <Icon name="close" size={18} color="#8C988F" sw={1.8} />
+                      </Pressable>
+                    </View>
+                  </Card>
+                );
+              })}
             </View>
           </View>
         )}
@@ -347,6 +413,23 @@ export default function WatchlistScreen() {
         {/* Extra padding */}
         <View className="h-10" />
       </ScrollView>
+
+      {/* ── Alerts sheet modal ── */}
+      <Modal
+        visible={alertsVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setAlertsVisible(false)}
+      >
+        <View className="flex-1 justify-end bg-black/40">
+          <View className="h-[85%]">
+            <WatchlistAlertsSheet
+              onClose={() => setAlertsVisible(false)}
+              focusSymbol={alertFocusSymbol}
+            />
+          </View>
+        </View>
+      </Modal>
     </Screen>
   );
 }

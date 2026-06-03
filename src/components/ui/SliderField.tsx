@@ -72,6 +72,10 @@ function SliderTrack({ value, onChange, min, max, step }: SliderTrackProps) {
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onShouldBlockNativeResponder: () => true,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderGrant: applyX,
         onPanResponderMove: applyX,
       }),

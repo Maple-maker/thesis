@@ -6,6 +6,7 @@ import { BuilderPieCustomizer } from "@/components/builder/BuilderPieCustomizer"
 import { BrokerageOffersCard } from "@/components/builder/BrokerageOffersCard";
 import { ThesisPerformancePreview } from "@/components/thesis/ThesisPerformancePreview";
 import { WhyThesisVsIndex } from "@/components/duel/WhyThesisVsIndex";
+import { StressTestSheet } from "@/components/thesis/StressTestSheet";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Header } from "@/components/ui/Header";
@@ -30,6 +31,8 @@ import {
   type PieAllocationRow,
   type PieCustomization,
 } from "@/types/pie-customization";
+import { useMilestoneCheck } from "@/lib/use-milestone-check";
+import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
 import { useStore } from "@/store";
 
 export default function BuilderPortfolioScreen() {
@@ -42,6 +45,8 @@ export default function BuilderPortfolioScreen() {
   const setCustomThesis = useStore((s) => s.setCustomThesis);
   const appendThesisChangelog = useStore((s) => s.appendThesisChangelog);
   const setWatchlistPipeline = useStore((s) => s.setWatchlistPipeline);
+  const trackActiveToday = useStore((s) => s.trackActiveToday);
+  const { check, currentMilestone, dismissCurrent } = useMilestoneCheck();
 
   const built = useMemo(() => {
     // Use model holdings directly if they exist (from lens adoption or save)
@@ -87,6 +92,7 @@ export default function BuilderPortfolioScreen() {
   const [pieCustomization, setPieCustomization] = useState<PieCustomization>(
     modelThesis?.pieCustomization ?? DEFAULT_PIE_CUSTOMIZATION
   );
+  const [stressSheetSymbol, setStressSheetSymbol] = useState<string | null>(null);
 
   useEffect(() => {
     if (!built) return;
@@ -172,6 +178,8 @@ export default function BuilderPortfolioScreen() {
       radarReports: modelThesis?.radarReports ?? [],
       pieCustomization: customization,
     });
+    trackActiveToday();
+    check();
     appendThesisChangelog({
       trigger: "portfolio-save",
       summary: `Saved model book: ${holdings.map((h) => `${h.symbol} ${h.weightPct}%`).join(", ")}${cashNote}`,
@@ -289,6 +297,18 @@ export default function BuilderPortfolioScreen() {
           onPress={handleShare}
         />
       </View>
+      <View className="mt-3 gap-2">
+        <Button
+          label="Stress test this thesis"
+          fullWidth
+          size="md"
+          variant="secondary"
+          onPress={() => {
+            const symbol = built?.holdings?.[0]?.symbol ?? "AAPL";
+            setStressSheetSymbol(symbol);
+          }}
+        />
+      </View>
       <View className="mt-3 gap-2 mb-6">
         <Button
           label="Life scenarios & radar research"
@@ -305,6 +325,19 @@ export default function BuilderPortfolioScreen() {
           onPress={() => router.push("/thesis-studio" as never)}
         />
       </View>
+
+      {/* Stress test sheet */}
+      {stressSheetSymbol && (
+        <StressTestSheet
+          visible={stressSheetSymbol != null}
+          onClose={() => setStressSheetSymbol(null)}
+          symbol={stressSheetSymbol}
+        />
+      )}
+
+      {currentMilestone && (
+        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
+      )}
     </Screen>
   );
 }

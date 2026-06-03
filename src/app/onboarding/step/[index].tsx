@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
@@ -75,6 +75,17 @@ export default function StepScreen() {
     () => step.questions.every((q) => isAnswered(q, getProfileValue(profile, q.path))),
     [profile, step]
   );
+
+  // Initialize unset scale fields to their midpoint so the Continue button works
+  // without requiring the user to touch every slider
+  useEffect(() => {
+    for (const q of step.questions) {
+      if (q.kind !== "scale") continue;
+      const existing = getProfileValue(profile, q.path);
+      if (typeof existing === "number" && !Number.isNaN(existing)) continue;
+      setProfilePath(q.path, Math.round(((q.min ?? 1) + (q.max ?? 10)) / 2));
+    }
+  }, [step.id]);
 
   const onNext = () => {
     markChapterComplete(step.id, step.sectionIds);

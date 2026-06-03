@@ -23,6 +23,7 @@ import { postThesisResearch } from "./thesis-research.js";
 import { postDebate, getDebateJob } from "./llm-debate.js";
 import { getMarketSentiment } from "./market-sentiment.js";
 import { postCatalystResearch } from "./catalyst-research.js";
+import { postFeedback } from "./feedback.js";
 import { getMfaStatus, postMfaChallenge, postMfaSetup, postMfaVerify } from "./mfa.js";
 
 const app = express();
@@ -35,10 +36,12 @@ const appSecret = process.env.THESIS_APP_SECRET;
 
 app.use("/v1", (req, res, next) => {
   if (!appSecret) return next();
-  const isHealth =
-    req.method === "GET" &&
-    (req.path === "/health" || req.originalUrl === "/v1/health");
-  if (isHealth) return next();
+  // Health check and feedback are public (feedback also validates payload server-side)
+  const isPublic =
+    (req.method === "GET" &&
+      (req.path === "/health" || req.originalUrl === "/v1/health")) ||
+    req.path === "/feedback";
+  if (isPublic) return next();
   const key = req.headers["x-thesis-app-key"];
   if (key !== appSecret) {
     res.status(401).json({ error: "Invalid app key" });
@@ -90,6 +93,7 @@ app.post("/v1/mfa/setup", postMfaSetup);
 app.post("/v1/mfa/verify", postMfaVerify);
 app.post("/v1/mfa/challenge", postMfaChallenge);
 app.get("/v1/mfa/status", getMfaStatus);
+app.post("/v1/feedback", postFeedback);
 
 if (process.env.DEV_PRO_USER_IDS) {
   seedDevProUsers(process.env.DEV_PRO_USER_IDS.split(",").map((s) => s.trim()));

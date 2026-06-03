@@ -403,3 +403,45 @@ export async function runDipScan(): Promise<DipScanResult> {
   }
   return res.json() as Promise<DipScanResult>;
 }
+
+// ── Feedback ─────────────────────────────────────────────────────────────
+
+export interface FeedbackPayload {
+  category: "bug" | "ux" | "feature" | "general";
+  description: string;
+  steps?: string;
+  deviceInfo?: string;
+  appVersion?: string;
+}
+
+export async function submitFeedback(payload: FeedbackPayload): Promise<boolean> {
+  const { url, key } = getThesisApiConfig();
+  const apiUrl = url || (__DEV__ ? DEV_DEFAULT_URL : "");
+  const apiKey = key || (__DEV__ ? DEV_DEFAULT_KEY : "");
+
+  if (!apiUrl) {
+    console.warn("[feedback] No API URL configured");
+    return false;
+  }
+
+  try {
+    const res = await fetch(`${apiUrl}/v1/feedback`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-Thesis-App-Key": apiKey } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(`[feedback] Server returned ${res.status}: ${err.slice(0, 200)}`);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("[feedback] Submit failed:", err);
+    return false;
+  }
+}

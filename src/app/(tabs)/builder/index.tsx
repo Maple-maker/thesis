@@ -13,14 +13,9 @@ import { TermHelpBubble } from "@/components/education/TermHelpBubble";
 import { PersonaCard, PersonaHero } from "@/components/ui/ThesisPersonaCard";
 import { BuilderAllocationPie } from "@/components/builder/BuilderAllocationPie";
 import { THEMES, themeById } from "@/data/themes";
-import { personaForTheme } from "@/data/thesis-personas";
-import { INVESTOR_LENSES } from "@/data/investor-lenses";
-import { builderProfileChips } from "@/lib/builder-profile-summary";
-import { backtestPlainEnglish } from "@/lib/backtest-narrative";
-import { composePieRows } from "@/lib/pie-customization";
-import { buildThesisPortfolio } from "@/lib/thesis-portfolio-builder";
-import { MAX_ACTIVE_THEMES } from "@/lib/thesis-limits";
-import { convictionLeaderboard, type ConvictionRankRow } from "@/lib/conviction-rank";
+import { stockBySymbol } from "@/data/stocks";
+import { useMilestoneCheck } from "@/lib/use-milestone-check";
+import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
 import { useStore } from "@/store";
 
 export default function BuilderScreen() {
@@ -29,6 +24,7 @@ export default function BuilderScreen() {
   const themeIds = useStore((s) => s.themeIds);
   const modelThesis = useStore((s) => s.modelThesis);
   const adoptLens = useStore((s) => s.adoptLens);
+  const trackActiveToday = useStore((s) => s.trackActiveToday);
   const clearModelThesis = useStore((s) => s.clearModelThesis);
   const clearCustomThesis = useStore((s) => s.clearCustomThesis);
   const toggleTheme = useStore((s) => s.toggleTheme);
@@ -77,8 +73,12 @@ export default function BuilderScreen() {
     return [];
   }, [modelThesis, previewBuilt]);
 
+  const { check, currentMilestone, dismissCurrent } = useMilestoneCheck();
+
   const handleForkLens = (lens: (typeof famousLenses)[0]) => {
     adoptLens(lens.id);
+    trackActiveToday();
+    check();
     router.push("/(tabs)/builder/portfolio" as never);
   };
 
@@ -351,6 +351,10 @@ export default function BuilderScreen() {
           Educational tool. Not investment advice. Past performance does not guarantee future results.
         </Text>
       </ScrollView>
+
+      {currentMilestone && (
+        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
+      )}
     </Screen>
   );
 }

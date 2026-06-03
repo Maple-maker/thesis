@@ -16,6 +16,8 @@ import { MAX_ACTIVE_THEMES } from "@/lib/thesis-limits";
 import { buildThesisPortfolio } from "@/lib/thesis-portfolio-builder";
 import { DEMO_ACCOUNTS, DEMO_HOLDINGS } from "@/data/demo-accounts";
 import type { ChatMessage } from "@/lib/assistant-chat";
+import type { LessonQuizRecord } from "@/lib/quiz-mastery";
+import type { MilestoneId } from "@/lib/milestones";
 import type { SubscriptionTier } from "@/data/subscription-tiers";
 import type { Holding, LinkedAccount, PlaidConnectionStatus } from "@/types/linked-accounts";
 import type { CfoProfile, CfoSectionId } from "@/types/cfo-profile";
@@ -37,9 +39,12 @@ import {
 import { lifeScenarioById } from "@/data/life-scenario-presets";
 import type {
   JournalEntry,
+  JournalEntryType,
+  EmotionalState,
   JournalReason,
   ThemeId,
   UserProfile,
+  WatchlistAlert,
 } from "./types";
 
 const RADAR_REVISIT_MS = 90 * 24 * 60 * 60 * 1000;
@@ -151,6 +156,7 @@ type Store = {
   ) => void;
 
   watchlist: string[];
+  watchlistAlerts: WatchlistAlert[];
   /** Free-text interests for Watchlist Thesis Radar (e.g. "biotech companies") */
   radarManualQuery: string;
   setRadarManualQuery: (query: string) => void;
@@ -158,14 +164,32 @@ type Store = {
   toggleWatchlist: (symbol: string) => void;
   setWatchlistPipeline: (symbol: string, state: WatchlistPipelineState) => void;
   isWatched: (symbol: string) => boolean;
+  addWatchlistAlert: (alert: Omit<WatchlistAlert, "id" | "createdAt" | "triggered" | "triggeredAt">) => void;
+  removeWatchlistAlert: (id: string) => void;
+  triggerAlert: (id: string) => void;
+  dismissTriggeredAlert: (id: string) => void;
 
   journal: JournalEntry[];
-  recordDuel: (entry: Omit<JournalEntry, "id" | "createdAt" | "revisitAt" | "revisitSnoozed">) => void;
+  recordDuel: (entry: Omit<JournalEntry, "id" | "createdAt" | "type" | "revisitAt" | "revisitSnoozed">) => void;
   snoozeDuelRevisit: (id: string) => void;
+  addJournalEntry: (entry: Omit<JournalEntry, "id" | "createdAt" | "revisitAt" | "revisitSnoozed">) => void;
+  updateJournalEntry: (id: string, updates: Partial<Omit<JournalEntry, "id" | "createdAt">>) => void;
+  deleteJournalEntry: (id: string) => void;
 
   completedLessons: string[];
+  lessonCompletionDates: Record<string, number>;
   markLessonComplete: (lessonId: string) => void;
   isLessonComplete: (lessonId: string) => boolean;
+
+  quizScores: Record<string, LessonQuizRecord>;
+  recordQuizAnswer: (lessonId: string, totalQuestions: number, correctAnswers: number) => void;
+
+  celebratedMilestones: MilestoneId[];
+  celebrateMilestone: (id: MilestoneId) => void;
+  dismissMilestone: (id: MilestoneId) => void;
+
+  lastActiveDate: string;
+  trackActiveToday: () => void;
 
   assistantMemory: AssistantMemoryNote[];
   addAssistantMemoryNote: (text: string, source?: AssistantMemoryNote["source"]) => void;
@@ -194,6 +218,9 @@ type Store = {
   setPlaidHoldings: (holdings: Holding[]) => void;
   setPlaidStatus: (s: PlaidConnectionStatus) => void;
 
+  tutorialShown: boolean;
+  setTutorialShown: (v: boolean) => void;
+
   hardReset: () => void;
 };
 
@@ -209,6 +236,7 @@ export const useStore = create<Store>()(
   persist(
     (set, get) => ({
       onboarding: "not-started",
+      tutorialShown: false,
       profile: createDefaultCfoProfile(),
       setProfileField: (key, value) =>
         set((s) => {
@@ -453,6 +481,7 @@ export const useStore = create<Store>()(
         }),
 
       watchlist: [],
+      watchlistAlerts: [],
       radarManualQuery: "",
       setRadarManualQuery: (radarManualQuery) => set({ radarManualQuery }),
       watchlistPipeline: {},
@@ -480,12 +509,45 @@ export const useStore = create<Store>()(
         })),
       isWatched: (symbol) => get().watchlist.includes(symbol.toUpperCase()),
 
+      addWatchlistAlert: (alert) =>
+        set((s) => ({
+          watchlistAlerts: [
+            ...s.watchlistAlerts,
+            {
+              ...alert,
+              id: `wa-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+              createdAt: Date.now(),
+              triggered: false,
+            },
+          ],
+        })),
+      removeWatchlistAlert: (id) =>
+        set((s) => ({
+          watchlistAlerts: s.watchlistAlerts.filter((a) => a.id !== id),
+        })),
+      triggerAlert: (id) =>
+        set((s) => ({
+          watchlistAlerts: s.watchlistAlerts.map((a) =>
+            a.id === id ? { ...a, triggered: true, triggeredAt: Date.now() } : a
+          ),
+        })),
+      dismissTriggeredAlert: (id) =>
+        set((s) => ({
+          watchlistAlerts: s.watchlistAlerts.map((a) =>
+            a.id === id
+              ? { ...a, triggered: false, triggeredAt: undefined }
+              : a
+          ),
+        })),
+
       journal: [],
       recordDuel: (entry) =>
         set((s) => ({
           journal: [
             {
               ...entry,
+              // recordDuel always creates duel-type entries
+              type: "duel" as const,
               id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
               createdAt: Date.now(),
               revisitAt: Date.now() + RADAR_REVISIT_MS,
@@ -501,15 +563,74 @@ export const useStore = create<Store>()(
               : j
           ),
         })),
+      addJournalEntry: (entry) =>
+        set((s) => ({
+          journal: [
+            {
+              ...entry,
+              id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+              createdAt: Date.now(),
+              revisitAt: Date.now() + RADAR_REVISIT_MS,
+            } as JournalEntry,
+            ...s.journal,
+          ],
+        })),
+      updateJournalEntry: (id, updates) =>
+        set((s) => ({
+          journal: s.journal.map((j) =>
+            j.id === id ? { ...j, ...updates } : j
+          ),
+        })),
+      deleteJournalEntry: (id) =>
+        set((s) => ({
+          journal: s.journal.filter((j) => j.id !== id),
+        })),
 
       completedLessons: [],
+      lessonCompletionDates: {},
       markLessonComplete: (lessonId) =>
         set((s) => ({
           completedLessons: s.completedLessons.includes(lessonId)
             ? s.completedLessons
             : [...s.completedLessons, lessonId],
+          lessonCompletionDates: {
+            ...s.lessonCompletionDates,
+            [lessonId]: Date.now(),
+          },
         })),
       isLessonComplete: (lessonId) => get().completedLessons.includes(lessonId),
+
+      quizScores: {},
+      recordQuizAnswer: (lessonId, totalQuestions, correctAnswers) =>
+        set((s) => ({
+          quizScores: {
+            ...s.quizScores,
+            [lessonId]: {
+              lessonId,
+              totalQuestions,
+              correctAnswers,
+              lastAttemptAt: Date.now(),
+            },
+          },
+        })),
+
+      celebratedMilestones: [],
+      celebrateMilestone: (id) =>
+        set((s) => ({
+          celebratedMilestones: s.celebratedMilestones.includes(id)
+            ? s.celebratedMilestones
+            : [...s.celebratedMilestones, id],
+        })),
+      dismissMilestone: (id) =>
+        set((s) => ({
+          celebratedMilestones: s.celebratedMilestones.filter((m) => m !== id),
+        })),
+
+      lastActiveDate: "",
+      trackActiveToday: () =>
+        set({
+          lastActiveDate: new Date().toISOString().slice(0, 10),
+        }),
 
       assistantMemory: [],
       addAssistantMemoryNote: (text, source = "user") =>
@@ -569,20 +690,28 @@ export const useStore = create<Store>()(
       setPlaidAccounts: (accounts) => set({ linkedAccounts: accounts }),
       setPlaidHoldings: (holdings) => set({ holdings }),
 
+      setTutorialShown: (tutorialShown) => set({ tutorialShown }),
+
       hardReset: () =>
         set({
           onboarding: "not-started",
+          tutorialShown: false,
           profile: createDefaultCfoProfile(),
           themeIds: [],
           customThesis: null,
           modelThesis: null,
           watchlist: [],
+          watchlistAlerts: [],
           radarManualQuery: "",
           journal: [],
           convictionNotes: [],
           thesisChangelog: [],
           watchlistPipeline: {},
           completedLessons: [],
+          lessonCompletionDates: {},
+          quizScores: {},
+          celebratedMilestones: [],
+          lastActiveDate: "",
           assistantMemory: [],
           chatMessages: [],
           assistantUsageDate: todayKey(),
@@ -609,6 +738,7 @@ export const useStore = create<Store>()(
           modelThesis: normalizeModelThesis(p?.modelThesis ?? current.modelThesis),
           convictionNotes: p?.convictionNotes ?? current.convictionNotes ?? [],
           thesisChangelog: p?.thesisChangelog ?? current.thesisChangelog ?? [],
+          watchlistAlerts: p?.watchlistAlerts ?? current.watchlistAlerts ?? [],
           watchlistPipeline: p?.watchlistPipeline ?? current.watchlistPipeline ?? {},
           thesisUserId: p?.thesisUserId ?? current.thesisUserId ?? newThesisUserId(),
           subscriptionTier: p?.subscriptionTier ?? current.subscriptionTier ?? "free",
@@ -628,4 +758,4 @@ export const selectPlaidConnected = (s: Store) =>
 export const selectWatchlist = (s: Store) => s.watchlist;
 export const selectJournal = (s: Store) => s.journal;
 
-export type { JournalReason };
+export type { EmotionalState, JournalEntryType, JournalReason };

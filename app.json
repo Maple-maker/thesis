@@ -10,7 +10,7 @@
     "backgroundColor": "#F3F5F1",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.thesis.app",
+      "bundleIdentifier": "com.makeyourthesis.app",
       "supportsTablet": true
     },
     "android": {
@@ -42,6 +42,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d25b92e4-cca0-4231-995e-827934fe51a6"
+      }
     }
   }
 }

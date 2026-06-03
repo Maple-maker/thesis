@@ -9,9 +9,20 @@ const thesisAppKey =
 module.exports = {
   expo: {
     ...appJson.expo,
+    ios: {
+      ...appJson.expo.ios,
+      infoPlist: {
+        ...appJson.expo.ios?.infoPlist,
+        ITSAppUsesNonExemptEncryption: false,
+      },
+    },
     extra: {
+      ...appJson.expo.extra,
       thesisApiUrl,
       thesisAppKey,
+      eas: {
+        projectId: "d25b92e4-cca0-4231-995e-827934fe51a6",
+      },
     },
   },
 };

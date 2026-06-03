@@ -340,8 +340,8 @@ export async function postDebate(req: Request, res: Response) {
 // ── GET /v1/research/debate/:jobId ─────────────────────────────────────
 
 export async function getDebateJob(req: Request, res: Response) {
-  const jobId = req.params.jobId;
-  if (!jobId) { res.status(400).json({ error: "Missing jobId" }); return; }
+  const jobId = String(req.params.jobId);
+  if (!jobId || jobId === "undefined") { res.status(400).json({ error: "Missing jobId" }); return; }
   const job = loadJob(jobId);
   if (!job) { res.status(404).json({ error: "Job not found" }); return; }
   res.json(job);

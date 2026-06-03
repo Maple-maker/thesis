@@ -2,20 +2,30 @@ import { Tabs } from "expo-router";
 import { Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
+import { useStore } from "@/store";
 
 function TabItem({
   icon,
   label,
   focused,
+  badge,
 }: {
   icon: IconName;
   label: string;
   focused: boolean;
+  badge?: number;
 }) {
   const color = focused ? "#0E7A66" : "#8C988F";
   return (
     <View className="items-center" style={{ minWidth: 56, paddingTop: 4 }}>
-      <Icon name={icon} size={23} sw={focused ? 2.1 : 1.8} color={color} />
+      <View className="relative">
+        <Icon name={icon} size={23} sw={focused ? 2.1 : 1.8} color={color} />
+        {badge != null && badge > 0 && (
+          <View className="absolute -top-1 -right-2 bg-amber min-w-[16px] h-[16px] rounded-full items-center justify-center px-1">
+            <Text className="text-white text-[9px] font-sansBold">{badge}</Text>
+          </View>
+        )}
+      </View>
       <Text
         className={`text-[10.5px] mt-1 ${focused ? "font-sansX" : "font-sansSb"}`}
         style={{ color }}
@@ -61,6 +71,9 @@ function BuilderTabItem({ focused }: { focused: boolean }) {
 const HIDDEN_TAB = { href: null } as const;
 
 export default function TabsLayout() {
+  const watchlistAlerts = useStore((s) => s.watchlistAlerts);
+  const triggeredCount = watchlistAlerts.filter((a) => a.triggered).length;
+
   return (
     <Tabs
       screenOptions={{
@@ -111,7 +124,7 @@ export default function TabsLayout() {
         name="watchlist"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabItem icon="flag" label="Watchlist" focused={focused} />
+            <TabItem icon="flag" label="Watchlist" focused={focused} badge={triggeredCount} />
           ),
         }}
       />

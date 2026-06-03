@@ -225,6 +225,9 @@
   footer { background: var(--green-deep); color: var(--cream-faint); padding: 42px 0; }
   .foot-in { display: flex; flex-direction: column; gap: 18px; }
   .foot-logo .logo-word { color: var(--cream); font-size: 21px; }
+	  .foot-links { display: flex; flex-wrap: wrap; gap: 10px 28px; }
+	  .foot-links a { font-size: 14px; font-weight: 600; color: rgba(246,241,230,.62); text-decoration: none; letter-spacing: .005em; }
+	  .foot-links a:hover { color: var(--cream); }
   .foot-disc { font-size: 13px; line-height: 1.6; max-width: 64ch; color: rgba(246,241,230,.46); }
 
   /* reveal */
@@ -517,6 +520,53 @@
     </div>
   </section>
 
+  <!-- ══ BETA FEEDBACK ══ -->
+  <section class="feedback pad-sm" id="feedback" style="background: var(--surface); border-top: 1px solid var(--line);">
+    <div class="narrow reveal">
+      <p class="eyebrow sec-label">Beta Feedback</p>
+      <h2 style="font-family: var(--serif); font-size: clamp(28px, 3.6vw, 42px);">Something broken?<br>Got an idea? Tell us.</h2>
+      <p style="margin-top: 16px; font-size: 16px; line-height: 1.55; color: var(--ink-2); font-weight: 500; max-width: 48ch;">
+        You're one of the first people using Thesis. Every report shapes what we build next.
+      </p>
+
+      <form class="feedback-form" data-feedback style="margin-top: 28px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="category" value="bug" checked style="accent-color: var(--green);">
+            <span style="font-size: 14px; font-weight: 600; color: var(--ink);">Bug</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="category" value="ux" style="accent-color: var(--green);">
+            <span style="font-size: 14px; font-weight: 600; color: var(--ink);">UX Issue</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="category" value="feature" style="accent-color: var(--green);">
+            <span style="font-size: 14px; font-weight: 600; color: var(--ink);">Feature Request</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="category" value="general" style="accent-color: var(--green);">
+            <span style="font-size: 14px; font-weight: 600; color: var(--ink);">General</span>
+          </label>
+        </div>
+
+        <textarea name="description" required placeholder="What happened? What did you expect? Be as specific as you can&hellip;" rows="4"
+          style="font-family: var(--font); font-size: 15px; font-weight: 500; padding: 15px 17px; border-radius: 14px; border: 1.5px solid var(--line); outline: none; resize: vertical; min-height: 100px; background: #fff; color: var(--ink); transition: border-color .16s;"
+        ></textarea>
+
+        <input type="text" name="steps" placeholder="Steps to reproduce (optional)" style="font-family: var(--font); font-size: 15px; font-weight: 500; padding: 15px 17px; border-radius: 14px; border: 1.5px solid var(--line); outline: none; background: #fff; color: var(--ink); transition: border-color .16s;">
+
+        <button type="submit" class="btn btn-green" style="align-self: flex-start; padding: 16px 32px;">Send feedback</button>
+
+        <div class="feedback-done" data-feedback-done style="display: none; align-items: center; gap: 12px; padding: 16px 18px; border-radius: 14px; font-weight: 600; font-size: 15px; background: rgba(14,122,102,0.08); border: 1.5px solid rgba(14,122,102,0.2); color: var(--green);">
+          <span class="check-badge" style="background: var(--green);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span>Feedback sent. Thank you — it goes directly to the builder.</span>
+        </div>
+
+        <p class="feedback-error" data-feedback-error style="display: none; color: #D22; font-size: 13.5px; font-weight: 600;"></p>
+      </form>
+    </div>
+  </section>
+
   <!-- ══ FINAL CTA ══ -->
   <section class="final pad">
     <div class="narrow final-in reveal">
@@ -548,6 +598,10 @@
         </span>
         <span class="logo-word">Thesis</span>
       </span>
+      <div class="foot-links">
+        <a href="/support">Support &amp; Legal</a>
+        <a href="mailto:founder@makeyourthesis.com">founder@makeyourthesis.com</a>
+      </div>
       <p class="foot-disc">Disclaimer: Thesis is an educational research tool designed to help you think through investment ideas. Nothing in the app constitutes investment advice or a recommendation to buy, sell, or hold any security. Any forecasts, simulations, or projections are for illustrative purposes only. All investing involves risk, including the possible loss of principal.</p>
     </div>
   </footer>
@@ -572,6 +626,56 @@
         fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
       });
     });
+
+    // ── Feedback form ──────────────────────────────────────
+    var feedbackForm = document.querySelector('form[data-feedback]');
+    if (feedbackForm) {
+      var API = 'https://thesis-server-beta.fly.dev/v1/feedback';
+      feedbackForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = feedbackForm.querySelector('button[type="submit"]');
+        var done = feedbackForm.querySelector('[data-feedback-done]');
+        var errEl = feedbackForm.querySelector('[data-feedback-error]');
+
+        var category = feedbackForm.querySelector('input[name="category"]:checked');
+        var description = feedbackForm.querySelector('textarea[name="description"]');
+        var steps = feedbackForm.querySelector('input[name="steps"]');
+
+        if (!description.value.trim() || description.value.trim().length < 5) {
+          errEl.textContent = 'Please describe the issue in a bit more detail.';
+          errEl.style.display = 'block';
+          return;
+        }
+
+        btn.textContent = 'Sending…';
+        btn.disabled = true;
+        errEl.style.display = 'none';
+
+        fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: category ? category.value : 'general',
+            description: description.value.trim(),
+            steps: steps.value.trim() || undefined,
+            deviceInfo: 'website',
+            appVersion: 'landing-page'
+          })
+        })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Server returned ' + res.status);
+          feedbackForm.style.display = 'none';
+          done.style.display = 'flex';
+        })
+        .catch(function (err) {
+          btn.textContent = 'Send feedback';
+          btn.disabled = false;
+          errEl.textContent = 'Couldn\'t send. Try again or email founder@makeyourthesis.com.';
+          errEl.style.display = 'block';
+          console.error('[feedback]', err);
+        });
+      });
+    }
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {

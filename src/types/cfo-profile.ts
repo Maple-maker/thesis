@@ -89,6 +89,7 @@ export type GoalsSection = {
   charitableGivingGoal?: boolean;
   majorPurchaseGoals?: string;
   goalPriorityRanking?: string;
+  financialFreedomVision?: string;
 };
 
 export type TimeHorizonSection = {
@@ -107,6 +108,7 @@ export type RiskSection = {
   concentrationTolerance?: "low" | "medium" | "high";
   speculationTolerance?: "none" | "small" | "moderate" | "high";
   incomeStabilityScore?: number;
+  downturnReaction?: string;
 };
 
 export type BehavioralSection = {
@@ -119,6 +121,9 @@ export type BehavioralSection = {
   tradingFrequencyPreference?: "rare" | "occasional" | "active";
   emotionalTriggers?: string;
   pastMistakes?: string;
+  moneyUpbringing?: string;
+  proudMoneyDecision?: string;
+  contrarianBelief?: string;
   investmentPhilosophy?: InvestmentPhilosophy;
 };
 
@@ -265,7 +270,7 @@ export type CommunicationSection = {
 };
 
 export type PersonalizationSection = {
-  favoriteInvestors?: string;
+  favoriteInvestors?: string[];
   trustedSources?: string;
   sectorsFollowed?: string;
   newslettersFollowed?: string;

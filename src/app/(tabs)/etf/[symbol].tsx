@@ -1,10 +1,11 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Alert, Linking, Pressable, Text, View } from "react-native";
 
 import { BullBearCasesSection } from "@/components/BullBearCasesSection";
 import { Icon } from "@/components/Icon";
 import { casesForEtf } from "@/lib/cases";
+import { computeEtfConviction } from "@/lib/conviction-rank";
 import { etfTagLabel, etfTagTone } from "@/lib/etf-tags";
 import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
@@ -26,6 +27,9 @@ export default function EtfDetail() {
   const handleBack = () => navigateBack(router, params.returnTo);
   const watchlist = useStore((s) => s.watchlist);
   const toggle = useStore((s) => s.toggleWatchlist);
+  const profile = useStore((s) => s.profile);
+  const themeIds = useStore((s) => s.themeIds);
+  const [tab, setTab] = useState<"overview" | "conviction">("overview");
 
   const sym = (params.symbol ?? "").toUpperCase();
   const etf = etfBySymbol(sym);
@@ -43,6 +47,28 @@ export default function EtfDetail() {
   );
 
   const bullBear = useMemo(() => (etf ? casesForEtf(etf) : null), [etf]);
+
+  const convictionScore = useMemo(
+    () => (etf ? computeEtfConviction(etf, profile, themeIds) : 0),
+    [etf, profile, themeIds]
+  );
+
+  const convictionLabel =
+    convictionScore >= 70 ? "Strong" : convictionScore >= 45 ? "Moderate" : convictionScore >= 25 ? "Weak" : "Mismatch";
+
+  const convictionDescription =
+    convictionScore >= 70
+      ? "Strong alignment with your themes and profile"
+      : convictionScore >= 45
+        ? "Moderate alignment — some overlap, verify fit"
+        : convictionScore >= 25
+          ? "Some overlap, review holdings carefully"
+          : "Limited alignment with your current themes";
+
+  const themeOverlap = useMemo(
+    () => (etf ? etf.themes.filter((tid) => themeIds.includes(tid)).length : 0),
+    [etf, themeIds]
+  );
 
   if (!etf) {
     return (
@@ -85,6 +111,23 @@ export default function EtfDetail() {
         </View>
       </View>
 
+      {/* Tab switcher */}
+      <View className="flex-row p-1 bg-track rounded-[12px] mb-4">
+        {(["overview", "conviction"] as const).map((t) => (
+          <Pressable
+            key={t}
+            onPress={() => setTab(t)}
+            className={`flex-1 py-2.5 rounded-[10px] items-center ${tab === t ? "bg-bg-surface" : ""}`}
+          >
+            <Text className={`text-[13px] font-sansBold ${tab === t ? "text-ink" : "text-ink-3"}`}>
+              {t === "overview" ? "Overview" : "Conviction"}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {tab === "overview" && (
+        <>
       <Card pad={16} className="mb-4">
         <Text className="text-ink text-[15px] font-sansMd leading-[22px]">{etf.description}</Text>
         <Text className="text-ink-3 text-[12px] font-sansMd mt-3">
@@ -174,14 +217,105 @@ export default function EtfDetail() {
           </View>
         </>
       )}
+        </>
+      )}
 
-      <Button
-        label="View fund page & prospectus"
-        fullWidth
-        size="md"
-        variant="secondary"
-        onPress={openProspectus}
-      />
+      {tab === "conviction" && (
+        <>
+          <Card pad={16} className="mb-4">
+            <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-wider mb-2">
+              Thesis alignment score
+            </Text>
+            <View className="flex-row items-end gap-2 mb-3">
+              <Text className="text-ink font-monoBold text-[30px]">
+                {convictionScore}
+              </Text>
+              <Text className="text-ink-3 text-[14px] font-sansMd mb-1">/ 100</Text>
+              <View className={`ml-2 mb-1 px-2.5 py-0.5 rounded-[8px] ${
+                convictionScore >= 70 ? "bg-brand-bg" : convictionScore >= 45 ? "bg-amber-bg" : convictionScore >= 25 ? "bg-track" : "bg-neg-bg/40"
+              }`}>
+                <Text className={`text-[11px] font-sansBold ${
+                  convictionScore >= 70 ? "text-brand" : convictionScore >= 45 ? "text-amber" : convictionScore >= 25 ? "text-ink-2" : "text-neg"
+                }`}>
+                  {convictionLabel}
+                </Text>
+              </View>
+            </View>
+            <Text className="text-ink-2 text-[13px] font-sansMd leading-[19px]">
+              {convictionDescription}
+            </Text>
+          </Card>
+
+          <Card pad={16} className="mb-4">
+            <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-wider mb-3">
+              Score breakdown
+            </Text>
+            <View className="gap-y-3">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-ink text-[14px] font-sansSb">Theme overlap</Text>
+                <Text className="text-ink-2 text-[14px] font-sansMd">
+                  {themeOverlap} of {themeIds.length || 0} your themes
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-ink text-[14px] font-sansSb">Expense efficiency</Text>
+                <Text className="text-ink-2 text-[14px] font-sansMd">
+                  {etf.expense <= 0.1 ? "Excellent" : etf.expense <= 0.3 ? "Good" : "Above average"} ({etf.expense}%)
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-ink text-[14px] font-sansSb">Holding quality</Text>
+                <Text className="text-ink-2 text-[14px] font-sansMd">
+                  {themeOverlap > 0 ? "Relevant to your themes" : "Review individual holdings"}
+                </Text>
+              </View>
+            </View>
+          </Card>
+
+          {etf.themes.length > 0 && (
+            <Card pad={14} className="mb-4">
+              <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-wider mb-2">
+                Connected themes
+              </Text>
+              <View className="flex-row flex-wrap gap-2">
+                {etf.themes.map((tid) => {
+                  const t = themeById(tid);
+                  const matched = themeIds.includes(tid);
+                  return (
+                    <Pressable
+                      key={tid}
+                      onPress={() =>
+                        router.push({ pathname: "/(tabs)/theme/[id]", params: { id: tid } })
+                      }
+                      className={`px-3 py-1.5 rounded-chip border active:opacity-70 ${
+                        matched ? "bg-brand-bg border-brand/20" : "bg-bg-surface border-line"
+                      }`}
+                    >
+                      <Text className={`text-[12px] font-sansSb ${matched ? "text-brand-deep" : "text-ink-2"}`}>
+                        {matched ? "✓ " : ""}{t?.title ?? tid}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </Card>
+          )}
+
+          <Text className="text-ink-3 text-[11px] font-sansMd leading-[16px] px-1">
+            Conviction for ETFs combines theme alignment, expense ratio, and the thesis fit of underlying holdings. The numerical score is illustrative based on profile data; not investment advice.
+          </Text>
+        </>
+      )}
+
+      <View className="mt-4 mb-2">
+        <Button
+          label="View fund page & prospectus"
+          fullWidth
+          size="md"
+          variant="secondary"
+          onPress={openProspectus}
+        />
+      </View>
 
       <View className="mt-3 mb-6">
         <Button

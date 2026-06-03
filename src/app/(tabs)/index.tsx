@@ -1,10 +1,16 @@
 import { useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 import { Icon, type IconName } from "@/components/Icon";
+import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
 import { AskThesisCard } from "@/components/home/AskThesisCard";
+import { NavigationTutorial } from "@/components/onboarding/NavigationTutorial";
 import { FearGreedIndex } from "@/components/home/FearGreedIndex";
+import { JournalReviewCard } from "@/components/journal/JournalReviewCard";
+import { ThesisHealthCard } from "@/components/home/ThesisHealthCard";
+import { CompounderDashboard } from "@/components/compounder/CompounderDashboard";
+import { WeeklyReviewCard } from "@/components/compounder/WeeklyReviewCard";
 import { InsightsFeed } from "@/components/home/InsightsFeed";
 import { RadarFeed } from "@/components/home/RadarFeed";
 import { TodayForThesisCard } from "@/components/home/TodayForThesisCard";
@@ -22,6 +28,8 @@ import { radarReportsForContext } from "@/data/radar-reports";
 import { stockBySymbol } from "@/data/stocks";
 import { themeById } from "@/data/themes";
 import { askPromptsForProfile } from "@/lib/ask-prompts";
+import { useMilestoneCheck } from "@/lib/use-milestone-check";
+import { buildProfileSummary } from "@/lib/profile-summary";
 import { useStore } from "@/store";
 
 export default function HomeScreen() {
@@ -31,6 +39,16 @@ export default function HomeScreen() {
   const journal = useStore((s) => s.journal);
   const profile = useStore((s) => s.profile);
   const hardReset = useStore((s) => s.hardReset);
+  const tutorialShown = useStore((s) => s.tutorialShown);
+  const setTutorialShown = useStore((s) => s.setTutorialShown);
+  const trackActiveToday = useStore((s) => s.trackActiveToday);
+
+  const { check, currentMilestone, dismissCurrent } = useMilestoneCheck();
+
+  useEffect(() => {
+    trackActiveToday();
+    check();
+  }, [trackActiveToday, check]);
 
   const themes = themeIds.map((id) => themeById(id)!).filter(Boolean);
   const featured = themes[0];
@@ -58,6 +76,9 @@ export default function HomeScreen() {
       ]
     );
   };
+
+  // Profile plain-language summary (E7)
+  const profileSummary = useMemo(() => buildProfileSummary(profile), [profile]);
 
   // Profile fingerprint values (0-100)
   const fingerprint = computeFingerprint(profile);
@@ -101,8 +122,11 @@ export default function HomeScreen() {
           <Text
             className="text-ink font-displayX text-[26px]"
             style={{ letterSpacing: -0.5, lineHeight: 30 }}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
           >
-            Investor
+            {profileSummary.headline}
           </Text>
         </Pressable>
         <View className="flex-row items-center gap-x-2">
@@ -114,7 +138,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           )}
-          <IconBtn name="bell" />
+          <IconBtn name="bell" onPress={() => router.push("/settings" as any)} />
         </View>
       </View>
 
@@ -182,6 +206,15 @@ export default function HomeScreen() {
         </View>
       )}
 
+      {/* Profile plain-language summary */}
+      {profileSummary.bullets.length > 0 && (
+        <Card pad={16} className="mb-4 bg-brand-bg/10" style={{ borderColor: "rgba(14, 122, 102, 0.2)" }}>
+          <Text className="text-ink-2 text-[13px] font-sansMd leading-[20px]">
+            {profileSummary.bullets.join(" ")}
+          </Text>
+        </Card>
+      )}
+
       {/* Profile fingerprint */}
       <Card pad={18} className="mb-4">
         <View className="flex-row items-center mb-3">
@@ -206,6 +239,18 @@ export default function HomeScreen() {
 
       {/* Fear & Greed Index */}
       <FearGreedIndex />
+
+      {/* Thesis health card — shows when holdings linked */}
+      <ThesisHealthCard />
+
+      {/* Investment Journal 2.0 — monthly review card */}
+      <JournalReviewCard />
+
+      {/* Conviction Compounder — investor score dashboard */}
+      <CompounderDashboard />
+
+      {/* Weekly review card — AI-generated summary */}
+      <WeeklyReviewCard />
 
       {/* AI CFO / Ask Thesis */}
       <AskThesisCard prompts={askPrompts} />
@@ -384,10 +429,28 @@ export default function HomeScreen() {
         <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px]">
           Educational tool. Not investment advice. Do your own research.
         </Text>
+        <Pressable
+          onPress={() => router.push("/feedback" as never)}
+          className="mt-3 py-2 active:opacity-70"
+        >
+          <Text className="text-brand text-[13px] font-sansBold text-center">
+            Report an issue or share feedback
+          </Text>
+        </Pressable>
         <Text className="text-ink-3 text-[10px] text-center font-sansMd mt-1 opacity-60">
           Long-press the greeting to reset everything.
         </Text>
       </View>
+
+      {/* Navigation tutorial — shown once after onboarding */}
+      {!tutorialShown && (
+        <NavigationTutorial onDismiss={() => setTutorialShown(true)} />
+      )}
+
+      {/* Milestone celebration modal */}
+      {currentMilestone && (
+        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
+      )}
     </Screen>
   );
 }

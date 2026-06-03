@@ -9,6 +9,7 @@ import { Bar } from "@/components/ui/Progress";
 import { ListRow } from "@/components/ui/ListRow";
 import { courses } from "@/data/courses";
 import { courseProgressLabel, courseProgressPercent } from "@/lib/course-progress";
+import { courseMasteryPct, masteryLabel } from "@/lib/quiz-mastery";
 import { recommendedCourseIds } from "@/lib/course-recommendations";
 import { useStore } from "@/store";
 
@@ -16,6 +17,8 @@ export default function CoursesIndex() {
   const router = useRouter();
   const profile = useStore((s) => s.profile);
   const completedLessons = useStore((s) => s.completedLessons);
+
+  const quizScores = useStore((s) => s.quizScores);
 
   const courseList = useMemo(() => {
     const all = courses();
@@ -61,6 +64,7 @@ export default function CoursesIndex() {
             const totalMin = course.lessons.reduce((sum, l) => sum + l.estimatedMin, 0);
             const pct = courseProgressPercent(course, completedLessons);
             const progressLine = courseProgressLabel(course, completedLessons);
+            const mPct = courseMasteryPct(course.lessons.map((l) => l.id), quizScores);
 
             return (
               <View key={course.id}>
@@ -72,7 +76,7 @@ export default function CoursesIndex() {
                 <ListRow
                   leading={<CourseThumbnail courseId={course.id} size={48} rounded={12} />}
                   title={course.title}
-                  subtitle={`${course.lessons.length} lessons · ~${totalMin} min · ${progressLine}`}
+                  subtitle={`${course.lessons.length} lessons · ~${totalMin} min · ${progressLine}${mPct != null ? ` · ${masteryLabel(mPct)}` : ""}`}
                   onPress={() => router.push(`/courses/${course.id}` as any)}
                 />
                 {pct > 0 && pct < 100 && (

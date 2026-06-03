@@ -1,0 +1,30 @@
+{
+  "cli": {
+    "version": ">= 14.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_THESIS_API_URL": "https://thesis-server-beta.fly.dev",
+        "EXPO_PUBLIC_THESIS_APP_KEY": "wqh3N5wrv5YSImafvoYO4Rw8TV7fcqqOerCM3mQF6A0="
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_THESIS_API_URL": "http://127.0.0.1:8787",
+        "EXPO_PUBLIC_THESIS_APP_KEY": "wqh3N5wrv5YSImafvoYO4Rw8TV7fcqqOerCM3mQF6A0="
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6775985719"
+      }
+    }
+  }
+}

@@ -125,7 +125,7 @@ export type Theme = {
   title: string;
   thesis: string; // short blurb for cards
   color: string; // hex for accent (gradient start)
-  emoji?: string; // legacy, optional
+  emoji?: string;
   glyph: string; // icon name from our Icon set
   kicker: string; // ALL-CAPS category label
   heat: ThemeHeat;
@@ -214,17 +214,52 @@ export type JournalReason =
   | "gut"
   | "other";
 
+export type JournalEntryType =
+  | "duel"
+  | "buy"
+  | "sell"
+  | "thesis-change"
+  | "watchlist-add"
+  | "watchlist-remove"
+  | "general";
+
+export type EmotionalState = "confident" | "uncertain" | "anxious" | "excited";
+
 export type JournalEntry = {
   id: string;
   createdAt: number;
-  winner: string; // symbol
-  loser: string; // symbol
-  reason: JournalReason;
+  type: JournalEntryType;
+  /** Symbol chosen in a duel (duel entries only). */
+  winner?: string;
+  /** Symbol passed over in a duel (duel entries only). */
+  loser?: string;
+  /** Reason for a duel decision. */
+  reason?: JournalReason;
+  /** Short note captured at creation time. */
   note?: string;
+  /** How the user felt when making the entry. */
+  emotionalState?: EmotionalState;
+  /** Longer free-form reflection text. */
+  freeformNote?: string;
+  /** User-defined labels for categorisation. */
+  tags?: string[];
+  /** Links this entry to a thesis model for cross-referencing. */
+  relatedThesisId?: string;
   /** Next suggested revisit (90 days after creation by default). */
   revisitAt: number;
   /** User has snoozed the revisit. */
   revisitSnoozed?: boolean;
+};
+
+export type WatchlistAlert = {
+  id: string;
+  symbol: string;
+  type: "price-above" | "price-below" | "conviction-change";
+  threshold?: number; // price target
+  convictionDirection?: "up" | "down";
+  createdAt: number;
+  triggered: boolean;
+  triggeredAt?: number;
 };
 
 export type DuelResult = {

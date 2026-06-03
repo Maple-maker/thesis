@@ -1,3 +1,24 @@
 [build]
   command = ""
   publish = "."
+
+# Clean URLs — serve .html files without the extension
+[[redirects]]
+  from = "/support"
+  to = "/support.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/support.html#privacy"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/support.html#terms"
+  status = 200
+
+[[redirects]]
+  from = "/security"
+  to = "/support.html#security"
+  status = 200

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { Icon } from "@/components/Icon";
+import { StressTestSheet } from "@/components/thesis/StressTestSheet";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Header } from "@/components/ui/Header";
@@ -34,6 +35,7 @@ import { runThesisRadarResearch } from "@/lib/thesis-radar-research";
 import { buildThesisPortfolio } from "@/lib/thesis-portfolio-builder";
 import { DEFAULT_PIE_CUSTOMIZATION } from "@/types/pie-customization";
 import { normalizeModelThesis, useStore } from "@/store";
+import type { StressTestResult } from "@/lib/thesis-stress-test";
 
 export default function ThesisModelScreen() {
   const router = useRouter();
@@ -57,9 +59,11 @@ export default function ThesisModelScreen() {
 
   const [researching, setResearching] = useState<string | null>(null);
   const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
+  const [stressSheetSymbol, setStressSheetSymbol] = useState<string | null>(null);
   const [pendingRadarSymbol, setPendingRadarSymbol] = useState<string | null>(null);
   const [pendingRadarTemplate, setPendingRadarTemplate] =
     useState<RadarSearchTemplateId>("conviction-dossier");
+  const [lastStressResult, setLastStressResult] = useState<StressTestResult | null>(null);
 
   useEffect(() => {
     const sym = params.radarSymbol?.toString().toUpperCase();
@@ -213,6 +217,73 @@ export default function ThesisModelScreen() {
           </Text>
         )}
       </Card>
+
+      {/* Stress test section */}
+      {stockSymbols.length > 0 && (
+        <View className="mb-4">
+          <View className="flex-row gap-2">
+            <View className="flex-1">
+              <Button
+                label={lastStressResult ? "Re-run stress test" : "Stress test thesis"}
+                fullWidth
+                size="md"
+                variant="secondary"
+                onPress={() => setStressSheetSymbol(stockSymbols[0])}
+              />
+            </View>
+          </View>
+
+          {/* Last result summary */}
+          {lastStressResult && (
+            <Card pad={14} className="mt-3">
+              <View className="flex-row items-center justify-between">
+                <View>
+                  <Text className="text-ink-3 text-[10px] font-sansX uppercase tracking-widest">
+                    Last stress test
+                  </Text>
+                  <Text className="text-ink-2 text-[12px] font-sansMd mt-0.5">
+                    {new Date(lastStressResult.runAt).toLocaleDateString()} · {lastStressResult.symbol}
+                  </Text>
+                </View>
+                <View className="items-end">
+                  <Text
+                    className="font-monoBold text-[24px]"
+                    style={{
+                      color:
+                        lastStressResult.overallResilience >= 70
+                          ? "#0E7A66"
+                          : lastStressResult.overallResilience >= 40
+                            ? "#D98512"
+                            : "#D32F2F",
+                    }}
+                  >
+                    {lastStressResult.overallResilience}
+                  </Text>
+                  <Text
+                    className="text-[10px] font-sansBold uppercase"
+                    style={{
+                      color:
+                        lastStressResult.overallResilience >= 70
+                          ? "#0E7A66"
+                          : lastStressResult.overallResilience >= 40
+                            ? "#D98512"
+                            : "#D32F2F",
+                    }}
+                  >
+                    {lastStressResult.resilienceLabel}
+                  </Text>
+                </View>
+              </View>
+              <Pressable
+                onPress={() => setStressSheetSymbol(stockSymbols[0])}
+                className="mt-2 active:opacity-70"
+              >
+                <Text className="text-brand text-[12px] font-sansBold">View full results →</Text>
+              </Pressable>
+            </Card>
+          )}
+        </View>
+      )}
 
       {(convictionNotes.length > 0 || thesisChangelog.length > 0) && (
         <Card pad={14} className="mb-4">
@@ -539,6 +610,16 @@ export default function ThesisModelScreen() {
         variant="secondary"
         onPress={() => router.push("/(tabs)/builder/portfolio" as never)}
       />
+
+      {/* Stress test sheet */}
+      {stressSheetSymbol && (
+        <StressTestSheet
+          visible={stressSheetSymbol != null}
+          onClose={() => setStressSheetSymbol(null)}
+          symbol={stressSheetSymbol}
+          onResult={setLastStressResult}
+        />
+      )}
     </Screen>
   );
 }

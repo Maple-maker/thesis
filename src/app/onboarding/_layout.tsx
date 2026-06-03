@@ -6,6 +6,7 @@ export default function OnboardingLayout() {
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
+        gestureEnabled: false,
         contentStyle: { backgroundColor: "#0A0A0B" },
       }}
     />

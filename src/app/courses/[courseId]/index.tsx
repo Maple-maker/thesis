@@ -10,6 +10,7 @@ import { Bar } from "@/components/ui/Progress";
 import { courseById, lessonsForCourse, type CourseId, type Lesson } from "@/data/courses";
 import { COURSE_DEFAULT_IMAGE } from "@/data/lesson-images";
 import { courseProgressPercent } from "@/lib/course-progress";
+import { courseMasteryPct, masteryLabel } from "@/lib/quiz-mastery";
 import { imageKeyForStep } from "@/lib/lesson-visuals";
 import { useStore } from "@/store";
 
@@ -22,11 +23,13 @@ function LessonRow({
   courseId,
   lesson,
   complete,
+  quizPct,
   onPress,
 }: {
   courseId: CourseId;
   lesson: Lesson;
   complete: boolean;
+  quizPct: number | null;
   onPress: () => void;
 }) {
   const thumbKey = useMemo(() => lessonThumbKey(lesson, courseId), [lesson, courseId]);
@@ -55,9 +58,20 @@ function LessonRow({
         <Text className="text-ink text-[14.5px] font-sansBold leading-[19px]">
           {lesson.title}
         </Text>
-        <Text className="text-ink-3 text-[12px] font-sansMd mt-0.5">
-          {lesson.estimatedMin} min · {lesson.steps.length} steps
-        </Text>
+        <View className="flex-row items-center gap-2">
+          <Text className="text-ink-3 text-[12px] font-sansMd mt-0.5">
+            {lesson.estimatedMin} min · {lesson.steps.length} steps
+          </Text>
+          {quizPct != null && (
+            <Text
+              className={`text-[11px] font-sansBold mt-0.5 ${
+                quizPct >= 90 ? "text-pos" : quizPct >= 50 ? "text-amber" : "text-ink-3"
+              }`}
+            >
+              · {quizPct}%
+            </Text>
+          )}
+        </View>
       </View>
 
       <Icon name="chev" size={16} color="#8C988F" sw={2} />
@@ -71,10 +85,12 @@ export default function CourseSyllabus() {
 
   const completedLessons = useStore((s) => s.completedLessons);
   const isComplete = useStore((s) => s.isLessonComplete);
+  const quizScores = useStore((s) => s.quizScores);
 
   const course = courseId ? courseById(courseId) : undefined;
   const lessons = courseId ? lessonsForCourse(courseId) : [];
   const progressPct = course ? courseProgressPercent(course, completedLessons) : 0;
+  const courseQuizPct = course ? courseMasteryPct(lessons.map((l) => l.id), quizScores) : null;
 
   if (!course) {
     return (
@@ -126,11 +142,20 @@ export default function CourseSyllabus() {
             <CourseThumbnail courseId={course.id} fullBleed />
           </View>
           <View className="px-4 pt-4 pb-4">
-            {progressPct > 0 && (
+            {(progressPct > 0 || courseQuizPct != null) && (
               <View className="mb-3">
                 <View className="flex-row justify-between mb-1.5">
-                  <Text className="text-ink-3 text-[11px] font-sansMd">Your progress</Text>
-                  <Text className="text-brand text-[11px] font-sansBold">{progressPct}%</Text>
+                  <Text className="text-ink-3 text-[11px] font-sansMd">
+                    {progressPct === 100 ? "Completed" : "Your progress"}
+                  </Text>
+                  <View className="flex-row items-center gap-2">
+                    {courseQuizPct != null && (
+                      <Text className={`text-[10px] font-sansBold ${courseQuizPct >= 90 ? "text-pos" : "text-ink-3"}`}>
+                        {masteryLabel(courseQuizPct)}
+                      </Text>
+                    )}
+                    <Text className="text-brand text-[11px] font-sansBold">{progressPct}%</Text>
+                  </View>
                 </View>
                 <Bar pct={progressPct / 100} height={6} />
               </View>
@@ -159,6 +184,7 @@ export default function CourseSyllabus() {
               courseId={course.id}
               lesson={lesson}
               complete={isComplete(lesson.id)}
+              quizPct={quizScores[lesson.id] ? Math.round((quizScores[lesson.id].correctAnswers / quizScores[lesson.id].totalQuestions) * 100) : null}
               onPress={() => router.push(`/courses/${course.id}/${lesson.id}` as any)}
             />
           ))}

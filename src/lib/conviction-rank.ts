@@ -71,6 +71,29 @@ export function rankStocksByConviction(
   return rows.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
+/** Score a single ETF against the user's profile and themes. */
+export function computeEtfConviction(
+  etf: ETF,
+  profile: UserProfile,
+  themeIds: ThemeId[],
+): number {
+  const themeSet = new Set(themeIds);
+  const overlap = etf.themes.filter((t) => themeSet.has(t)).length;
+
+  let score = overlap * 18 + (etf.expense <= 0.2 ? 8 : 0);
+  const holdingScores: number[] = [];
+  for (const sym of etf.holdings.slice(0, 4)) {
+    const stock = stockBySymbol(sym);
+    if (!stock) continue;
+    holdingScores.push(scoreThesis(stock, profile, themeIds).overall);
+  }
+  if (holdingScores.length) {
+    const avg = holdingScores.reduce((a, b) => a + b, 0) / holdingScores.length;
+    score = Math.round(score * 0.35 + avg * 0.65);
+  }
+  return Math.min(100, Math.max(0, score));
+}
+
 /** Rank ETFs by theme overlap + underlying holding thesis scores. */
 export function rankEtfsByConviction(
   profile: UserProfile,
@@ -92,18 +115,7 @@ export function rankEtfsByConviction(
     const overlap = etf.themes.filter((t) => themeSet.has(t)).length;
     if (overlap === 0 && themeIds.length > 0) continue;
 
-    let score = overlap * 18 + (etf.expense <= 0.2 ? 8 : 0);
-    const holdingScores: number[] = [];
-    for (const sym of etf.holdings.slice(0, 4)) {
-      const stock = stockBySymbol(sym);
-      if (!stock) continue;
-      holdingScores.push(scoreThesis(stock, profile, themeIds).overall);
-    }
-    if (holdingScores.length) {
-      const avg = holdingScores.reduce((a, b) => a + b, 0) / holdingScores.length;
-      score = Math.round(score * 0.35 + avg * 0.65);
-    }
-    score = Math.min(100, score);
+    const score = computeEtfConviction(etf, profile, themeIds);
     if (score < 35) continue;
 
     rows.push({

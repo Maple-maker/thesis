@@ -17,6 +17,7 @@ import { PortfolioBacktestCompare } from "@/components/duel/PortfolioBacktestCom
 import { WhyThesisVsIndex } from "@/components/duel/WhyThesisVsIndex";
 import { ExplainSheet } from "@/components/ExplainSheet";
 import { Icon } from "@/components/Icon";
+import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Delta } from "@/components/ui/Delta";
@@ -28,6 +29,7 @@ import { themeById } from "@/data/themes";
 import type { ConceptId } from "@/data/concepts";
 import { BullBearCaseCard } from "@/components/BullBearCaseCard";
 import { casesFor, casesForEtf, takeForUserPick, techWeightFromHoldings } from "@/lib/cases";
+import { useMilestoneCheck } from "@/lib/use-milestone-check";
 import { useExplainSheet } from "@/hooks/useExplainSheet";
 import type { CompareMetric } from "@/lib/duel-asset";
 import {
@@ -74,6 +76,7 @@ export default function DuelScreen() {
   const holdings = useStore((s) => s.holdings);
   const recordDuel = useStore((s) => s.recordDuel);
   const connectDemoAccounts = useStore((s) => s.connectDemoAccounts);
+  const trackActiveToday = useStore((s) => s.trackActiveToday);
 
   const [pair, setPair] = useState<[DuelAsset, DuelAsset] | null>(null);
   const [phase, setPhase] = useState<Phase>("pick");
@@ -83,6 +86,7 @@ export default function DuelScreen() {
   const [mindChange, setMindChange] = useState("");
   const [swapSide, setSwapSide] = useState<"a" | "b" | null>(null);
   const addConvictionNote = useStore((s) => s.addConvictionNote);
+  const { check, currentMilestone, dismissCurrent } = useMilestoneCheck();
 
   useEffect(() => {
     const pa = params.a ? resolveDuelAsset(String(params.a), holdings) : null;
@@ -195,6 +199,8 @@ export default function DuelScreen() {
         takeaway: note.trim() || undefined,
       });
     }
+    trackActiveToday();
+    check();
     setPhase("synthesis");
   };
 
@@ -275,6 +281,10 @@ export default function DuelScreen() {
           onAnother={newDuel}
           onDone={() => router.back()}
         />
+      )}
+
+      {currentMilestone && (
+        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
       )}
     </SafeAreaView>
   );

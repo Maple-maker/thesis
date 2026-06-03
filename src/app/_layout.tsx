@@ -128,6 +128,16 @@ export default function RootLayout() {
           <Stack.Screen name="thesis-studio" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="thesis-model/index" options={{ animation: "slide_from_right" }} />
           <Stack.Screen name="explore-climate" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="support" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="thesis-health" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen name="compounder" options={{ animation: "slide_from_right" }} />
+          <Stack.Screen
+            name="feedback"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>
