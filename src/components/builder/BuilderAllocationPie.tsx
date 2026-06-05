@@ -207,10 +207,26 @@ export function BuilderAllocationPie({
         </View>
       </View>
 
+      {/* Over-100% warning — visible when manually editing weights */}
+      {editable && (() => {
+        const total = rows.reduce((s, r) => s + r.weightPct, 0);
+        if (total > 100.1) {
+          return (
+            <View className="mt-3 bg-neg-bg border border-neg/30 rounded-[12px] px-3.5 py-2.5 flex-row items-center gap-2">
+              <Icon name="info" size={14} color="#D8472C" sw={2} />
+              <Text className="text-neg text-[12.5px] font-sansSb leading-[17px] flex-1">
+                {total.toFixed(0)}% total — over by { (total - 100).toFixed(0)}%. Trim a slice or tap "Normalize to 100%" below.
+              </Text>
+            </View>
+          );
+        }
+        return null;
+      })()}
+
       {!compact ? (
         <Text className="text-ink-3 text-[10px] font-sansMd text-center mt-2 leading-[14px]">
           {editable
-            ? "Tap a slice to adjust weight · long-press a ticker for details"
+            ? "Tap a % to edit · long-press a ticker for details"
             : "Tap a slice to highlight · long-press a row for details"}
         </Text>
       ) : null}

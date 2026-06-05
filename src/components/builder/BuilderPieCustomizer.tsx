@@ -366,7 +366,7 @@ export function BuilderPieCustomizer({
         onSelectSymbol={setSelected}
         onRemove={removeHolding}
         onWeightChange={(symbol, weight) => {
-          onRowsChange(finalizePieRows(adjustSliceWeight(rows, symbol, weight)));
+          onRowsChange(finalizePieRows(adjustSliceWeight(rows, symbol, weight), true));
         }}
       />
 
