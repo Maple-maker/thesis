@@ -6,6 +6,7 @@ import { ConnectAccountsButton } from "@/components/plaid/ConnectAccountsButton"
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
+import { pushRoute } from "@/lib/app-route";
 import { computeNetWorth } from "@/data/demo-accounts";
 import { useStore, selectIsPro, selectPlaidConnected } from "@/store";
 
@@ -20,7 +21,7 @@ export function ConnectAccountsCard() {
 
   if (connected && nw) {
     return (
-      <Pressable onPress={() => router.push("/accounts" as any)} className="mb-4 active:opacity-70">
+      <Pressable onPress={() => pushRoute(router, "/accounts")} className="mb-4 active:opacity-70">
         <Card pad={16} className="border-brand/25 bg-brand-bg/25">
           <View className="flex-row items-center justify-between">
             <View className="flex-1">
@@ -60,7 +61,7 @@ export function ConnectAccountsCard() {
       {isPro ? (
         <>
           <ConnectAccountsButton label="Connect demo accounts" />
-          <Pressable onPress={() => router.push("/cfo" as any)} className="mt-3 active:opacity-70">
+          <Pressable onPress={() => pushRoute(router, "/cfo")} className="mt-3 active:opacity-70">
             <Text className="text-brand text-[13px] font-sansBold text-center">Open CFO dashboard →</Text>
           </Pressable>
         </>
@@ -70,9 +71,9 @@ export function ConnectAccountsCard() {
             label="Unlock Pro + connect"
             fullWidth
             variant="primary"
-            onPress={() => router.push("/pro" as any)}
+            onPress={() => pushRoute(router, "/pro")}
           />
-          <Pressable onPress={() => router.push("/accounts" as any)} className="mt-3 active:opacity-70">
+          <Pressable onPress={() => pushRoute(router, "/accounts")} className="mt-3 active:opacity-70">
             <Text className="text-ink-3 text-[12px] font-sansMd text-center">
               Preview accounts screen
             </Text>

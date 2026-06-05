@@ -102,7 +102,7 @@ export default function BuilderPortfolioScreen() {
   }, [built, modelThesis?.updatedAt, themeIds.join(",")]);
 
   const handleRowsChange = (rows: PieAllocationRow[]) => {
-    const finalized = finalizePieRows(rows);
+    const finalized = finalizePieRows(rows, true); // loose: don't force 100% during manual edits
     setDraftRows(finalized);
     const cashRow = finalized.find((r) => r.symbol === CASH_SLICE_SYMBOL);
     setPieCustomization({

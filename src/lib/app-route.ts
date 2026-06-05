@@ -1,4 +1,5 @@
-import type { Href, Router } from "expo-router";
+import type { Href } from "expo-router";
+import type { ImperativeRouter } from "expo-router";
 
 /** Tab and stack paths used for reliable back navigation. */
 export const APP_ROUTES = {
@@ -44,7 +45,7 @@ function normalizeReturnTo(returnTo?: string | string[]): string | undefined {
 /**
  * Prefer an explicit return path (tab-safe). Falls back to router.back(), then watchlist.
  */
-export function navigateBack(router: Router, returnTo?: string | string[]) {
+export function navigateBack(router: ImperativeRouter, returnTo?: string | string[]) {
   const dest = normalizeReturnTo(returnTo);
   if (dest) {
     router.navigate(dest as Href);
@@ -57,11 +58,18 @@ export function navigateBack(router: Router, returnTo?: string | string[]) {
   router.navigate(APP_ROUTES.watchlist as Href);
 }
 
-/** Parse `/path?a=1&b=2` into expo-router push args. */
-export function pushAppRoute(router: Router, route: string) {
+/**
+ * Push a string route (with optional query params) via the imperative router.
+ * Centralises the type assertion needed for Expo Router's strict Href type
+ * so it doesn't litter every call site.
+ *
+ * @example pushRoute(router, "/settings")
+ * @example pushRoute(router, "/stock/NVDA?returnTo=/(tabs)")
+ */
+export function pushRoute(router: ImperativeRouter, route: string) {
   const qIndex = route.indexOf("?");
   if (qIndex === -1) {
-    router.push(route as never);
+    router.push(route as Href);
     return;
   }
   const pathname = route.slice(0, qIndex);
@@ -71,5 +79,23 @@ export function pushAppRoute(router: Router, route: string) {
     const [k, v] = part.split("=");
     if (k && v) params[k] = decodeURIComponent(v);
   }
-  router.push({ pathname, params } as never);
+  router.push({ pathname, params } as Href);
 }
+
+/**
+ * Push a route object (pathname + params) via the imperative router.
+ * Centralises the type assertion for Expo Router's strict typed routes.
+ *
+ * @example pushRouteObject(router, { pathname: "/duel", params: { a: "NVDA" } })
+ */
+export function pushRouteObject(
+  router: ImperativeRouter,
+  obj: { pathname: string; params?: Record<string, string | undefined> }
+) {
+  router.push(obj as Href);
+}
+
+/**
+ * @deprecated Use {@link pushRoute} instead — same behaviour, clearer name.
+ */
+export const pushAppRoute = pushRoute;

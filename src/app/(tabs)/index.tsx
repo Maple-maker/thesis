@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { pushRoute } from "@/lib/app-route";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
@@ -117,6 +118,7 @@ export default function HomeScreen() {
   };
 
   return (
+    <>
     <Screen padded>
       {/* Greeting */}
       <View className="flex-row items-center justify-between pt-3 mb-4">
@@ -141,7 +143,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           )}
-          <IconBtn name="bell" onPress={() => router.push("/settings" as any)} />
+          <IconBtn name="bell" onPress={() => pushRoute(router, "/settings")} />
         </View>
       </View>
 
@@ -441,7 +443,7 @@ export default function HomeScreen() {
           Educational tool. Not investment advice. Do your own research.
         </Text>
         <Pressable
-          onPress={() => router.push("/feedback" as never)}
+          onPress={() => pushRoute(router, "/feedback")}
           className="mt-3 py-2 active:opacity-70"
         >
           <Text className="text-brand text-[13px] font-sansBold text-center">
@@ -453,16 +455,18 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      {/* Navigation tutorial — shown once after onboarding */}
-      {!tutorialShown && (
-        <NavigationTutorial onDismiss={() => setTutorialShown(true)} />
-      )}
-
-      {/* Milestone celebration modal */}
-      {currentMilestone && (
-        <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
-      )}
     </Screen>
+
+    {/* Navigation tutorial — rendered outside Screen so the overlay covers the full viewport */}
+    {!tutorialShown && (
+      <NavigationTutorial onDismiss={() => setTutorialShown(true)} />
+    )}
+
+    {/* Milestone celebration modal */}
+    {currentMilestone && (
+      <MilestoneCelebration milestone={currentMilestone} onDismiss={dismissCurrent} />
+    )}
+  </>
   );
 }
 

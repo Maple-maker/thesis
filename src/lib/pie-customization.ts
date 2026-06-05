@@ -56,13 +56,21 @@ function distributeRoundingDelta(rows: PieAllocationRow[], target: number) {
   };
 }
 
-/** Guarantees invested + cash sleeves sum to exactly 100%. */
-export function finalizePieRows(rows: PieAllocationRow[]): PieAllocationRow[] {
+/** Guarantees invested + cash sleeves sum to exactly 100%. Set loose=true to skip normalization for manual editing. */
+export function finalizePieRows(rows: PieAllocationRow[], loose?: boolean): PieAllocationRow[] {
   if (rows.length === 0) return rows;
 
-  const cashRow = rows.find((r) => r.symbol === CASH_SLICE_SYMBOL);
+  // Clamp all values but don't normalize when in loose (manual edit) mode
+  const cleaned = rows.map((r) => {
+    const max = r.symbol === CASH_SLICE_SYMBOL ? MAX_CASH_PCT : 100;
+    return { ...r, weightPct: round1(clamp(r.weightPct, 0, max)) };
+  });
+
+  if (loose) return cleaned;
+
+  const cashRow = cleaned.find((r) => r.symbol === CASH_SLICE_SYMBOL);
   const cashPct = cashRow ? clamp(round1(cashRow.weightPct), 0, MAX_CASH_PCT) : 0;
-  const invested = rows
+  const invested = cleaned
     .filter((r) => r.symbol !== CASH_SLICE_SYMBOL)
     .map((r) => ({ ...r, weightPct: Math.max(0, round1(r.weightPct)) }));
 
@@ -210,32 +218,22 @@ export function adjustSliceWeight(
 ): PieAllocationRow[] {
   const sym = symbol.toUpperCase();
   if (sym === CASH_SLICE_SYMBOL) {
-    return setCashReserve(
-      rows.filter((r) => r.symbol !== CASH_SLICE_SYMBOL),
-      clamp(newWeight, 0, MAX_CASH_PCT)
+    return rows.map((r) =>
+      r.symbol === CASH_SLICE_SYMBOL
+        ? { ...r, weightPct: round1(clamp(newWeight, 0, MAX_CASH_PCT)) }
+        : r
     );
   }
 
-  const cash = rows.find((r) => r.symbol === CASH_SLICE_SYMBOL);
-  const cashPct = cash?.weightPct ?? 0;
-  const invested = rows.filter((r) => r.symbol !== CASH_SLICE_SYMBOL);
-  const idx = invested.findIndex((r) => r.symbol === sym);
-  if (idx < 0) return finalizePieRows(rows);
+  const idx = rows.findIndex((r) => r.symbol === sym);
+  if (idx < 0) return rows;
 
-  const target = round1(100 - cashPct);
-  const w = clamp(newWeight, 0, target);
-  const delta = w - invested[idx].weightPct;
-  const others = invested.filter((r) => r.symbol !== sym);
-  const otherSum = others.reduce((s, r) => s + r.weightPct, 0);
-
-  const next = invested.map((r) => {
-    if (r.symbol === sym) return { ...r, weightPct: round1(w) };
-    if (otherSum <= 0) return { ...r, weightPct: round1((target - w) / others.length) };
-    const share = (r.weightPct / otherSum) * (otherSum - delta);
-    return { ...r, weightPct: round1(Math.max(0, share)) };
-  });
-
-  return finalizePieRows(cashPct > 0 ? [...next, cashSliceRow(cashPct)] : next);
+  // Just change this one slice — don't redistribute to others.
+  // User explicitly manages their own allocations; totals may not equal 100%.
+  const w = clamp(round1(newWeight), 0, 100);
+  return rows.map((r, i) =>
+    i === idx ? { ...r, weightPct: w } : r
+  );
 }
 
 export function parsePiePreferences(

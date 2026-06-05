@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -86,7 +87,7 @@ export default function BuilderScreen() {
     adoptLens(lens.id);
     trackActiveToday();
     check();
-    router.push("/(tabs)/builder/portfolio" as never);
+    pushRoute(router, "/(tabs)/builder/portfolio");
   };
 
   const handleRebuild = () => {
@@ -146,10 +147,10 @@ export default function BuilderScreen() {
             )}
             <View className="flex-row gap-2">
               <View className="flex-1">
-                <Button label="Edit" size="md" onPress={() => router.push("/(tabs)/builder/portfolio" as never)} />
+                <Button label="Edit" size="md" onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")} />
               </View>
               <View className="flex-1">
-                <Button label="Share" size="md" variant="secondary" onPress={() => router.push("/(tabs)/builder/portfolio" as never)} />
+                <Button label="Share" size="md" variant="secondary" onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")} />
               </View>
             </View>
             <Pressable onPress={handleRebuild} className="mt-3 active:opacity-70">
@@ -249,7 +250,7 @@ export default function BuilderScreen() {
                 return (
                   <Pressable
                     key={id}
-                    onPress={() => router.push({ pathname: "/(tabs)/builder/[id]", params: { id } } as never)}
+                    onPress={() => pushRouteObject(router, { pathname: "/(tabs)/builder/[id]", params: { id } })}
                     className="flex-row items-center bg-brand-bg border border-brand/30 rounded-full px-3 py-1.5 active:opacity-70"
                   >
                     <Icon name={t.glyph as IconName} size={13} color={t.color} />
@@ -276,20 +277,20 @@ export default function BuilderScreen() {
                     key={row.symbol}
                     row={row}
                     onPress={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/(tabs)/stock/[symbol]",
                         params: { symbol: row.symbol },
-                      } as never)
+                      })
                     }
                     onDuel={() => {
                       useStore.getState().setDuelMode("securities");
-                      router.push({ pathname: "/duel", params: { a: row.symbol } } as any);
+                      pushRouteObject(router, { pathname: "/duel", params: { a: row.symbol } });
                     }}
                     onDossier={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/thesis-model",
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
-                      } as any)
+                      })
                     }
                     onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
@@ -304,20 +305,20 @@ export default function BuilderScreen() {
                     key={row.symbol}
                     row={row}
                     onPress={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/(tabs)/etf/[symbol]",
                         params: { symbol: row.symbol },
-                      } as never)
+                      })
                     }
                     onDuel={() => {
                       useStore.getState().setDuelMode("securities");
-                      router.push({ pathname: "/duel", params: { a: row.symbol } } as any);
+                      pushRouteObject(router, { pathname: "/duel", params: { a: row.symbol } });
                     }}
                     onDossier={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/thesis-model",
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
-                      } as any)
+                      })
                     }
                     onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
@@ -335,23 +336,23 @@ export default function BuilderScreen() {
             fullWidth
             size="lg"
             variant="primary"
-            onPress={() => router.push("/(tabs)/builder/portfolio" as never)}
+            onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")}
           />
           <Button
             label="Browse full thesis library"
             fullWidth
             size="md"
             variant="secondary"
-            onPress={() => router.push("/(tabs)/themes" as never)}
+            onPress={() => pushRoute(router, "/(tabs)/themes")}
           />
         </View>
 
         {/* Tools */}
         <View className="flex-row gap-2.5 mb-6">
-          <ToolCard icon="compare" label="Duel" color="#0E7A66" onPress={() => router.push("/duel" as any)} />
-          <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => router.push("/xray" as any)} />
-          <ToolCard icon="discover" label="Lenses" color="#D98512" onPress={() => router.push("/lenses" as any)} />
-          <ToolCard icon="target" label="Forecast" color="#3B82F6" onPress={() => router.push("/forecast" as any)} />
+          <ToolCard icon="compare" label="Duel" color="#0E7A66" onPress={() => pushRoute(router, "/duel")} />
+          <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => pushRoute(router, "/xray")} />
+          <ToolCard icon="discover" label="Lenses" color="#D98512" onPress={() => pushRoute(router, "/lenses")} />
+          <ToolCard icon="target" label="Forecast" color="#3B82F6" onPress={() => pushRoute(router, "/forecast")} />
         </View>
 
         <Text className="text-ink-3 text-[10px] text-center font-sansMd leading-[14px]">

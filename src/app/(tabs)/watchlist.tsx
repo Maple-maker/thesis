@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
@@ -151,9 +152,9 @@ export default function WatchlistScreen() {
                       <Pressable
                         onPress={() => {
                           if (row.kind === "etf") {
-                            router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never);
+                            pushRouteObject(router, { pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } });
                           } else {
-                            router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } } as never);
+                            pushRouteObject(router, { pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } });
                           }
                         }}
                         className="flex-row items-center flex-1 active:opacity-70"
@@ -177,7 +178,7 @@ export default function WatchlistScreen() {
                             </Text>
                             {row.kind === "etf" && (
                               <Pressable
-                                onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                                onPress={() => pushRouteObject(router, { pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } })}
                               >
                                 <Text className="text-violet text-[10px] font-sansBold underline">ETF research →</Text>
                               </Pressable>
@@ -221,7 +222,7 @@ export default function WatchlistScreen() {
                   <Card key={s.symbol} pad={14}>
                     <View className="flex-row items-center">
                       <Pressable
-                        onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
+                        onPress={() => pushRouteObject(router, { pathname: "/(tabs)/stock/[symbol]", params: { symbol: s.symbol } })}
                         className="flex-row items-center flex-1 active:opacity-70"
                       >
                         <Tick ticker={s.symbol} size={42} />
@@ -298,7 +299,7 @@ export default function WatchlistScreen() {
                       <Card key={row.symbol} pad={12}>
                         <View className="flex-row items-center">
                           <Pressable
-                            onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } } as never)}
+                            onPress={() => pushRouteObject(router, { pathname: "/(tabs)/stock/[symbol]", params: { symbol: row.symbol } })}
                             className="flex-row items-center flex-1 active:opacity-70"
                           >
                             <View className={`w-[36px] h-[36px] rounded-[9px] items-center justify-center mr-3 ${colors.bg}`}>
@@ -344,7 +345,7 @@ export default function WatchlistScreen() {
                       <Card key={row.symbol} pad={12}>
                         <View className="flex-row items-center">
                           <Pressable
-                            onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                            onPress={() => pushRouteObject(router, { pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } })}
                             className="flex-row items-center flex-1 active:opacity-70"
                           >
                             <View className="bg-violet-bg/50 w-[36px] h-[36px] rounded-[9px] items-center justify-center mr-3">
@@ -376,7 +377,7 @@ export default function WatchlistScreen() {
                         </View>
                         {/* ETF research link */}
                         <Pressable
-                          onPress={() => router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } } as never)}
+                          onPress={() => pushRouteObject(router, { pathname: "/(tabs)/etf/[symbol]", params: { symbol: row.symbol } })}
                           className="mt-2 pt-2 border-t border-line"
                         >
                           <Text className="text-violet text-[11px] font-sansBold">

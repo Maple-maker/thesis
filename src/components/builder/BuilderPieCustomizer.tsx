@@ -81,13 +81,14 @@ export function BuilderPieCustomizer({
   const addHolding = (symbol: string, name: string, kind: "stock" | "etf") => {
     if (rows.some((r) => r.symbol === symbol)) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const addPct = 10;
-    const scaleDown = (100 - addPct) / 100;
-    const scaled = rows.map((r) => ({ ...r, weightPct: Math.round(r.weightPct * scaleDown * 10) / 10 }));
-    const sum = scaled.reduce((s, r) => s + r.weightPct, 0);
-    const next = finalizePieRows([...scaled, { symbol, name, weightPct: Math.round((100 - sum) * 10) / 10, role: "", kind }]);
+    // Add at a small default weight — user adjusts manually from here
+    const addPct = 5;
+    const next = finalizePieRows(
+      [...rows, { symbol, name, weightPct: addPct, role: "", kind }],
+      true // loose: don't force 100%, user manages allocations
+    );
     onRowsChange(next);
-    setInsights([`Added ${symbol} at ${addPct}%`]);
+    setInsights([`Added ${symbol} at ${addPct}% — adjust to fill your target allocation`]);
     setSearch("");
     setSearchResults([]);
   };
@@ -99,12 +100,10 @@ export function BuilderPieCustomizer({
       Alert.alert("Last holding", "Removing the last holding would leave an empty portfolio. Use 'Clear and rebuild' from the builder to start fresh, or add another holding first.", [{ text: "OK" }]);
       return;
     }
-    const total = remaining.reduce((s, r) => s + r.weightPct, 0);
-    if (total <= 0) return;
-    const next = finalizePieRows(remaining.map((r) => ({ ...r, weightPct: Math.round(r.weightPct * (100 / total) * 10) / 10 })));
-    onRowsChange(next);
+    // Just remove — don't redistribute. User manages their own allocations.
+    onRowsChange(finalizePieRows(remaining, true));
     if (selected === symbol) setSelected(null);
-    setInsights([`Removed ${symbol}`]);
+    setInsights([`Removed ${symbol} — ${(100 - pieTotalPct(remaining)).toFixed(1)}% now unallocated`]);
   };
 
   const ctx = { profile, themeIds, thesisBaseline };
@@ -377,32 +376,78 @@ export function BuilderPieCustomizer({
           <Text className="text-ink-3 text-[10px] font-sansX uppercase tracking-wider mb-2">
             Adjust {selectedRow.symbol}
           </Text>
+
+          {/* Direct % input */}
+          <View className="flex-row items-center gap-2 mb-3">
+            <TextInput
+              value={String(selectedRow.weightPct)}
+              onChangeText={(t) => {
+                const v = parseFloat(t);
+                if (!isNaN(v)) {
+                  onRowsChange(
+                    finalizePieRows(adjustSliceWeight(rows, selectedRow.symbol, v), true)
+                  );
+                } else if (t === "" || t === ".") {
+                  // Allow clearing to type new value
+                }
+              }}
+              keyboardType="decimal-pad"
+              placeholder="0"
+              placeholderTextColor="#8C988F"
+              selectTextOnFocus
+              className="bg-bg-subtle border border-line rounded-[10px] px-3 py-2 text-ink font-monoBold text-[18px] text-center"
+              style={{ width: 72 }}
+            />
+            <Text className="text-ink-2 text-[14px] font-sansBold">%</Text>
+            <Text className="text-ink-3 text-[12px] font-sansMd flex-1">
+              Type a number, 0–100
+            </Text>
+          </View>
+
+          {/* Also keep the slider for quick adjustments */}
           <SliderField
             value={selectedRow.weightPct}
             onChange={(w) => {
-              onRowsChange(finalizePieRows(adjustSliceWeight(rows, selectedRow.symbol, w)));
+              onRowsChange(
+                finalizePieRows(adjustSliceWeight(rows, selectedRow.symbol, w), true)
+              );
             }}
             min={0}
-            max={selectedRow.symbol === CASH_SLICE_SYMBOL ? 35 : 50}
+            max={100}
             step={0.5}
             lowLabel="0%"
-            highLabel={selectedRow.symbol === CASH_SLICE_SYMBOL ? "35%" : "50%"}
+            highLabel="100%"
             formatValue={(v) => `${v}%`}
           />
         </View>
       )}
 
-      <View className="flex-row items-center justify-between mt-3">
-        <Pressable
-          onPress={() => {
-            onRowsChange(finalizePieRows(normalizeInvestedWeights(rows, "proportional")));
-            setInsights(["Normalized all slices to 100%."]);
-          }}
-          className="py-2 active:opacity-70"
-        >
-          <Text className="text-brand text-[13px] font-sansBold">Normalize to 100% →</Text>
-        </Pressable>
-        <Text className="text-ink-3 text-[11px] font-monoBold">{pieTotalPct(rows)}%</Text>
+      {/* Total + gap indicator */}
+      <View className="mt-3">
+        <View className="flex-row items-center justify-between">
+          <Pressable
+            onPress={() => {
+              onRowsChange(finalizePieRows(normalizeInvestedWeights(rows, "proportional")));
+              setInsights(["Normalized all slices to 100%."]);
+            }}
+            className="py-2 active:opacity-70"
+          >
+            <Text className="text-brand text-[13px] font-sansBold">Normalize to 100% →</Text>
+          </Pressable>
+          <Text className="text-ink-3 text-[11px] font-monoBold">{pieTotalPct(rows)}%</Text>
+        </View>
+
+        {/* Gap callout */}
+        {Math.abs(pieTotalPct(rows) - 100) > 0.1 && (
+          <View className="bg-amber-bg rounded-[10px] px-3 py-2.5 mt-2 flex-row items-center gap-2">
+            <Icon name="info" size={14} color="#D98512" sw={2} />
+            <Text className="text-amber text-[12px] font-sansMd leading-[17px] flex-1">
+              {pieTotalPct(rows) < 100
+                ? `${(100 - pieTotalPct(rows)).toFixed(1)}% unallocated — add a new holding or increase existing slices above.`
+                : `${(pieTotalPct(rows) - 100).toFixed(1)}% over 100% — trim a slice or tap "Normalize to 100%".`}
+            </Text>
+          </View>
+        )}
       </View>
 
       <Text className="text-ink-3 text-[10px] font-sansMd text-center mt-2 leading-[14px]">
