@@ -12,7 +12,6 @@ import * as Haptics from "expo-haptics";
 import { Icon } from "@/components/Icon";
 import { BuilderAllocationPie } from "@/components/builder/BuilderAllocationPie";
 import { Button } from "@/components/ui/Button";
-import { SliderField } from "@/components/ui/SliderField";
 import { Tick } from "@/components/ui/Tick";
 import { PIE_ALLOCATION_DISCLAIMER } from "@/data/educational-disclosures";
 import { ETFS } from "@/data/etfs";
@@ -378,7 +377,7 @@ export function BuilderPieCustomizer({
           </Text>
 
           {/* Direct % input */}
-          <View className="flex-row items-center gap-2 mb-3">
+          <View className="flex-row items-center gap-2">
             <TextInput
               value={String(selectedRow.weightPct)}
               onChangeText={(t) => {
@@ -387,38 +386,20 @@ export function BuilderPieCustomizer({
                   onRowsChange(
                     finalizePieRows(adjustSliceWeight(rows, selectedRow.symbol, v), true)
                   );
-                } else if (t === "" || t === ".") {
-                  // Allow clearing to type new value
                 }
               }}
               keyboardType="decimal-pad"
               placeholder="0"
               placeholderTextColor="#8C988F"
               selectTextOnFocus
-              className="bg-bg-subtle border border-line rounded-[10px] px-3 py-2 text-ink font-monoBold text-[18px] text-center"
-              style={{ width: 72 }}
+              className="bg-bg-subtle border border-line rounded-[10px] px-3 py-2 text-ink font-monoBold text-[20px] text-center"
+              style={{ width: 80 }}
             />
-            <Text className="text-ink-2 text-[14px] font-sansBold">%</Text>
-            <Text className="text-ink-3 text-[12px] font-sansMd flex-1">
-              Type a number, 0–100
+            <Text className="text-ink-2 text-[15px] font-sansBold">%</Text>
+            <Text className="text-ink-3 text-[12px] font-sansMd flex-1 leading-[16px]">
+              Type a new weight, 0–100
             </Text>
           </View>
-
-          {/* Also keep the slider for quick adjustments */}
-          <SliderField
-            value={selectedRow.weightPct}
-            onChange={(w) => {
-              onRowsChange(
-                finalizePieRows(adjustSliceWeight(rows, selectedRow.symbol, w), true)
-              );
-            }}
-            min={0}
-            max={100}
-            step={0.5}
-            lowLabel="0%"
-            highLabel="100%"
-            formatValue={(v) => `${v}%`}
-          />
         </View>
       )}
 

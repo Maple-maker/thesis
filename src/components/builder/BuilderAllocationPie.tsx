@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { useMemo, useRef, useState } from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 import { Icon } from "@/components/Icon";
 import { AllocationPieChart } from "@/components/builder/AllocationPieChart";
@@ -37,6 +37,20 @@ export function BuilderAllocationPie({
   const [selectedLocal, setSelectedLocal] = useState<string | null>(null);
   const selected = editable && onSelectSymbol ? selectedProp ?? null : selectedLocal;
   const setSelected = editable && onSelectSymbol ? onSelectSymbol : setSelectedLocal;
+
+  // Inline weight editing — tap a % number to type a new value directly
+  const [editingSymbol, setEditingSymbol] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const editInputRef = useRef<TextInput>(null);
+
+  const commitEdit = (symbol: string) => {
+    const v = parseFloat(editValue);
+    if (!isNaN(v) && onWeightChange) {
+      onWeightChange(symbol, Math.max(0, Math.min(100, v)));
+    }
+    setEditingSymbol(null);
+    setEditValue("");
+  };
 
   const slices = useMemo(
     () =>
@@ -146,9 +160,35 @@ export function BuilderAllocationPie({
                     </Text>
                   ) : null}
                 </View>
-                <Text className="text-ink font-monoBold text-[16px] ml-2">
-                  {r.weightPct}%
-                </Text>
+                {/* Inline weight editor — tap % to type a new value */}
+                {editable && editingSymbol === r.symbol ? (
+                  <TextInput
+                    ref={editInputRef}
+                    value={editValue}
+                    onChangeText={setEditValue}
+                    onSubmitEditing={() => commitEdit(r.symbol)}
+                    onBlur={() => commitEdit(r.symbol)}
+                    keyboardType="decimal-pad"
+                    selectTextOnFocus
+                    autoFocus
+                    className="bg-brand-bg border border-brand rounded-[7px] px-2 py-0.5 text-ink font-monoBold text-[14px] text-center ml-2"
+                    style={{ minWidth: 48 }}
+                  />
+                ) : (
+                  <Pressable
+                    onPress={() => {
+                      if (!editable) return;
+                      setEditingSymbol(r.symbol);
+                      setEditValue(String(r.weightPct));
+                    }}
+                    className="ml-2 px-1.5 py-0.5 rounded-[6px] active:bg-brand-bg/60"
+                    hitSlop={8}
+                  >
+                    <Text className="text-ink font-monoBold text-[16px]">
+                      {r.weightPct}%
+                    </Text>
+                  </Pressable>
+                )}
                 {editable && onRemove && r.symbol !== CASH_SLICE_SYMBOL && (
                   <Pressable
                     onPress={() => onRemove(r.symbol)}
