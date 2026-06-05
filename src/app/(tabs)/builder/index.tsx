@@ -400,24 +400,79 @@ function LeaderboardRow({
         ? "bg-amber/10"
         : "bg-ink-3/10";
 
+  // Allocation adjustment — only available when the symbol is in the model thesis
+  const modelThesis = useStore((s) => s.modelThesis);
+  const setModelThesis = useStore((s) => s.setModelThesis);
+  const holding = modelThesis?.holdings.find(
+    (h) => h.symbol.toUpperCase() === row.symbol.toUpperCase()
+  );
+  const weightPct = holding?.weightPct ?? 0;
+
+  const adjustWeight = (delta: number) => {
+    if (!modelThesis || !holding) return;
+    const newW = Math.max(0, Math.min(100, weightPct + delta));
+    const updated = modelThesis.holdings.map((h) =>
+      h.symbol.toUpperCase() === row.symbol.toUpperCase()
+        ? { ...h, weightPct: newW }
+        : h
+    );
+    // Re-normalize so total stays at 100%
+    const nonCashUpdated = updated.filter((h) => h.symbol !== "CASH");
+    const totalNonCash = nonCashUpdated.reduce((s, h) => s + h.weightPct, 0);
+    if (totalNonCash > 0) {
+      const scale = 100 / totalNonCash;
+      const normalized = updated.map((h) =>
+        h.symbol === "CASH"
+          ? h
+          : { ...h, weightPct: Math.round(h.weightPct * scale) }
+      );
+      setModelThesis({ ...modelThesis, holdings: normalized });
+    }
+  };
+
   return (
     <Pressable onPress={onPress} className="active:opacity-70 mb-1.5">
       <Card pad={12}>
         <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center flex-1 mr-3">
-            <View className="w-[46px] mr-2.5">
-              <Text className="text-ink font-monoBold text-[13px]">{row.symbol}</Text>
-              <Text className="text-ink-3 text-[9px] font-sansMd">{row.kind === "etf" ? "ETF" : "Stock"}</Text>
-            </View>
-            <View className="flex-1 mr-2">
-              <Text className="text-ink text-[12px] font-sansSb" numberOfLines={1}>
-                {row.name}
-              </Text>
-              <Text className="text-ink-3 text-[10px] font-sansMd mt-0.5" numberOfLines={1}>
-                {row.blurb}
+          {/* Company name + ticker */}
+          <View className="flex-1 mr-2">
+            <Text className="text-ink text-[13px] font-sansSb" numberOfLines={1}>
+              {row.name}
+            </Text>
+            <View className="flex-row items-center gap-1.5 mt-0.5">
+              <Text className="text-ink-3 text-[11px] font-monoBold">{row.symbol}</Text>
+              <Text className="text-ink-3 text-[10px] font-sansMd">
+                {row.kind === "etf" ? "ETF" : "Stock"}
               </Text>
             </View>
           </View>
+
+          {/* Allocation % stepper (only when in model thesis) */}
+          {holding && (
+            <View className="flex-row items-center gap-1 mr-2">
+              <Pressable
+                onPress={() => adjustWeight(-5)}
+                className="w-[22px] h-[22px] rounded-[6px] bg-bg-subtle items-center justify-center active:opacity-70"
+                hitSlop={4}
+                disabled={weightPct <= 0}
+              >
+                <Text className="text-ink-2 text-[13px] font-monoBold" style={{ opacity: weightPct <= 0 ? 0.3 : 1 }}>−</Text>
+              </Pressable>
+              <View className="bg-bg-surface border border-line rounded-[7px] px-2 py-0.5 min-w-[42px] items-center">
+                <Text className="text-ink text-[11px] font-monoBold">{weightPct}%</Text>
+              </View>
+              <Pressable
+                onPress={() => adjustWeight(5)}
+                className="w-[22px] h-[22px] rounded-[6px] bg-brand-bg items-center justify-center active:opacity-70"
+                hitSlop={4}
+                disabled={weightPct >= 100}
+              >
+                <Text className="text-brand text-[13px] font-monoBold" style={{ opacity: weightPct >= 100 ? 0.3 : 1 }}>+</Text>
+              </Pressable>
+            </View>
+          )}
+
+          {/* Score + actions */}
           <View className="flex-row items-center gap-1.5">
             <View className={`rounded-[6px] px-2 py-0.5 ${labelBg}`}>
               <Text className="text-[10px] font-sansBold" style={{ color: scoreColor }}>
