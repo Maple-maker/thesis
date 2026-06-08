@@ -167,6 +167,9 @@ export default function GuidanceScreen() {
             ))}
           </>
         )}
+        <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-6 px-4">
+          Educational tool, not investment advice. Nothing here is a recommendation to buy or sell any security.
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );

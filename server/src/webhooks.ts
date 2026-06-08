@@ -8,12 +8,14 @@ import { setUserPro } from "./entitlements.js";
  */
 export function postRevenueCatWebhook(req: Request, res: Response) {
   const secret = process.env.REVENUECAT_WEBHOOK_SECRET;
-  if (secret) {
-    const auth = req.headers.authorization;
-    if (auth !== `Bearer ${secret}`) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
+  if (!secret) {
+    res.status(503).json({ error: "Webhook not configured" });
+    return;
+  }
+  const auth = req.headers.authorization;
+  if (auth !== `Bearer ${secret}`) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
   }
 
   const body = req.body as {

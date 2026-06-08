@@ -1,5 +1,6 @@
 import "@/global.css";
 
+import * as Sentry from "@sentry/react-native";
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
@@ -19,6 +20,11 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  environment: process.env.NODE_ENV ?? "production",
+});
 
 import { ExplainProvider } from "@/hooks/use-explain";
 
@@ -59,13 +65,14 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <StatusBar style="dark" />
         <ExplainProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: "#F3F5F1" },
-            animation: "slide_from_right",
-          }}
-        >
+          <Sentry.ErrorBoundary fallback={<View style={{ flex: 1, backgroundColor: "#F3F5F1" }} />}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: "#F3F5F1" },
+                animation: "slide_from_right",
+              }}
+            >
           <Stack.Screen name="index" />
           <Stack.Screen name="onboarding" />
           <Stack.Screen name="(tabs)" />
@@ -142,7 +149,16 @@ export default function RootLayout() {
               animation: "slide_from_bottom",
             }}
           />
-        </Stack>
+          <Stack.Screen
+            name="auth"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              gestureEnabled: false,
+            }}
+          />
+            </Stack>
+          </Sentry.ErrorBoundary>
         </ExplainProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

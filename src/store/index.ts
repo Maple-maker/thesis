@@ -1,6 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { User } from "@supabase/supabase-js";
+
+import { supabase } from "@/lib/supabase";
 
 import { createDefaultCfoProfile } from "@/data/cfo-profile-defaults";
 import { computeDerivedMetrics } from "@/lib/cfo-derived-metrics";
@@ -202,6 +205,12 @@ type Store = {
   assistantMessagesToday: number;
   recordAssistantMessage: () => boolean;
 
+  /** Supabase auth user — null when not signed in */
+  authUser: { id: string; email?: string; provider?: string } | null;
+  authLoading: boolean;
+  setAuthUser: (user: User | null) => void;
+  signOut: () => Promise<void>;
+  /** Prefer auth user ID when signed in, fall back to generated ID */
   thesisUserId: string;
   subscriptionTier: SubscriptionTier;
   setSubscriptionTier: (tier: SubscriptionTier) => void;
@@ -235,6 +244,8 @@ function newThesisUserId() {
 export const useStore = create<Store>()(
   persist(
     (set, get) => ({
+      authUser: null,
+      authLoading: false,
       onboarding: "not-started",
       tutorialShown: false,
       profile: createDefaultCfoProfile(),
@@ -675,6 +686,23 @@ export const useStore = create<Store>()(
       },
       setDevPro: (pro) => set({ subscriptionTier: pro ? "pro" : "free" }),
 
+      setAuthUser: (user) => {
+        const id = user?.id ?? newThesisUserId();
+        const email = user?.email ?? undefined;
+        const provider = user?.app_metadata?.provider ?? undefined;
+        set({
+          authUser: user ? { id, email, provider } : null,
+          thesisUserId: id,
+        });
+      },
+      signOut: async () => {
+        await supabase.auth.signOut();
+        set({
+          authUser: null,
+          thesisUserId: newThesisUserId(),
+        });
+      },
+
       plaidStatus: "disconnected",
       linkedAccounts: [],
       holdings: [],
@@ -735,6 +763,8 @@ export const useStore = create<Store>()(
           ...p,
           profile,
           themeIds,
+          authUser: p?.authUser ?? null,
+          authLoading: false,
           modelThesis: normalizeModelThesis(p?.modelThesis ?? current.modelThesis),
           convictionNotes: p?.convictionNotes ?? current.convictionNotes ?? [],
           thesisChangelog: p?.thesisChangelog ?? current.thesisChangelog ?? [],

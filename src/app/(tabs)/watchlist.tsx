@@ -413,6 +413,9 @@ export default function WatchlistScreen() {
 
         {/* Extra padding */}
         <View className="h-10" />
+        <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-2 px-4">
+          Educational tool, not investment advice. Nothing here is a recommendation to buy or sell any security.
+        </Text>
       </ScrollView>
 
       {/* ── Alerts sheet modal ── */}

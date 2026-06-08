@@ -8,7 +8,9 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_THESIS_API_URL": "https://thesis-server-beta.fly.dev",
-        "EXPO_PUBLIC_THESIS_APP_KEY": "wqh3N5wrv5YSImafvoYO4Rw8TV7fcqqOerCM3mQF6A0="
+        "EXPO_PUBLIC_THESIS_APP_KEY": "Cbcaciqz8SOZPTOPSwN0sAlu0hLrQL4UtxKPO+mGttE=",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://oeqjliuzppakcshbqxib.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lcWpsaXV6cHBha2NzaGJxeGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTc2NTMsImV4cCI6MjA5NjMzMzY1M30.k6aF9W92M1438NT7pcBFBGR2vZlmlqoQT5QTl8aMCf0"
       }
     },
     "development": {

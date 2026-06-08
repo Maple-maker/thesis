@@ -183,9 +183,12 @@ export default function RevealScreen() {
           size="lg"
           onPress={() => {
             setOnboarding("complete");
-            router.replace("/(tabs)");
+            router.replace("/auth");
           }}
         />
+        <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-4 px-6">
+          Educational tool, not investment advice. Nothing here is a recommendation to buy or sell any security.
+        </Text>
       </View>
     </Screen>
   );
