@@ -62,8 +62,8 @@ export default function RevealScreen() {
           Your thesis
         </Text>
         <Text
-          className="text-ink text-[32px] font-displayX mt-2"
-          style={{ letterSpacing: -0.7, lineHeight: 36 }}
+          className="text-ink text-[38px] font-displayX mt-2"
+          style={{ letterSpacing: -0.9, lineHeight: 42 }}
         >
           Here's how the world{"\n"}looks from where you sit.
         </Text>
@@ -113,7 +113,7 @@ export default function RevealScreen() {
         </Animated.View>
       )}
 
-      <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest mt-7 mb-3">
+      <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest mt-8 mb-3">
         Your other themes
       </Text>
 

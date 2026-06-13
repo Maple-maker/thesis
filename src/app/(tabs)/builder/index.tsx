@@ -24,10 +24,11 @@ import { backtestPlainEnglish } from "@/lib/backtest-narrative";
 import { MAX_ACTIVE_THEMES } from "@/lib/thesis-limits";
 import { useMilestoneCheck } from "@/lib/use-milestone-check";
 import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
-import { useStore } from "@/store";
+import { useStore, selectIsPro } from "@/store";
 
 export default function BuilderScreen() {
   const router = useRouter();
+  const isPro = useStore(selectIsPro);
   const profile = useStore((s) => s.profile);
   const themeIds = useStore((s) => s.themeIds);
   const modelThesis = useStore((s) => s.modelThesis);
@@ -339,6 +340,13 @@ export default function BuilderScreen() {
             onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")}
           />
           <Button
+            label="My holdings & reasons"
+            fullWidth
+            size="md"
+            variant="secondary"
+            onPress={() => pushRoute(router, "/(tabs)/portfolio")}
+          />
+          <Button
             label="Browse full thesis library"
             fullWidth
             size="md"
@@ -353,6 +361,12 @@ export default function BuilderScreen() {
           <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => pushRoute(router, "/xray")} />
           <ToolCard icon="discover" label="Lenses" color="#D98512" onPress={() => pushRoute(router, "/lenses")} />
           <ToolCard icon="target" label="Forecast" color="#3B82F6" onPress={() => pushRoute(router, "/forecast")} />
+          <ToolCard
+            icon={isPro ? "sparkle" : "lock"}
+            label="Advisor"
+            color="#0E7A66"
+            onPress={() => pushRoute(router, "/advisor")}
+          />
         </View>
 
         <Text className="text-ink-3 text-[10px] text-center font-sansMd leading-[14px]">

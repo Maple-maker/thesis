@@ -101,6 +101,8 @@ export type Stock = {
   divYield: number; // %, 0 if none
   peRatio: number | null;
   volatility: "low" | "med" | "high";
+  /** Company website domain for logo lookup (Brandfetch CDN). */
+  domain?: string;
 };
 
 export type ETF = {
@@ -200,6 +202,36 @@ export type UserProfile = {
   concerns: Concern[];
   values: Value[];
   incomeNeed: IncomeNeed;
+
+  /** Quick Take only — single theme interest proxy, mapped to interests[] at reveal. */
+  qtInterest?: string;
+};
+
+// ---- Conviction portfolio ----
+
+/** Why the user added a holding — required at the conviction gate. */
+export type ConvictionReason =
+  | "long-term-growth"
+  | "fits-my-thesis"
+  | "valuation"
+  | "gut-feeling"
+  | "following-someone"
+  | "income-yield"
+  | "diversification"
+  | "other";
+
+/**
+ * One conviction-tracked holding. Mirrors the `decisions` table JSONB payload
+ * (type 'portfolio_add') — keep field names in sync with supabase/functions.
+ */
+export type PortfolioHolding = {
+  id: string; // client-generated, dedupe key for cloud sync
+  symbol: string;
+  addedAt: number;
+  reason: ConvictionReason;
+  note: string; // user's free text, may be empty
+  sourceLens?: string; // investor lens id when added via "copy a lens"
+  allocationPct: number; // equal-weight default, user-adjustable
 };
 
 // ---- App state objects ----

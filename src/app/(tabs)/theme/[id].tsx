@@ -244,6 +244,9 @@ export default function ThemeDetail() {
           variant="secondary"
           onPress={() => router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol: stocks[0]?.symbol ?? "" } })}
         />
+        <Text className="text-ink-3 text-[11px] text-center font-sansMd mt-4">
+          Educational only · not investment advice
+        </Text>
       </View>
     </Screen>
   );

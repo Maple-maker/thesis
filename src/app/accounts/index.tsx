@@ -60,7 +60,7 @@ function AccountRow({ account }: { account: LinkedAccount }) {
 
 export default function AccountsScreen() {
   const router = useRouter();
-  const segments = useSegments();
+  const segments = useSegments() as string[];
   const isAccountsTab = segments[0] === "(tabs)" && segments[1] === "accounts";
   const connected = useStore(selectPlaidConnected);
   const accounts = useStore((s) => s.linkedAccounts);

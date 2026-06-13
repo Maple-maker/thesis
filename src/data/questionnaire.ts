@@ -264,4 +264,5 @@ export const DEFAULT_PROFILE: UserProfile = {
   concerns: [],
   values: [],
   incomeNeed: "none",
+  qtInterest: undefined,
 };

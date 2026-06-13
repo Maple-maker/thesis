@@ -28,6 +28,7 @@
     "expo-web-browser": "~56.0.5",
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",
+    "lightweight-charts": "^5.2.0",
     "morgan": "^1.11.0",
     "nativewind": "^4.2.4",
     "react": "19.2.3",

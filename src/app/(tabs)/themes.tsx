@@ -146,6 +146,9 @@ export default function ThemesScreen() {
             })}
           </View>
         )}
+      <Text className="text-ink-3 text-[11px] text-center font-sansMd mt-6 mb-2">
+        Educational only · not investment advice
+      </Text>
     </Screen>
   );
 }

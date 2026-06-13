@@ -45,6 +45,7 @@ import type {
   JournalEntryType,
   EmotionalState,
   JournalReason,
+  PortfolioHolding,
   ThemeId,
   UserProfile,
   WatchlistAlert,
@@ -152,6 +153,12 @@ type Store = {
 
   convictionNotes: ConvictionNote[];
   addConvictionNote: (note: Omit<ConvictionNote, "id" | "createdAt">) => void;
+
+  /** Conviction portfolio — holdings with required reasons, synced to Supabase. */
+  portfolio: PortfolioHolding[];
+  addHolding: (holding: Omit<PortfolioHolding, "id" | "addedAt" | "allocationPct">) => void;
+  removeHolding: (symbol: string) => void;
+  updateAllocation: (symbol: string, pct: number) => void;
 
   thesisChangelog: ThesisChangelogEntry[];
   appendThesisChangelog: (
@@ -431,6 +438,47 @@ export const useStore = create<Store>()(
             },
             ...s.convictionNotes,
           ].slice(0, 40),
+        })),
+
+      portfolio: [],
+      addHolding: (holding) =>
+        set((s) => {
+          const sym = holding.symbol.toUpperCase();
+          if (s.portfolio.some((h) => h.symbol === sym)) return s;
+          const next: PortfolioHolding = {
+            ...holding,
+            symbol: sym,
+            id: `h-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+            addedAt: Date.now(),
+            allocationPct: 0,
+          };
+          // Equal-weight default: redistribute evenly across all holdings.
+          const portfolio = [...s.portfolio, next];
+          const even = Math.round((100 / portfolio.length) * 10) / 10;
+          return {
+            portfolio: portfolio.map((h) => ({ ...h, allocationPct: even })),
+          };
+        }),
+      removeHolding: (symbol) =>
+        set((s) => {
+          const sym = symbol.toUpperCase();
+          const portfolio = s.portfolio.filter((h) => h.symbol !== sym);
+          if (portfolio.length === s.portfolio.length) return s;
+          const even =
+            portfolio.length > 0
+              ? Math.round((100 / portfolio.length) * 10) / 10
+              : 0;
+          return {
+            portfolio: portfolio.map((h) => ({ ...h, allocationPct: even })),
+          };
+        }),
+      updateAllocation: (symbol, pct) =>
+        set((s) => ({
+          portfolio: s.portfolio.map((h) =>
+            h.symbol === symbol.toUpperCase()
+              ? { ...h, allocationPct: Math.max(0, Math.min(100, pct)) }
+              : h
+          ),
         })),
 
       thesisChangelog: [],
@@ -732,6 +780,7 @@ export const useStore = create<Store>()(
           watchlistAlerts: [],
           radarManualQuery: "",
           journal: [],
+          portfolio: [],
           convictionNotes: [],
           thesisChangelog: [],
           watchlistPipeline: {},
@@ -767,6 +816,7 @@ export const useStore = create<Store>()(
           authLoading: false,
           modelThesis: normalizeModelThesis(p?.modelThesis ?? current.modelThesis),
           convictionNotes: p?.convictionNotes ?? current.convictionNotes ?? [],
+          portfolio: p?.portfolio ?? current.portfolio ?? [],
           thesisChangelog: p?.thesisChangelog ?? current.thesisChangelog ?? [],
           watchlistAlerts: p?.watchlistAlerts ?? current.watchlistAlerts ?? [],
           watchlistPipeline: p?.watchlistPipeline ?? current.watchlistPipeline ?? {},

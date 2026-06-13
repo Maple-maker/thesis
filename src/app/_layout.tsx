@@ -75,6 +75,7 @@ export default function RootLayout() {
             >
           <Stack.Screen name="index" />
           <Stack.Screen name="onboarding" />
+          <Stack.Screen name="quick-take" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
             name="duel"
@@ -99,6 +100,13 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="ask"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen
+            name="advisor"
             options={{
               presentation: "modal",
               animation: "slide_from_bottom",
@@ -155,6 +163,20 @@ export default function RootLayout() {
               presentation: "modal",
               animation: "slide_from_bottom",
               gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/sign-in"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen
+            name="auth/sign-up"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
             }}
           />
             </Stack>
