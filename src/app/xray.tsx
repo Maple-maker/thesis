@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,7 +25,7 @@ export default function PortfolioXrayScreen() {
   );
 
   const openDuel = (a: string, b: string) => {
-    router.push({ pathname: "/duel", params: { a, b } } as any);
+    pushRouteObject(router, { pathname: "/duel", params: { a, b } });
   };
 
   return (
@@ -57,7 +58,7 @@ export default function PortfolioXrayScreen() {
             </Text>
             <View className="mt-3 gap-y-2">
               <Button label="Load demo portfolio" fullWidth onPress={connectDemoAccounts} />
-              <Pressable onPress={() => router.push("/accounts" as any)} className="py-2 items-center">
+              <Pressable onPress={() => pushRoute(router, "/accounts")} className="py-2 items-center">
                 <Text className="text-brand font-sansBold text-[13px]">Or connect accounts →</Text>
               </Pressable>
             </View>
@@ -211,7 +212,7 @@ export default function PortfolioXrayScreen() {
                   {g.message}
                 </Text>
                 <Pressable
-                  onPress={() => router.push("/screener" as any)}
+                  onPress={() => pushRoute(router, "/screener")}
                   className="mt-2 active:opacity-70"
                 >
                   <Text className="text-brand text-[13px] font-sansBold">Find ETFs by theme →</Text>
@@ -221,7 +222,7 @@ export default function PortfolioXrayScreen() {
           </View>
         )}
 
-        <Button label="Open Duel" fullWidth onPress={() => router.push("/duel" as any)} />
+        <Button label="Open Duel" fullWidth onPress={() => pushRoute(router, "/duel")} />
         <Text className="text-ink-3 text-[11px] text-center font-sansMd mt-6 leading-[16px]">
           Educational only, not tax or allocation advice. Verify ETF holdings on issuer sites.
         </Text>

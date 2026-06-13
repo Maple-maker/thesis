@@ -1,7 +1,19 @@
 import "dotenv/config";
 
+import * as Sentry from "@sentry/node";
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV ?? "production",
+    tracesSampleRate: 0.1,
+  });
+}
 
 import { postChat } from "./chat.js";
 import { postMemoryExtract } from "./memory-extract.js";
@@ -29,13 +41,43 @@ import { getMfaStatus, postMfaChallenge, postMfaSetup, postMfaVerify } from "./m
 const app = express();
 const port = Number(process.env.PORT ?? 8787);
 
-app.use(cors({ origin: process.env.CORS_ORIGIN ?? "*" }));
+// Security headers
+app.use(helmet());
+
+// Request logging (dev: concise, prod: combined)
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+
+// CORS — tighten in production
+const corsOrigin = process.env.CORS_ORIGIN?.trim();
+app.use(
+  cors({
+    origin: corsOrigin && corsOrigin !== "*" ? corsOrigin.split(",").map((s) => s.trim()) : "*",
+  })
+);
+
+// Body parsing
 app.use(express.json({ limit: "512kb" }));
+
+// Rate limiting — generous for AI endpoints which are slow
+const apiLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, slow down." },
+});
+app.use("/v1", apiLimiter);
 
 const appSecret = process.env.THESIS_APP_SECRET;
 
 app.use("/v1", (req, res, next) => {
-  if (!appSecret) return next();
+  if (!appSecret) {
+    // Fail closed: without a secret, reject all requests (except health for readiness check)
+    const isHealth = req.method === "GET" && (req.path === "/health" || req.originalUrl === "/v1/health");
+    if (isHealth) return next();
+    res.status(503).json({ error: "Service misconfigured: THESIS_APP_SECRET not set" });
+    return;
+  }
   // Health check and feedback are public (feedback also validates payload server-side)
   const isPublic =
     (req.method === "GET" &&
@@ -55,25 +97,9 @@ app.get("/v1/market/quote", getMarketQuote);
 app.get("/v1/macro/snapshot", getMacroSnapshot);
 
 app.get("/v1/health", (_req, res) => {
-  const pace = paceStatus();
   res.json({
     ok: true,
     service: "thesis-api",
-    pace: {
-      chain: pace.chain,
-      configured: pace.configured,
-      primary: pace.configured[0]?.id ?? "none",
-    },
-    macro: {
-      toolsEnabled: process.env.ASSISTANT_TOOLS !== "0",
-      fredApiKey: Boolean(process.env.FRED_API_KEY?.trim()),
-    },
-    market: {
-      liveSearch: isMarketLiveSearchEnabled(),
-      provider: preferPolygonMarketData() ? "massive" : "yahoo",
-      massiveConfigured: isPolygonConfigured(),
-      ...marketPlanSummary(),
-    },
   });
 });
 

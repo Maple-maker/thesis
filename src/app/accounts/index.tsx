@@ -60,7 +60,7 @@ function AccountRow({ account }: { account: LinkedAccount }) {
 
 export default function AccountsScreen() {
   const router = useRouter();
-  const segments = useSegments();
+  const segments = useSegments() as string[];
   const isAccountsTab = segments[0] === "(tabs)" && segments[1] === "accounts";
   const connected = useStore(selectPlaidConnected);
   const accounts = useStore((s) => s.linkedAccounts);
@@ -136,6 +136,9 @@ export default function AccountsScreen() {
             </Pressable>
           </>
         )}
+        <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-6 px-4">
+          Educational tool, not investment advice. Nothing here is a recommendation to buy or sell any security.
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );

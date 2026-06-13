@@ -317,6 +317,9 @@ export default function BuildThesis() {
           )}
         </>
       )}
+      <Text className="text-ink-3 text-[11px] text-center font-sansMd mt-2 mb-2">
+        Educational only · not investment advice
+      </Text>
     </Screen>
   );
 }

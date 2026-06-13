@@ -1,6 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { User } from "@supabase/supabase-js";
+
+import { supabase } from "@/lib/supabase";
 
 import { createDefaultCfoProfile } from "@/data/cfo-profile-defaults";
 import { computeDerivedMetrics } from "@/lib/cfo-derived-metrics";
@@ -42,6 +45,7 @@ import type {
   JournalEntryType,
   EmotionalState,
   JournalReason,
+  PortfolioHolding,
   ThemeId,
   UserProfile,
   WatchlistAlert,
@@ -150,6 +154,12 @@ type Store = {
   convictionNotes: ConvictionNote[];
   addConvictionNote: (note: Omit<ConvictionNote, "id" | "createdAt">) => void;
 
+  /** Conviction portfolio — holdings with required reasons, synced to Supabase. */
+  portfolio: PortfolioHolding[];
+  addHolding: (holding: Omit<PortfolioHolding, "id" | "addedAt" | "allocationPct">) => void;
+  removeHolding: (symbol: string) => void;
+  updateAllocation: (symbol: string, pct: number) => void;
+
   thesisChangelog: ThesisChangelogEntry[];
   appendThesisChangelog: (
     entry: Omit<ThesisChangelogEntry, "id" | "createdAt">
@@ -202,6 +212,12 @@ type Store = {
   assistantMessagesToday: number;
   recordAssistantMessage: () => boolean;
 
+  /** Supabase auth user — null when not signed in */
+  authUser: { id: string; email?: string; provider?: string } | null;
+  authLoading: boolean;
+  setAuthUser: (user: User | null) => void;
+  signOut: () => Promise<void>;
+  /** Prefer auth user ID when signed in, fall back to generated ID */
   thesisUserId: string;
   subscriptionTier: SubscriptionTier;
   setSubscriptionTier: (tier: SubscriptionTier) => void;
@@ -235,6 +251,8 @@ function newThesisUserId() {
 export const useStore = create<Store>()(
   persist(
     (set, get) => ({
+      authUser: null,
+      authLoading: false,
       onboarding: "not-started",
       tutorialShown: false,
       profile: createDefaultCfoProfile(),
@@ -420,6 +438,47 @@ export const useStore = create<Store>()(
             },
             ...s.convictionNotes,
           ].slice(0, 40),
+        })),
+
+      portfolio: [],
+      addHolding: (holding) =>
+        set((s) => {
+          const sym = holding.symbol.toUpperCase();
+          if (s.portfolio.some((h) => h.symbol === sym)) return s;
+          const next: PortfolioHolding = {
+            ...holding,
+            symbol: sym,
+            id: `h-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+            addedAt: Date.now(),
+            allocationPct: 0,
+          };
+          // Equal-weight default: redistribute evenly across all holdings.
+          const portfolio = [...s.portfolio, next];
+          const even = Math.round((100 / portfolio.length) * 10) / 10;
+          return {
+            portfolio: portfolio.map((h) => ({ ...h, allocationPct: even })),
+          };
+        }),
+      removeHolding: (symbol) =>
+        set((s) => {
+          const sym = symbol.toUpperCase();
+          const portfolio = s.portfolio.filter((h) => h.symbol !== sym);
+          if (portfolio.length === s.portfolio.length) return s;
+          const even =
+            portfolio.length > 0
+              ? Math.round((100 / portfolio.length) * 10) / 10
+              : 0;
+          return {
+            portfolio: portfolio.map((h) => ({ ...h, allocationPct: even })),
+          };
+        }),
+      updateAllocation: (symbol, pct) =>
+        set((s) => ({
+          portfolio: s.portfolio.map((h) =>
+            h.symbol === symbol.toUpperCase()
+              ? { ...h, allocationPct: Math.max(0, Math.min(100, pct)) }
+              : h
+          ),
         })),
 
       thesisChangelog: [],
@@ -675,6 +734,23 @@ export const useStore = create<Store>()(
       },
       setDevPro: (pro) => set({ subscriptionTier: pro ? "pro" : "free" }),
 
+      setAuthUser: (user) => {
+        const id = user?.id ?? newThesisUserId();
+        const email = user?.email ?? undefined;
+        const provider = user?.app_metadata?.provider ?? undefined;
+        set({
+          authUser: user ? { id, email, provider } : null,
+          thesisUserId: id,
+        });
+      },
+      signOut: async () => {
+        await supabase.auth.signOut();
+        set({
+          authUser: null,
+          thesisUserId: newThesisUserId(),
+        });
+      },
+
       plaidStatus: "disconnected",
       linkedAccounts: [],
       holdings: [],
@@ -704,6 +780,7 @@ export const useStore = create<Store>()(
           watchlistAlerts: [],
           radarManualQuery: "",
           journal: [],
+          portfolio: [],
           convictionNotes: [],
           thesisChangelog: [],
           watchlistPipeline: {},
@@ -735,8 +812,11 @@ export const useStore = create<Store>()(
           ...p,
           profile,
           themeIds,
+          authUser: p?.authUser ?? null,
+          authLoading: false,
           modelThesis: normalizeModelThesis(p?.modelThesis ?? current.modelThesis),
           convictionNotes: p?.convictionNotes ?? current.convictionNotes ?? [],
+          portfolio: p?.portfolio ?? current.portfolio ?? [],
           thesisChangelog: p?.thesisChangelog ?? current.thesisChangelog ?? [],
           watchlistAlerts: p?.watchlistAlerts ?? current.watchlistAlerts ?? [],
           watchlistPipeline: p?.watchlistPipeline ?? current.watchlistPipeline ?? {},

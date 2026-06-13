@@ -36,7 +36,7 @@ export async function learnFromAssistantTurn(params: {
       const llmIncoming = facts.map((f) => ({
         text: f.text,
         source: "extracted" as const,
-        category: f.category,
+        category: f.category as AssistantMemoryNote["category"],
         importance: f.importance,
       }));
       const second = mergeIncomingMemory(merged, llmIncoming);

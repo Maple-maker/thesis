@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 import {
   ActivityIndicator,
   Alert,
@@ -82,9 +83,9 @@ export default function AskChatScreen() {
     (symbol: string, kind: EntityKind) => {
       closeSymbolSheet();
       if (kind === "etf") {
-        router.push({ pathname: "/(tabs)/etf/[symbol]", params: { symbol } } as never);
+        pushRouteObject(router, { pathname: "/(tabs)/etf/[symbol]", params: { symbol } });
       } else {
-        router.push({ pathname: "/(tabs)/stock/[symbol]", params: { symbol } } as never);
+        pushRouteObject(router, { pathname: "/(tabs)/stock/[symbol]", params: { symbol } });
       }
     },
     [router, closeSymbolSheet]
@@ -93,7 +94,7 @@ export default function AskChatScreen() {
   const onDuelSymbol = useCallback(
     (symbol: string) => {
       closeSymbolSheet();
-      router.push({ pathname: "/duel", params: { a: symbol } } as never);
+      pushRouteObject(router, { pathname: "/duel", params: { a: symbol } });
     },
     [router, closeSymbolSheet]
   );
@@ -159,7 +160,7 @@ export default function AskChatScreen() {
   const send = useCallback(
     async (text: string) => {
       if (!isPro) {
-        router.push("/pro" as any);
+        pushRoute(router, "/pro");
         return;
       }
       if (!recordMsg()) {
@@ -266,7 +267,7 @@ export default function AskChatScreen() {
           </Text>
         </View>
         <Pressable
-          onPress={() => router.push("/ask/memory" as any)}
+          onPress={() => pushRoute(router, "/ask/memory")}
           className="w-[36px] h-[36px] rounded-[11px] bg-bg-surface2 items-center justify-center active:opacity-70"
         >
           <Icon name="book" size={16} color="#16201C" sw={2} />
@@ -351,6 +352,9 @@ export default function AskChatScreen() {
               ))}
             </View>
           )}
+          <Text className="text-ink-3 text-[11px] text-center font-sansMd leading-[16px] mt-4 px-4">
+            Educational tool, not investment advice. AI-generated responses may contain errors. Nothing here is a recommendation to buy or sell any security.
+          </Text>
         </ScrollView>
 
         <ChatComposer

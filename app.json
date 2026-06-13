@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "backgroundColor": "#F3F5F1",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/images/icon.png",
       "bundleIdentifier": "com.makeyourthesis.app",
       "supportsTablet": true
     },
@@ -29,6 +29,7 @@
     "plugins": [
       "expo-asset",
       "expo-router",
+      "expo-web-browser",
       [
         "expo-splash-screen",
         {

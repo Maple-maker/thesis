@@ -3,6 +3,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { ConvictionGate } from "@/components/ConvictionGate";
 import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -25,8 +26,45 @@ export default function LensDetailScreen() {
   const router = useRouter();
   const lens = lensById(id ?? "");
   const [tab, setTab] = useState<"details" | "targets">("details");
+  const [gateOpen, setGateOpen] = useState(false);
   const holdings = useStore((s) => s.holdings);
   const themeIds = useStore((s) => s.themeIds);
+  const profile = useStore((s) => s.profile);
+
+  // Profile match — educational friction, not a compatibility score. Shows
+  // what the user is accepting if they adopt this framework.
+  const profileMatch = useMemo(() => {
+    if (!lens) return [];
+    const notes: { tone: "aligned" | "tension"; text: string }[] = [];
+    if (profile.reactionToDrawdown === "panic-sell" && lens.stats.risk === "High") {
+      notes.push({
+        tone: "tension",
+        text: "You said a bad month makes you want out. This framework assumes holding through deep drawdowns — that gap is worth sitting with.",
+      });
+    }
+    if ((profile.horizon === "short" || profile.horizon === "medium") && lens.stats.risk !== "Low") {
+      notes.push({
+        tone: "tension",
+        text: `Your horizon is ${profile.horizon}-term; this lens is built for money that can stay invested through full cycles.`,
+      });
+    }
+    if (
+      (profile.horizon === "long" || profile.horizon === "very-long") &&
+      profile.reactionToDrawdown !== "panic-sell"
+    ) {
+      notes.push({
+        tone: "aligned",
+        text: "Your long horizon and steady drawdown reaction fit the patience this framework demands.",
+      });
+    }
+    if (profile.incomeNeed === "primary" && lens.stats.dividendYieldPct < 1.5) {
+      notes.push({
+        tone: "tension",
+        text: `You want income now; this lens yields about ${lens.stats.dividendYieldPct}% — the cash flow would have to come from elsewhere.`,
+      });
+    }
+    return notes.slice(0, 3);
+  }, [lens, profile]);
 
   const compare = useMemo(
     () => (lens ? compareLensToBook(lens, holdings, themeIds) : null),
@@ -177,6 +215,29 @@ export default function LensDetailScreen() {
                 )}
               </Card>
             )}
+
+            {profileMatch.length > 0 && (
+              <Card pad={14} className="mt-3 bg-white/5 border-white/10">
+                <Text className="text-brand text-[11px] font-sansX uppercase tracking-wider mb-2">
+                  vs your profile
+                </Text>
+                <View className="gap-y-2">
+                  {profileMatch.map((n, i) => (
+                    <View key={i} className="flex-row items-start">
+                      <View
+                        className="w-[7px] h-[7px] rounded-full mt-[6px] mr-2.5"
+                        style={{
+                          backgroundColor: n.tone === "aligned" ? "#149059" : "#D98512",
+                        }}
+                      />
+                      <Text className="text-white/80 text-[13px] font-sansMd flex-1 leading-[19px]">
+                        {n.text}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </Card>
+            )}
           </View>
         ) : (
           <View className="mt-6">
@@ -227,14 +288,11 @@ export default function LensDetailScreen() {
         <View className="flex-row gap-2 mb-2">
           <View className="flex-1">
             <Button
-              label="Use this model"
+              label="Use this model (with my own reasons)"
               fullWidth
               size="lg"
               variant="primary"
-              onPress={() => {
-                useStore.getState().adoptLens(lens.id);
-                router.push("/(tabs)/builder/portfolio" as any);
-              }}
+              onPress={() => setGateOpen(true)}
             />
           </View>
         </View>
@@ -271,6 +329,23 @@ export default function LensDetailScreen() {
           <Text className="text-ink-3 text-[13px] font-sansBold">Duel top two holdings</Text>
         </Pressable>
       </View>
+
+      {/* Conviction gate — one reason per holding before the model is adopted */}
+      <ConvictionGate
+        visible={gateOpen}
+        symbols={lens.holdings.map((h) => h.symbol)}
+        sourceLens={lens.id}
+        onClose={() => setGateOpen(false)}
+        onComplete={() => {
+          const store = useStore.getState();
+          store.adoptLens(lens.id);
+          // Conviction records mirror the lens's target weights, not equal-weight.
+          for (const h of lens.holdings) {
+            store.updateAllocation(h.symbol, h.weightPct);
+          }
+          router.push("/(tabs)/builder/portfolio" as never);
+        }}
+      />
     </SafeAreaView>
   );
 }

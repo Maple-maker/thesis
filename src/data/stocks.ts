@@ -738,8 +738,72 @@ const CURATED_STOCKS: Stock[] = [
   },
 ];
 
-/** Curated rows plus inferred cap tier, sector, and theme tags. */
-export const STOCKS: Stock[] = CURATED_STOCKS.map(enrichStockTags);
+/** Company website domains for logo lookup (Brandfetch CDN, see LogoImage). */
+const DOMAIN_BY_SYMBOL: Record<string, string> = {
+  NVDA: "nvidia.com",
+  TSM: "tsmc.com",
+  AVGO: "broadcom.com",
+  MSFT: "microsoft.com",
+  GOOGL: "google.com",
+  META: "meta.com",
+  AMD: "amd.com",
+  ARM: "arm.com",
+  NEE: "nexteraenergy.com",
+  FSLR: "firstsolar.com",
+  ENPH: "enphase.com",
+  BEP: "brookfield.com",
+  VST: "vistracorp.com",
+  UNH: "unitedhealthgroup.com",
+  LLY: "lilly.com",
+  ISRG: "intuitive.com",
+  ABBV: "abbvie.com",
+  MDT: "medtronic.com",
+  KO: "coca-cola.com",
+  PG: "pg.com",
+  COST: "costco.com",
+  WMT: "walmart.com",
+  JNJ: "jnj.com",
+  O: "realtyincome.com",
+  VZ: "verizon.com",
+  PEP: "pepsico.com",
+  ENB: "enbridge.com",
+  "BRK.B": "berkshirehathaway.com",
+  MA: "mastercard.com",
+  V: "visa.com",
+  AAPL: "apple.com",
+  ASML: "asml.com",
+  CRWD: "crowdstrike.com",
+  PANW: "paloaltonetworks.com",
+  ZS: "zscaler.com",
+  FTNT: "fortinet.com",
+  SQ: "block.xyz",
+  ADYEN: "adyen.com",
+  PYPL: "paypal.com",
+  VRTX: "vrtx.com",
+  REGN: "regeneron.com",
+  CRSP: "crisprtx.com",
+  NKE: "nike.com",
+  LULU: "lululemon.com",
+  IONQ: "ionq.com",
+  IBM: "ibm.com",
+  EQIX: "equinix.com",
+  CVX: "chevron.com",
+  XOM: "exxonmobil.com",
+  UAL: "united.com",
+  DAL: "delta.com",
+  MDLZ: "mondelezinternational.com",
+  NSRGY: "nestle.com",
+  BABA: "alibabagroup.com",
+  MELI: "mercadolibre.com",
+  TSLA: "tesla.com",
+  RBLX: "roblox.com",
+  PLTR: "palantir.com",
+};
+
+/** Curated rows plus inferred cap tier, sector, theme tags, and logo domain. */
+export const STOCKS: Stock[] = CURATED_STOCKS.map((s) =>
+  enrichStockTags({ ...s, domain: s.domain ?? DOMAIN_BY_SYMBOL[s.symbol] })
+);
 
 const CURATED_BY_SYMBOL = new Map(STOCKS.map((s) => [s.symbol, s]));
 

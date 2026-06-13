@@ -130,6 +130,7 @@ export default function TabsLayout() {
       />
       {/* Hidden, nested stacks, library, legacy routes */}
       <Tabs.Screen name="themes" options={HIDDEN_TAB} />
+      <Tabs.Screen name="portfolio" options={HIDDEN_TAB} />
       <Tabs.Screen name="journal" options={HIDDEN_TAB} />
       <Tabs.Screen name="learn" options={HIDDEN_TAB} />
       <Tabs.Screen name="theme" options={HIDDEN_TAB} />

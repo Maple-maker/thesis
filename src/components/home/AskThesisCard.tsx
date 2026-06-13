@@ -5,6 +5,7 @@ import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
+import { pushRoute } from "@/lib/app-route";
 import type { AskPromptChip } from "@/lib/ask-prompts";
 import { useStore, selectIsPro } from "@/store";
 
@@ -68,7 +69,7 @@ export function AskThesisCard({ prompts }: Props) {
           fullWidth
           size="md"
           variant="primary"
-          onPress={() => router.push("/ask/chat" as any)}
+          onPress={() => pushRoute(router, "/ask/chat")}
         />
       </Card>
     );
@@ -113,7 +114,7 @@ export function AskThesisCard({ prompts }: Props) {
           fullWidth
           size="md"
           variant="primary"
-          onPress={() => router.push("/ask/chat" as any)}
+          onPress={() => pushRoute(router, "/ask/chat")}
         />
         <View className="flex-row items-center mt-3 pt-3 border-t border-line">
           <Text className="text-ink-3 text-[11px] font-sansMd flex-1">
@@ -121,7 +122,7 @@ export function AskThesisCard({ prompts }: Props) {
           </Text>
           <Text
             className="text-violet text-[11px] font-sansBold"
-            onPress={() => router.push("/pro" as any)}
+            onPress={() => pushRoute(router, "/pro")}
           >
             Go Pro →
           </Text>
@@ -159,7 +160,7 @@ export function AskThesisCard({ prompts }: Props) {
         fullWidth
         size="md"
         variant="primary"
-        onPress={() => router.push("/pro" as any)}
+        onPress={() => pushRoute(router, "/pro")}
       />
       <Text className="text-ink-3 text-[10px] font-sansMd text-center mt-2">
         Resets daily · {FREE_DAILY_LIMIT} free per day

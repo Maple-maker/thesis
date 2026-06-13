@@ -7,6 +7,7 @@ import { computeEtfConviction } from "@/lib/conviction-rank";
 import type { ThemeId, UserProfile } from "@/store/types";
 import type { Holding } from "@/types/linked-accounts";
 import type { ModelThesis } from "@/store";
+import type { LensHolding } from "@/data/investor-lenses";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -27,6 +28,32 @@ export interface PortfolioHealthSummary {
   yellowCount: number;
   redCount: number;
   total: number;
+}
+
+// ── Model thesis health types ────────────────────────────────────────────
+
+export type AlignmentStatus = "aligned" | "overweight" | "underweight" | "missing";
+
+export interface ThesisAlignmentGap {
+  symbol: string;
+  name: string;
+  kind: "stock" | "etf";
+  targetWeightPct: number;
+  actualWeightPct: number;
+  gapPct: number; // positive = overweight, negative = underweight
+  status: AlignmentStatus;
+  convictionScore: number;
+  triggers: string[];
+}
+
+export interface ModelHealthSummary {
+  greenCount: number;
+  yellowCount: number;
+  redCount: number;
+  total: number;
+  alignedCount: number;
+  misalignedCount: number;
+  missingCount: number;
 }
 
 // ── Mock market / earnings events for demo tickers ───────────────────────
@@ -246,4 +273,98 @@ export function getPortfolioHealthSummary(
 /** Determine which holdings have context insights (event briefs). */
 export function holdingsWithBriefs(healthData: HoldingHealth[]): HoldingHealth[] {
   return healthData.filter((h) => h.hasBrief);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Model thesis health + alignment gap
+// ════════════════════════════════════════════════════════════════════════════
+
+/** Compute conviction + trigger health for a single model thesis holding. */
+export function computeModelHoldingHealth(
+  holding: LensHolding,
+  profile: UserProfile,
+  themeIds: ThemeId[],
+): { convictionScore: number; triggers: string[]; name: string } {
+  const convictionScore = scoreForHolding(holding.symbol, profile, themeIds);
+  const stock = stockBySymbol(holding.symbol);
+  const etf = etfBySymbol(holding.symbol);
+  const name = stock?.name ?? etf?.name ?? holding.symbol;
+  const mockEvent = MOCK_EVENTS[holding.symbol];
+
+  const triggers = generateTriggers(holding.symbol, mockEvent, null);
+  return { convictionScore, triggers, name };
+}
+
+function healthStatusForScore(score: number, mockEvent?: MockEvent): HealthStatus {
+  const isNegativeEvent = mockEvent?.type === "negative";
+  const isMixedEvent = mockEvent?.type === "mixed";
+  if (score >= 70 && !isNegativeEvent && !isMixedEvent) return "green";
+  if (score < 40 || isNegativeEvent) return "red";
+  return "yellow";
+}
+
+/** Build alignment gap for each model thesis holding vs actual portfolio. */
+export function computeAlignmentGap(
+  thesisHoldings: LensHolding[],
+  actualHoldings: Holding[],
+  profile: UserProfile,
+  themeIds: ThemeId[],
+): ThesisAlignmentGap[] {
+  const actualBySymbol = new Map(actualHoldings.map((h) => [h.symbol, h]));
+
+  return thesisHoldings.map((th) => {
+    const actual = actualBySymbol.get(th.symbol);
+    const { convictionScore, triggers, name } = computeModelHoldingHealth(th, profile, themeIds);
+    const mockEvent = MOCK_EVENTS[th.symbol];
+
+    let status: AlignmentStatus;
+    let gapPct = 0;
+    let actualWeightPct = 0;
+
+    if (!actual) {
+      status = "missing";
+      gapPct = -th.weightPct; // full gap
+    } else {
+      // Actual weight from portfolio holding
+      actualWeightPct = actual.weightPct;
+      gapPct = actualWeightPct - th.weightPct;
+
+      if (Math.abs(gapPct) <= 3) {
+        status = "aligned";
+      } else if (gapPct > 3) {
+        status = "overweight";
+      } else {
+        status = "underweight";
+      }
+    }
+
+    return {
+      symbol: th.symbol,
+      name,
+      kind: th.kind,
+      targetWeightPct: th.weightPct,
+      actualWeightPct,
+      gapPct,
+      status,
+      convictionScore,
+      triggers: status === "missing"
+        ? [`Not held — add ${th.symbol} to align with your thesis`]
+        : triggers,
+    };
+  });
+}
+
+/** Overall health summary for model thesis holdings. */
+export function getModelHealthSummary(
+  gaps: ThesisAlignmentGap[],
+): ModelHealthSummary {
+  return {
+    greenCount: gaps.filter((g) => healthStatusForScore(g.convictionScore, MOCK_EVENTS[g.symbol]) === "green").length,
+    yellowCount: gaps.filter((g) => healthStatusForScore(g.convictionScore, MOCK_EVENTS[g.symbol]) === "yellow").length,
+    redCount: gaps.filter((g) => healthStatusForScore(g.convictionScore, MOCK_EVENTS[g.symbol]) === "red").length,
+    total: gaps.length,
+    alignedCount: gaps.filter((g) => g.status === "aligned").length,
+    misalignedCount: gaps.filter((g) => g.status === "overweight" || g.status === "underweight").length,
+    missingCount: gaps.filter((g) => g.status === "missing").length,
+  };
 }

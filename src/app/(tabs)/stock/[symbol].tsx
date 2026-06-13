@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
+import { ConvictionGate } from "@/components/ConvictionGate";
 import { Icon, type IconName } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -10,9 +11,9 @@ import { Screen } from "@/components/ui/Screen";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Tag } from "@/components/ui/Tag";
 import { InsightCard } from "@/components/ui/InsightCard";
-import { Sparkline } from "@/components/ui/Sparkline";
+import { LogoImage } from "@/components/ui/LogoImage";
+import { PriceChart } from "@/components/ui/PriceChart";
 import { ThesisScoreCard } from "@/components/ui/ThesisScoreCard";
-import { Tick } from "@/components/ui/Tick";
 import { EtfListRow } from "@/components/EtfListRow";
 import { ETFS } from "@/data/etfs";
 import { NotFoundState } from "@/components/NotFoundState";
@@ -34,11 +35,13 @@ import { thesisFitForStock } from "@/lib/thesis-fit";
 import { lessonHintFromBreakdown, lessonPath } from "@/lib/lesson-hints";
 import { glossaryTermById } from "@/data/investing-glossary";
 import { fetchMarketQuote } from "@/lib/market-api";
+import { fetchQuote as fetchEdgeQuote } from "@/lib/prices";
 import {
   formatPctChange,
   formatUsdPrice,
   quoteSourceLabel,
   stockQuoteDisplay,
+  stockQuoteFromLive,
   stockQuoteFromMarket,
   type StockQuoteDisplay,
 } from "@/lib/stock-quote-display";
@@ -56,6 +59,8 @@ export default function StockDetail() {
   const themeIds = useStore((s) => s.themeIds);
   const watchlist = useStore((s) => s.watchlist);
   const toggle = useStore((s) => s.toggleWatchlist);
+  const portfolio = useStore((s) => s.portfolio);
+  const [gateOpen, setGateOpen] = useState(false);
   const [tab, setTab] = useState<"overview" | "conviction">("overview");
   const [liveQuote, setLiveQuote] = useState<StockQuoteDisplay | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(true);
@@ -92,16 +97,24 @@ export default function StockDetail() {
     }
     let cancelled = false;
     setQuoteLoading(true);
-    void fetchMarketQuote(stock.symbol).then((q) => {
+    void fetchMarketQuote(stock.symbol).then(async (q) => {
       if (cancelled) return;
-      if (q) setLiveQuote(stockQuoteFromMarket(q));
-      else setLiveQuote(null);
+      if (q) {
+        setLiveQuote(stockQuoteFromMarket(q));
+        setQuoteLoading(false);
+        return;
+      }
+      // Thesis API unavailable — fall back to the Supabase price proxy
+      // (Polygon prev-day EOD), then to illustrative data.
+      const eq = await fetchEdgeQuote(stock.symbol);
+      if (cancelled) return;
+      setLiveQuote(eq ? stockQuoteFromLive(eq, fallbackQuote) : null);
       setQuoteLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [stock?.symbol]);
+  }, [stock?.symbol, fallbackQuote]);
 
   const quote = liveQuote ?? fallbackQuote;
   const sparkData = useMemo(() => {
@@ -129,6 +142,7 @@ export default function StockDetail() {
     );
   }
   const watching = watchlist.includes(stock.symbol);
+  const inPortfolio = portfolio.some((h) => h.symbol === stock.symbol);
 
   return (
     <Screen padded>
@@ -264,7 +278,7 @@ export default function StockDetail() {
         <>
       {/* Header, price stays in viewport (flex + shrink) */}
       <View className="flex-row items-start mt-1 mb-5 gap-3">
-        <Tick ticker={stock.symbol} size={62} />
+        <LogoImage ticker={stock.symbol} domain={stock.domain} size={62} />
         <View className="flex-1 min-w-0">
           <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest">
             {stock.sector}
@@ -378,9 +392,9 @@ export default function StockDetail() {
         Tap a label to learn what it means.
       </Text>
 
-      {/* Price trend sparkline */}
+      {/* Price trend chart */}
       {sparkData && quote && (
-        <Card pad={14} className="mb-5 overflow-hidden">
+        <Card pad={14} className="mb-2 overflow-hidden">
           <View className="flex-row items-start justify-between gap-2 mb-2">
             <Text className="text-ink-3 text-[10.5px] font-sansX uppercase tracking-widest flex-1">
               1-year price trend
@@ -392,9 +406,12 @@ export default function StockDetail() {
               {formatUsdPrice(quote.range1yLow)} – {formatUsdPrice(quote.range1yHigh)}
             </Text>
           </View>
-          <Sparkline data={sparkData} color="#0E7A66" height={52} fill />
+          <PriceChart data={sparkData} height={170} />
         </Card>
       )}
+      <Text className="text-ink-3 text-[10.5px] font-sansMd text-center mb-5 leading-[15px]">
+        Prices delayed ≥15 min · Educational only · Not investment advice
+      </Text>
 
       {/* Peer companies for comparison */}
       <PeerComparisonCard ticker={stock.symbol} />
@@ -465,7 +482,7 @@ export default function StockDetail() {
         </>
       ) : null}
 
-      <View className="mb-2">
+      <View className="mb-2 gap-y-2">
         <Button
           label={watching ? "Remove from watchlist" : "Add to watchlist"}
           fullWidth
@@ -481,7 +498,22 @@ export default function StockDetail() {
           }
           onPress={() => toggle(stock.symbol)}
         />
+        <Button
+          label={inPortfolio ? "In your portfolio" : "Add to portfolio"}
+          fullWidth
+          size="md"
+          variant="secondary"
+          disabled={inPortfolio}
+          onPress={() => setGateOpen(true)}
+        />
       </View>
+
+      {/* Conviction gate — reason required before any portfolio add */}
+      <ConvictionGate
+        visible={gateOpen}
+        symbols={[stock.symbol]}
+        onClose={() => setGateOpen(false)}
+      />
 
       {/* E4 — ExplainSheet for stat tap */}
       <ExplainSheet {...explainSheetProps} />

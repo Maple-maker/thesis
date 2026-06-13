@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 import {
   ActivityIndicator,
   Alert,
@@ -316,13 +317,13 @@ export default function ThesisModelScreen() {
 
       <View className="flex-row flex-wrap gap-2 mb-5">
         <Pressable
-          onPress={() => router.push("/(tabs)/builder/portfolio" as never)}
+          onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")}
           className="flex-1 min-w-[30%] rounded-[12px] border border-line bg-bg-surface px-3 py-2.5 active:opacity-70"
         >
           <Text className="text-ink text-[12px] font-sansBold">Edit pie</Text>
         </Pressable>
         <Pressable
-          onPress={() => router.push("/(tabs)/watchlist" as never)}
+          onPress={() => pushRoute(router, "/(tabs)/watchlist")}
           className="flex-1 min-w-[30%] rounded-[12px] border border-line bg-bg-surface px-3 py-2.5 active:opacity-70"
         >
           <Text className="text-ink text-[12px] font-sansBold">Watchlist</Text>
@@ -333,7 +334,7 @@ export default function ThesisModelScreen() {
               router.push({
                 pathname: "/duel",
                 params: { a: watchlist[0], b: watchlist[1] },
-              } as never)
+              })
             }
             className="flex-1 min-w-[30%] rounded-[12px] border border-brand/30 bg-brand-bg px-3 py-2.5 active:opacity-70"
           >
@@ -415,7 +416,7 @@ export default function ThesisModelScreen() {
             ))
           )}
           <Pressable
-            onPress={() => router.push("/forecast" as never)}
+            onPress={() => pushRoute(router, "/forecast")}
             className="mt-2 active:opacity-70"
           >
             <Text className="text-brand text-[12px] font-sansBold">
@@ -443,7 +444,7 @@ export default function ThesisModelScreen() {
       )}
 
       <Pressable
-        onPress={() => router.push("/(tabs)/watchlist" as never)}
+        onPress={() => pushRoute(router, "/(tabs)/watchlist")}
         className="mb-2 px-1 active:opacity-70 flex-row items-center justify-between"
       >
         <Text className="text-ink-3 text-[11px] font-sansX uppercase tracking-widest">
@@ -608,7 +609,7 @@ export default function ThesisModelScreen() {
         label="Open model portfolio"
         fullWidth
         variant="secondary"
-        onPress={() => router.push("/(tabs)/builder/portfolio" as never)}
+        onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")}
       />
 
       {/* Stress test sheet */}

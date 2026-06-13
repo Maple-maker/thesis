@@ -1,5 +1,6 @@
 import { hasMilitaryAffiliation } from "@/lib/military-profile";
 import type { UserProfile } from "@/store/types";
+import type { CfoProfile } from "@/types/cfo-profile";
 
 export type ResearchModuleId =
   | "market-scenarios"
@@ -75,7 +76,7 @@ export const RESEARCH_MODULES: ResearchModule[] = [
     id: "military-programs",
     title: "Military financial programs",
     subtitle: "SCRA, TSP/Roth TSP, SDP, CZTE, official links for service members.",
-    relevant: (p) => hasMilitaryAffiliation(p),
+    relevant: (p) => hasMilitaryAffiliation(p as CfoProfile),
     priority: () => 11,
   },
 ];

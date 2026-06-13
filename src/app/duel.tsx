@@ -28,6 +28,7 @@ import { Tick } from "@/components/ui/Tick";
 import { themeById } from "@/data/themes";
 import type { ConceptId } from "@/data/concepts";
 import { BullBearCaseCard } from "@/components/BullBearCaseCard";
+import { StockSignalsCard } from "@/components/StockSignalsCard";
 import { casesFor, casesForEtf, takeForUserPick, techWeightFromHoldings } from "@/lib/cases";
 import { useMilestoneCheck } from "@/lib/use-milestone-check";
 import { useExplainSheet } from "@/hooks/useExplainSheet";
@@ -569,6 +570,14 @@ function ComparePhase({
         <BullBearCaseCard type="bull" ticker={active.symbol} items={activeCases.bull} />
         <BullBearCaseCard type="bear" ticker={active.symbol} items={activeCases.bear} />
       </View>
+
+      {/* Stock signals for selected symbol */}
+      {active.kind !== "portfolio" && (
+        <StockSignalsCard
+          symbol={active.symbol}
+          onConceptPress={onLearnMetric}
+        />
+      )}
 
       {/* Pick prompt */}
       <SectionTitle>Make your call</SectionTitle>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — Thesis</title>
+<meta name="description" content="Thesis privacy policy — how we collect, use, store, and protect your data.">
+<meta name="theme-color" content="#0E7A66">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --serif: 'Newsreader', Georgia, serif;
+    --mono: 'Spline Sans Mono', ui-monospace, monospace;
+    --green: #0E7A66;
+    --green-deep: #06483C;
+    --paper: #F4EFE6;
+    --paper-2: #EFE8DA;
+    --surface: #FCF9F2;
+    --ink: #16201C;
+    --ink-2: #545C56;
+    --ink-3: #8A8E84;
+    --line: #E6DECF;
+    --line-strong: #D8CDB8;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -.02em; }
+  p { margin: 0; text-wrap: pretty; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { width: min(860px, 100% - 44px); margin: 0 auto; }
+
+  .top-nav { padding: 24px 0; border-bottom: 1px solid var(--line); background: var(--surface); }
+  .top-nav a {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--green);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .top-nav a:hover { text-decoration: none; color: var(--green-deep); }
+
+  .page-hero { background: var(--surface); padding: clamp(40px, 6vw, 72px) 0 clamp(36px, 5vw, 56px); border-bottom: 1px solid var(--line); }
+  .page-hero h1 { font-family: var(--serif); font-size: clamp(34px, 4.4vw, 52px); color: var(--ink); line-height: 1.08; }
+  .page-hero .sub { margin-top: 14px; font-size: 16px; line-height: 1.55; color: var(--ink-2); font-weight: 500; max-width: 56ch; }
+
+  .content-section { padding: clamp(48px, 7vw, 80px) 0; }
+  .prose { font-size: 15px; line-height: 1.72; color: var(--ink-2); }
+  .prose h1 { font-size: 26px; font-weight: 700; color: var(--ink); margin: 28px 0 10px; letter-spacing: -.01em; font-family: var(--serif); }
+  .prose h2 { font-size: 18px; font-weight: 700; color: var(--ink); margin: 30px 0 8px; font-family: var(--serif); }
+  .prose h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin: 24px 0 6px; }
+  .prose p { margin: 10px 0; }
+  .prose strong { color: var(--ink); font-weight: 700; }
+  .prose em { font-style: italic; }
+  .prose ul, .prose ol { margin: 8px 0; padding-left: 22px; }
+  .prose li { margin: 4px 0; }
+  .prose hr { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
+  .prose table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px;
+  }
+  .prose th, .prose td {
+    text-align: left; padding: 10px 14px; border: 1px solid var(--line);
+  }
+  .prose th { background: var(--paper-2); font-weight: 700; color: var(--ink); font-size: 13px; }
+  .prose td { color: var(--ink-2); }
+  .prose .last-updated { font-size: 13px; color: var(--ink-3); font-style: italic; margin-top: 20px; }
+  .prose .toc { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-bottom: 28px; }
+  .prose .toc ul { margin: 6px 0 0; }
+  .prose .toc li { font-size: 14px; margin: 2px 0; }
+  .prose .toc a { color: var(--ink-2); }
+  .prose .toc a:hover { color: var(--green); }
+
+  footer { background: var(--green-deep); color: rgba(246,241,230,.46); padding: 42px 0; }
+  .foot-in { display: flex; flex-direction: column; gap: 18px; }
+  .foot-in .logo { display: inline-flex; align-items: center; gap: 11px; }
+  .foot-in .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: rgba(246,241,230,.14); display: flex; align-items: center; justify-content: center;
+  }
+  .foot-in .logo-word { font-family: var(--serif); font-size: 21px; font-weight: 600; color: rgba(246,241,230,.9); }
+  .foot-disc { font-size: 13px; line-height: 1.6; max-width: 64ch; }
+
+  @media (max-width: 540px) {
+    .wrap { width: calc(100% - 32px); }
+    .prose table { font-size: 12px; }
+    .prose th, .prose td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="wrap">
+    <a href="/">&larr; Back to Thesis</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <h1>Privacy Policy</h1>
+    <p class="sub">How Thesis collects, uses, stores, and protects your data. Last updated June 2026.</p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="wrap">
+    <div class="prose">
+
+<div class="toc">
+  <strong style="font-size:14px;color:var(--ink);">Contents</strong>
+  <ul>
+    <li><a href="#intro">1. Introduction</a></li>
+    <li><a href="#collect">2. Information We Collect</a></li>
+    <li><a href="#use">3. How We Use Your Information</a></li>
+    <li><a href="#storage">4. Data Storage &amp; Security</a></li>
+    <li><a href="#sharing">5. Data Sharing</a></li>
+    <li><a href="#ai">6. AI &amp; Machine Learning</a></li>
+    <li><a href="#rights">7. Your Rights</a></li>
+    <li><a href="#children">8. Children's Privacy</a></li>
+    <li><a href="#changes">9. Changes to This Policy</a></li>
+    <li><a href="#contact">10. Contact</a></li>
+  </ul>
+</div>
+
+<h1 id="intro">1. Introduction</h1>
+<p>Thesis ("we," "our," "us") is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your rights regarding your data.</p>
+
+<h2 id="collect">2. Information We Collect</h2>
+<h3>2.1 Information You Provide</h3>
+<ul>
+<li><strong>Profile data:</strong> Age range, investment goals, risk tolerance, experience level, investment interests (collected during onboarding questionnaire)</li>
+<li><strong>Investment thesis data:</strong> Themes you select, portfolio allocations you create, conviction notes, watchlist items</li>
+<li><strong>Research data:</strong> Duel comparisons you run, catalyst sweeps you request, AI debate queries</li>
+<li><strong>Account data:</strong> Email address (if you create an account for cloud sync)</li>
+</ul>
+
+<h3>2.2 Financial Account Data (via Plaid)</h3>
+<p>When you link financial accounts through Plaid:</p>
+<ul>
+<li><strong>We receive:</strong> Account names, types, balances, transaction history, investment holdings, securities data</li>
+<li><strong>We do NOT receive:</strong> Online banking usernames or passwords (these are handled entirely by Plaid and never shared with Thesis)</li>
+<li><strong>We do NOT receive:</strong> Full account numbers, routing numbers, Social Security numbers, or other identity documents</li>
+</ul>
+
+<h3>2.3 Automatically Collected Information</h3>
+<ul>
+<li><strong>Usage data:</strong> Features used, screens visited, actions taken (for product improvement)</li>
+<li><strong>Device data:</strong> Device type, operating system version, app version</li>
+<li><strong>Performance data:</strong> Crash logs, error reports, load times</li>
+</ul>
+
+<h3>2.4 What Thesis Does NOT Collect</h3>
+<ul>
+<li>Government-issued identification (SSN, driver's license, passport)</li>
+<li>Credit reports or credit scores</li>
+<li>Biometric data</li>
+<li>Precise location data</li>
+<li>Contacts or address book data</li>
+</ul>
+
+<h2 id="use">3. How We Use Your Information</h2>
+<table>
+<tr><th>Purpose</th><th>Data Used</th></tr>
+<tr><td>Build and display your investment thesis</td><td>Profile data, theme selections, portfolio allocations</td></tr>
+<tr><td>Show your real financial picture</td><td>Plaid account data, balances, holdings</td></tr>
+<tr><td>Provide AI-powered research</td><td>Profile data, thesis model, research queries</td></tr>
+<tr><td>Improve the app and fix bugs</td><td>Usage data, crash logs</td></tr>
+<tr><td>Recommend relevant educational content</td><td>Experience level, interests, thesis themes</td></tr>
+<tr><td>Display affiliate offers</td><td>Profile data, account types</td></tr>
+</table>
+
+<h2 id="storage">4. Data Storage &amp; Security</h2>
+<h3>Storage</h3>
+<ul>
+<li><strong>Plaid access tokens:</strong> Stored server-side in encrypted storage</li>
+<li><strong>User profile &amp; thesis data:</strong> Stored in Supabase (cloud database with encryption at rest and in transit)</li>
+<li><strong>App preferences:</strong> Stored locally on your device (AsyncStorage)</li>
+</ul>
+
+<h3>Security Measures</h3>
+<ul>
+<li>All data in transit is encrypted using HTTPS/TLS</li>
+<li>Plaid API keys and access tokens are stored server-side only — never exposed to the mobile client</li>
+<li>Database access is authenticated and scoped</li>
+<li>Regular dependency updates to patch security vulnerabilities</li>
+</ul>
+
+<h3>Data Retention</h3>
+<ul>
+<li>Financial account data is retained while your accounts are linked</li>
+<li>When you disconnect accounts, Plaid access tokens are deleted immediately</li>
+<li>Cached financial data is cleared from your device</li>
+<li>Thesis model and profile data is retained until you delete it or request deletion</li>
+</ul>
+
+<h2 id="sharing">5. Data Sharing</h2>
+<h3>Thesis Does NOT:</h3>
+<ul>
+<li>Sell your personal data to third parties</li>
+<li>Share your financial data with advertisers</li>
+<li>Share your portfolio or transaction data with affiliate partners</li>
+<li>Use your data for purposes unrelated to the Thesis app</li>
+</ul>
+
+<h3>Limited Sharing:</h3>
+<ul>
+<li><strong>Plaid Technologies, Inc.:</strong> Your financial data is accessed through Plaid. Plaid's use of your data is governed by their own Privacy Policy.</li>
+<li><strong>Service Providers:</strong> We use Supabase (database) and AI API providers (DeepSeek, Anthropic). Data shared is limited to what is necessary for the service to function.</li>
+<li><strong>Legal Requirements:</strong> We may disclose data if required by law, court order, or government regulation.</li>
+</ul>
+
+<h2 id="ai">6. AI &amp; Machine Learning</h2>
+<ul>
+<li>AI research queries (debates, catalyst sweeps, sentiment analysis, conviction dossiers) are processed by third-party AI providers (DeepSeek API, Anthropic API)</li>
+<li>Query data is transmitted to these providers for processing only — it is not used to train their models (API terms prohibit this)</li>
+<li>No financial account data or personally identifiable information is included in AI queries</li>
+</ul>
+
+<h2 id="rights">7. Your Rights</h2>
+<p>You have the right to:</p>
+<ul>
+<li><strong>Access:</strong> Request a copy of your data</li>
+<li><strong>Correction:</strong> Update or correct your profile and thesis data</li>
+<li><strong>Deletion:</strong> Delete your account and associated data</li>
+<li><strong>Disconnect:</strong> Revoke Plaid access at any time through the app</li>
+<li><strong>Export:</strong> Export your thesis models and research</li>
+</ul>
+<p>To exercise these rights, contact us at <a href="mailto:founder@makeyourthesis.com">founder@makeyourthesis.com</a> or use the in-app settings.</p>
+
+<h2 id="children">8. Children's Privacy</h2>
+<p>Thesis is not intended for users under 13 years of age. We do not knowingly collect data from children under 13.</p>
+
+<h2 id="changes">9. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. Material changes will be communicated through the App. Continued use after changes constitutes acceptance.</p>
+
+<h2 id="contact">10. Contact</h2>
+<p>For privacy-related questions or requests:</p>
+<ul>
+<li>Email: <a href="mailto:founder@makeyourthesis.com">founder@makeyourthesis.com</a></li>
+<li>In-app: Settings → Privacy Policy</li>
+</ul>
+
+<hr>
+<p class="last-updated"><em>Last updated: June 2026</em></p>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 18c5-1.5 7.5-7.8 11-15 2.5 6.5 5 10 8 9" fill="none" stroke="rgba(246,241,230,.9)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16.5" cy="3" r="2.5" fill="rgba(246,241,230,.9)"/></svg>
+      </div>
+      <span class="logo-word">thesis</span>
+    </div>
+    <p class="foot-disc">Educational tool. Not investment advice. Nothing on this site or in the Thesis app is a recommendation to buy or sell any security.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 import { allFinancials } from "@/data/stock-financials";
 import { priceHistory } from "@/data/price-data";
 import type { MarketQuote } from "@/lib/market-api";
+import type { LiveQuote } from "@/lib/prices";
 
 /** Illustrative spot prices for common tickers (not live quotes). */
 const REFERENCE_USD: Record<string, number> = {
@@ -98,6 +99,27 @@ export function stockQuoteFromMarket(q: MarketQuote): StockQuoteDisplay {
     source: "polygon",
     asOf: q.asOf,
     recency: q.recency,
+  };
+}
+
+/**
+ * Quote from the Supabase price proxy (Polygon prev-day, EOD). Carries no 1y
+ * series, so range/sparkline come from the illustrative fallback when present.
+ */
+export function stockQuoteFromLive(
+  q: LiveQuote,
+  fallback?: StockQuoteDisplay | null
+): StockQuoteDisplay {
+  return {
+    price: q.close,
+    changePct1y: fallback?.changePct1y ?? null,
+    changePctDay: q.changePct * 100,
+    range1yLow: fallback?.range1yLow ?? Math.min(q.open, q.close),
+    range1yHigh: fallback?.range1yHigh ?? Math.max(q.open, q.close),
+    sparkline: fallback?.sparkline,
+    source: "polygon",
+    asOf: q.date,
+    recency: "eod",
   };
 }
 

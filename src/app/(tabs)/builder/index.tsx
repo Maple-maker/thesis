@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { pushRoute, pushRouteObject } from "@/lib/app-route";
 
 import { Icon, type IconName } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
@@ -23,10 +24,11 @@ import { backtestPlainEnglish } from "@/lib/backtest-narrative";
 import { MAX_ACTIVE_THEMES } from "@/lib/thesis-limits";
 import { useMilestoneCheck } from "@/lib/use-milestone-check";
 import { MilestoneCelebration } from "@/components/engagement/MilestoneCelebration";
-import { useStore } from "@/store";
+import { useStore, selectIsPro } from "@/store";
 
 export default function BuilderScreen() {
   const router = useRouter();
+  const isPro = useStore(selectIsPro);
   const profile = useStore((s) => s.profile);
   const themeIds = useStore((s) => s.themeIds);
   const modelThesis = useStore((s) => s.modelThesis);
@@ -86,7 +88,7 @@ export default function BuilderScreen() {
     adoptLens(lens.id);
     trackActiveToday();
     check();
-    router.push("/(tabs)/builder/portfolio" as never);
+    pushRoute(router, "/(tabs)/builder/portfolio");
   };
 
   const handleRebuild = () => {
@@ -146,10 +148,10 @@ export default function BuilderScreen() {
             )}
             <View className="flex-row gap-2">
               <View className="flex-1">
-                <Button label="Edit" size="md" onPress={() => router.push("/(tabs)/builder/portfolio" as never)} />
+                <Button label="Edit" size="md" onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")} />
               </View>
               <View className="flex-1">
-                <Button label="Share" size="md" variant="secondary" onPress={() => router.push("/(tabs)/builder/portfolio" as never)} />
+                <Button label="Share" size="md" variant="secondary" onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")} />
               </View>
             </View>
             <Pressable onPress={handleRebuild} className="mt-3 active:opacity-70">
@@ -249,7 +251,7 @@ export default function BuilderScreen() {
                 return (
                   <Pressable
                     key={id}
-                    onPress={() => router.push({ pathname: "/(tabs)/builder/[id]", params: { id } } as never)}
+                    onPress={() => pushRouteObject(router, { pathname: "/(tabs)/builder/[id]", params: { id } })}
                     className="flex-row items-center bg-brand-bg border border-brand/30 rounded-full px-3 py-1.5 active:opacity-70"
                   >
                     <Icon name={t.glyph as IconName} size={13} color={t.color} />
@@ -276,20 +278,20 @@ export default function BuilderScreen() {
                     key={row.symbol}
                     row={row}
                     onPress={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/(tabs)/stock/[symbol]",
                         params: { symbol: row.symbol },
-                      } as never)
+                      })
                     }
                     onDuel={() => {
                       useStore.getState().setDuelMode("securities");
-                      router.push({ pathname: "/duel", params: { a: row.symbol } } as any);
+                      pushRouteObject(router, { pathname: "/duel", params: { a: row.symbol } });
                     }}
                     onDossier={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/thesis-model",
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
-                      } as any)
+                      })
                     }
                     onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
@@ -304,20 +306,20 @@ export default function BuilderScreen() {
                     key={row.symbol}
                     row={row}
                     onPress={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/(tabs)/etf/[symbol]",
                         params: { symbol: row.symbol },
-                      } as never)
+                      })
                     }
                     onDuel={() => {
                       useStore.getState().setDuelMode("securities");
-                      router.push({ pathname: "/duel", params: { a: row.symbol } } as any);
+                      pushRouteObject(router, { pathname: "/duel", params: { a: row.symbol } });
                     }}
                     onDossier={() =>
-                      router.push({
+                      pushRouteObject(router, {
                         pathname: "/thesis-model",
                         params: { radarSymbol: row.symbol, radarTemplate: "conviction-dossier" },
-                      } as any)
+                      })
                     }
                     onWatchlist={() => { toggleWatchlist(row.symbol); setWatchlistPipeline(row.symbol, "shortlisted"); }}
                   />
@@ -335,23 +337,36 @@ export default function BuilderScreen() {
             fullWidth
             size="lg"
             variant="primary"
-            onPress={() => router.push("/(tabs)/builder/portfolio" as never)}
+            onPress={() => pushRoute(router, "/(tabs)/builder/portfolio")}
+          />
+          <Button
+            label="My holdings & reasons"
+            fullWidth
+            size="md"
+            variant="secondary"
+            onPress={() => pushRoute(router, "/(tabs)/portfolio")}
           />
           <Button
             label="Browse full thesis library"
             fullWidth
             size="md"
             variant="secondary"
-            onPress={() => router.push("/(tabs)/themes" as never)}
+            onPress={() => pushRoute(router, "/(tabs)/themes")}
           />
         </View>
 
         {/* Tools */}
         <View className="flex-row gap-2.5 mb-6">
-          <ToolCard icon="compare" label="Duel" color="#0E7A66" onPress={() => router.push("/duel" as any)} />
-          <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => router.push("/xray" as any)} />
-          <ToolCard icon="discover" label="Lenses" color="#D98512" onPress={() => router.push("/lenses" as any)} />
-          <ToolCard icon="target" label="Forecast" color="#3B82F6" onPress={() => router.push("/forecast" as any)} />
+          <ToolCard icon="compare" label="Duel" color="#0E7A66" onPress={() => pushRoute(router, "/duel")} />
+          <ToolCard icon="grid" label="X-Ray" color="#7C3AED" onPress={() => pushRoute(router, "/xray")} />
+          <ToolCard icon="discover" label="Lenses" color="#D98512" onPress={() => pushRoute(router, "/lenses")} />
+          <ToolCard icon="target" label="Forecast" color="#3B82F6" onPress={() => pushRoute(router, "/forecast")} />
+          <ToolCard
+            icon={isPro ? "sparkle" : "lock"}
+            label="Advisor"
+            color="#0E7A66"
+            onPress={() => pushRoute(router, "/advisor")}
+          />
         </View>
 
         <Text className="text-ink-3 text-[10px] text-center font-sansMd leading-[14px]">
@@ -399,24 +414,79 @@ function LeaderboardRow({
         ? "bg-amber/10"
         : "bg-ink-3/10";
 
+  // Allocation adjustment — only available when the symbol is in the model thesis
+  const modelThesis = useStore((s) => s.modelThesis);
+  const setModelThesis = useStore((s) => s.setModelThesis);
+  const holding = modelThesis?.holdings.find(
+    (h) => h.symbol.toUpperCase() === row.symbol.toUpperCase()
+  );
+  const weightPct = holding?.weightPct ?? 0;
+
+  const adjustWeight = (delta: number) => {
+    if (!modelThesis || !holding) return;
+    const newW = Math.max(0, Math.min(100, weightPct + delta));
+    const updated = modelThesis.holdings.map((h) =>
+      h.symbol.toUpperCase() === row.symbol.toUpperCase()
+        ? { ...h, weightPct: newW }
+        : h
+    );
+    // Re-normalize so total stays at 100%
+    const nonCashUpdated = updated.filter((h) => h.symbol !== "CASH");
+    const totalNonCash = nonCashUpdated.reduce((s, h) => s + h.weightPct, 0);
+    if (totalNonCash > 0) {
+      const scale = 100 / totalNonCash;
+      const normalized = updated.map((h) =>
+        h.symbol === "CASH"
+          ? h
+          : { ...h, weightPct: Math.round(h.weightPct * scale) }
+      );
+      setModelThesis({ ...modelThesis, holdings: normalized });
+    }
+  };
+
   return (
     <Pressable onPress={onPress} className="active:opacity-70 mb-1.5">
       <Card pad={12}>
         <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center flex-1 mr-3">
-            <View className="w-[46px] mr-2.5">
-              <Text className="text-ink font-monoBold text-[13px]">{row.symbol}</Text>
-              <Text className="text-ink-3 text-[9px] font-sansMd">{row.kind === "etf" ? "ETF" : "Stock"}</Text>
-            </View>
-            <View className="flex-1 mr-2">
-              <Text className="text-ink text-[12px] font-sansSb" numberOfLines={1}>
-                {row.name}
-              </Text>
-              <Text className="text-ink-3 text-[10px] font-sansMd mt-0.5" numberOfLines={1}>
-                {row.blurb}
+          {/* Company name + ticker */}
+          <View className="flex-1 mr-2">
+            <Text className="text-ink text-[13px] font-sansSb" numberOfLines={1}>
+              {row.name}
+            </Text>
+            <View className="flex-row items-center gap-1.5 mt-0.5">
+              <Text className="text-ink-3 text-[11px] font-monoBold">{row.symbol}</Text>
+              <Text className="text-ink-3 text-[10px] font-sansMd">
+                {row.kind === "etf" ? "ETF" : "Stock"}
               </Text>
             </View>
           </View>
+
+          {/* Allocation % stepper (only when in model thesis) */}
+          {holding && (
+            <View className="flex-row items-center gap-1 mr-2">
+              <Pressable
+                onPress={() => adjustWeight(-5)}
+                className="w-[22px] h-[22px] rounded-[6px] bg-bg-subtle items-center justify-center active:opacity-70"
+                hitSlop={4}
+                disabled={weightPct <= 0}
+              >
+                <Text className="text-ink-2 text-[13px] font-monoBold" style={{ opacity: weightPct <= 0 ? 0.3 : 1 }}>−</Text>
+              </Pressable>
+              <View className="bg-bg-surface border border-line rounded-[7px] px-2 py-0.5 min-w-[42px] items-center">
+                <Text className="text-ink text-[11px] font-monoBold">{weightPct}%</Text>
+              </View>
+              <Pressable
+                onPress={() => adjustWeight(5)}
+                className="w-[22px] h-[22px] rounded-[6px] bg-brand-bg items-center justify-center active:opacity-70"
+                hitSlop={4}
+                disabled={weightPct >= 100}
+              >
+                <Text className="text-brand text-[13px] font-monoBold" style={{ opacity: weightPct >= 100 ? 0.3 : 1 }}>+</Text>
+              </Pressable>
+            </View>
+          )}
+
+          {/* Score + actions */}
           <View className="flex-row items-center gap-1.5">
             <View className={`rounded-[6px] px-2 py-0.5 ${labelBg}`}>
               <Text className="text-[10px] font-sansBold" style={{ color: scoreColor }}>

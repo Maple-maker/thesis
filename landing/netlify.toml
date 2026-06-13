@@ -14,6 +14,11 @@
   status = 200
 
 [[redirects]]
+  from = "/privacy-policy"
+  to = "/privacy-policy.html"
+  status = 200
+
+[[redirects]]
   from = "/terms"
   to = "/support.html#terms"
   status = 200

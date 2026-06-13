@@ -1,5 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { pushRoute } from "@/lib/app-route";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInUp } from "react-native-reanimated";
@@ -104,7 +105,7 @@ function HubView({
 
         {/* Ask Thesis */}
         <Pressable
-          onPress={() => router.push("/ask" as any)}
+          onPress={() => pushRoute(router, "/ask")}
           className="mb-3 active:opacity-70"
         >
           <Card pad={18}>
@@ -125,7 +126,7 @@ function HubView({
 
         {/* Courses */}
         <Pressable
-          onPress={() => router.push("/courses" as any)}
+          onPress={() => pushRoute(router, "/courses")}
           className="mb-3 active:opacity-70"
         >
           <Card pad={18}>

@@ -318,6 +318,11 @@ export default function EtfScreener() {
             </Text>
           </View>
         }
+        ListFooterComponent={
+          <Text className="text-ink-3 text-[11px] text-center font-sansMd mt-6">
+            Educational only · not investment advice
+          </Text>
+        }
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => <SecurityRow item={item} />}
       />

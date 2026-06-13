@@ -55,3 +55,12 @@ scripts/.cache/
 
 # Local Netlify folder
 .netlify
+
+# Relay spec containing burn API keys — rotate keys, then remove this line to commit the doc
+docs/relay-specs/quick-start-YOUR-SETUP.md
+
+# Supabase CLI local state (machine-specific)
+supabase/.temp/
+
+# Claude Code runtime locks
+.claude/scheduled_tasks.lock

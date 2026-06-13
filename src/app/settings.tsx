@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Alert, Linking, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/Icon";
@@ -9,6 +9,8 @@ export default function SettingsScreen() {
   const router = useRouter();
   const profile = useStore((s) => s.profile);
   const subscriptionTier = useStore((s) => s.subscriptionTier);
+  const authUser = useStore((s) => s.authUser);
+  const signOut = useStore((s) => s.signOut);
   const hardReset = useStore((s) => s.hardReset);
   const fullName = profile.extended.identity?.fullName;
 
@@ -56,12 +58,38 @@ export default function SettingsScreen() {
                 {fullName || "Not set"}
               </Text>
             </View>
-            <View className="px-4 py-3.5 flex-row justify-between items-center">
+            {authUser ? (
+              <View className="px-4 py-3.5 border-b border-line flex-row justify-between items-center">
+                <Text className="text-ink font-sansSb text-[15px]">Account</Text>
+                <Text className="text-ink-2 font-sansMd text-[13px]" numberOfLines={1}>
+                  {authUser.email ?? "Signed in"}
+                </Text>
+              </View>
+            ) : null}
+            <View className={`px-4 py-3.5${authUser ? " border-b border-line" : ""} flex-row justify-between items-center`}>
               <Text className="text-ink font-sansSb text-[15px]">Subscription</Text>
               <Text className="text-ink-2 font-sansMd text-[15px] capitalize">
                 {subscriptionTier}
               </Text>
             </View>
+            {authUser ? (
+              <Pressable
+                onPress={async () => {
+                  await signOut();
+                }}
+                className="px-4 py-3.5 flex-row justify-between items-center active:opacity-70"
+              >
+                <Text className="text-neg font-sansSb text-[15px]">Sign out</Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => router.push("/auth")}
+                className="px-4 py-3.5 flex-row justify-between items-center active:opacity-70"
+              >
+                <Text className="text-brand font-sansSb text-[15px]">Sign in to save your data</Text>
+                <Icon name="chev" size={14} color="#0E7A66" sw={2} />
+              </Pressable>
+            )}
           </View>
         </View>
 
@@ -87,9 +115,23 @@ export default function SettingsScreen() {
             </Pressable>
             <Pressable
               onPress={() => router.push("/support" as any)}
-              className="px-4 py-3.5 flex-row justify-between items-center active:opacity-70"
+              className="px-4 py-3.5 border-b border-line flex-row justify-between items-center active:opacity-70"
             >
               <Text className="text-ink font-sansSb text-[15px]">Support & legal</Text>
+              <Icon name="chev" size={14} color="#8C988F" sw={2} />
+            </Pressable>
+            <Pressable
+              onPress={() => Linking.openURL("https://makeyourthesis.com/privacy-policy")}
+              className="px-4 py-3.5 border-b border-line flex-row justify-between items-center active:opacity-70"
+            >
+              <Text className="text-ink font-sansSb text-[15px]">Privacy Policy</Text>
+              <Icon name="chev" size={14} color="#8C988F" sw={2} />
+            </Pressable>
+            <Pressable
+              onPress={() => Linking.openURL("https://makeyourthesis.com/terms-of-service")}
+              className="px-4 py-3.5 flex-row justify-between items-center active:opacity-70"
+            >
+              <Text className="text-ink font-sansSb text-[15px]">Terms of Service</Text>
               <Icon name="chev" size={14} color="#8C988F" sw={2} />
             </Pressable>
           </View>
